@@ -1,10 +1,11 @@
 # CTD 1D Project - SC06 Group 6E
 ## Group Members:
-- Lindero Dianthe Marithe Lumagui
-- Lim Donggeon
-- David Ling
-- Evan Ang
-- Mithunbalaji MG
+- Lindero Dianthe Marithe Lumagui (1007213)
+- Lim Donggeon (1007068)
+- David Ling De Wei (1007175)
+- Evan Ang Jun Ting (1006616)
+- Mithunbalaji Mageswari Ganeshkumar (1007494)
+- Pham Hong Quan (1007131)
 
 ## Project Summary
 Data pertaining to the initial plan of code developed goes here
