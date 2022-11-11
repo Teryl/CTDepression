@@ -1,6 +1,4 @@
-print("The Mitochondra is the powerhouse of the cell")
-
-print("I support python across my device HAHA")
+## Main Code Begins Here
 
 a = 1
 for i in range(2,2):
