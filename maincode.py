@@ -1,4 +1,5 @@
-## Main Code Begins Here
+public static void main(String[] args){
+
 
 a = 1
 for i in range(2,2):
@@ -10,4 +11,4 @@ a = input(int("Enter your number"))
 
 print ("You will never get bitches")
 
-c = "deez nartz"
+print("Give me my fking hell calculator')")
