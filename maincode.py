@@ -1,4 +1,4 @@
-public static void main(String[] args){
+public static void main(String[] args){ ## someones too used to java programming huh
 
 
 a = 12
@@ -11,4 +11,4 @@ a = input(int("Enter your number"))
 
 print ("You will never get bitches")
 
-print("Give me my fking hell calculator')")
+print("Give me my fking hell calculator')")}
