@@ -6,6 +6,7 @@
 - Evan Ang Jun Ting (1006616)
 - Mithunbalaji Mageswari Ganeshkumar (1007494)
 - Pham Hong Quan (1007131)
+- Samuel Rodrigues (1007069)
 
 ## Project Summary
 Data pertaining to the initial plan of code developed goes here
