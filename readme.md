@@ -22,7 +22,7 @@ To go in depth into the inner working of each bit of code written. Can be used a
 Any ideas that were deemed unfeasible or reserved for 'later' goes here. Not like we're gonna do anything after this is over but still just for documentation purposes.
 
 ## Snippets and Dependencies (native)
-###GitHub Copilot
+### GitHub Copilot
 GitHub Copilot is an AI Software that acts as a pair programmer, giving suggestions to code from what has been used by other programmers worldwide.
 
 GitHub Copilot has been used to complete rather large sections of code. Since it uses public code to provide suggestions, it is rather impossible to know the sources that Copilot uses to suggest code snippets.
