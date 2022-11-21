@@ -97,7 +97,7 @@ Complete list of enemies can be found in this table. Bosses are labelled with an
 | Bepis Man      | 🔼 Atk  <br> 🔽 Def  |
 | The Rock       | 🔼 Def  <br> 🔼 Time |
 
-*Note that `🔽 Time` is actually a buff, and the inverse a nerf/debuff.*
+*Note that `🔽 Time` is actually a debuff to the player, as they have less time to compute possible permutations.*
 
 Every enemy is buffed or debuffed a different amount. The buff/debuff multipliers are finely tuned to scale with the [player's progression](#upgrade-shop) so that as they reach new levels, they are constantly challenged by stronger enemies.\
 Power scaling with the player character, the enemies should scale at a slightly higher rate than the player, so that the player's skill ceiling is reached at a certain point. Failure to achieve this balance means the player would find the late game tedious rather than challenging and fun.
