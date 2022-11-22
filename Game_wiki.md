@@ -69,6 +69,12 @@ permutation points = value of each
 total sum points = unique permutation regardless of order
 base damage = constant\*total sum points
 idk what is going on here @teryl pls take over
+
+permutation points = value of a permutation = total number of operations and numbers used
+total sum points = sum of all permutation points
+base damage = sum of all permutation points
+i think??? halp @teryl
+
 ```
 
 
