@@ -21,17 +21,18 @@ To find out more about our programming decisions, principles, and documentation,
 
 # For Internal Use:
 ### Quick Links:
+- [Progess Tracker](https://sanalog.notion.site/889e31923ee34c17b81921d9106d6d3a?v=1e52cd7881d34aecbbef3fabb7da94b3)
+- [Collaborative Sketchbook](https://magma.com/d/nsQyi1jE0h)
 - [Python 3.9 Standard Library](https://docs.python.org/3.9/library/)
 - [Official Tkinter documentation](https://docs.python.org/3/library/tk.html)
 - [TkDocs](https://tkdocs.com/about.html)
-- [Collaborative Sketchbook](https://magma.com/d/nsQyi1jE0h)
 
-
-### Progress Tracker
-| Item                               | Category | Due Date | Status |
-| :--------------------------------- | :------- | :------: | :----: |
-| Read project brief                 | Admin    | 14 Nov   | ✅
-| Set up GitHub repository           | Admin    | 14 Nov   | ✅
-| Come up with game ideas            | Meeting  | 17 Nov   | ✅
-| Create game wiki                   | Admin    | 21 Nov   | ✅
-| Submission of deliverables         | Admin    | 07 Dec   | ✅
+### Key Progress 
+| Items                                 | Deadline | Status |
+| :-----------------------------------------| :------: | :----: |
+| Read project brief                        | 14 Nov   | ✅
+| Set up GitHub repository                  | 14 Nov   | ✅
+| Create [game wiki](Game_wiki.md)          | 21 Nov   | ✅
+| Create [code docs](Code_documentation.md) | 27 Nov   | ⬛
+| Start programming                         | 01 Dec   | ⬛
+| Submission of deliverables                | 07 Dec   | ⬛
