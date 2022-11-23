@@ -1,5 +1,5 @@
 # CTD 1D Project - SC06 Group 6E
-## Group Members:
+## Group Members
 | Name                               | ID      | Role                | [Digimon Crest](https://digimon.fandom.com/wiki/Crests) |
 | :--------------------------------- | :-----: | :------------------ | :----------: |
 | Lindero Dianthe Marithe Lumagui    | 1007213 | GitHub expert       |              |
@@ -19,8 +19,8 @@ To find out more about our programming decisions, principles, and documentation,
 
 <br>
 
-# For Internal Use:
-### Quick Links:
+# For Internal Use
+### Quick Links
 - [Progess Tracker](https://sanalog.notion.site/889e31923ee34c17b81921d9106d6d3a?v=1e52cd7881d34aecbbef3fabb7da94b3)
 - [Collaborative Sketchbook](https://magma.com/d/nsQyi1jE0h)
 - [Python 3.9 Standard Library](https://docs.python.org/3.9/library/)
