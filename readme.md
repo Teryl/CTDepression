@@ -1,30 +1,37 @@
 # CTD 1D Project - SC06 Group 6E
 ## Group Members:
-- Lindero Dianthe Marithe Lumagui (1007213)
-- Lim Donggeon (1007068)
-- David Ling De Wei (1007175)
-- Evan Ang Jun Ting (1006616)
-- Mithunbalaji Mageswari Ganeshkumar (1007494)
-- Pham Hong Quan (1007131)
+| Name                               | ID      | Role                | [Digimon Crest](https://digimon.fandom.com/wiki/Crests) |
+| :--------------------------------- | :-----: | :------------------ | :----------: |
+| Lindero Dianthe Marithe Lumagui    | 1007213 | GitHub expert       |              |
+| Lim Donggeon                       | 1007068 | Markdown enthusiast |              |
+| David Ling De Wei                  | 1007175 | Copilot replacement |              |
+| Evan Ang Jun Ting                  | 1006616 | Rare sane person    |              |
+| Mithunbalaji Mageswari Ganeshkumar | 1007494 | hours.asleep() = 0  |              |
+| Pham Hong Quan                     | 1007131 | Taking commissions  |              |
 
 ## Project Summary
 Data pertaining to the initial plan of code developed goes here
 
 ## Project Details
-To go in depth into the inner working of each bit of code written. Can be used after initial plan is drawn.
+To find out more about the gameplay, design directions, and concept artworks, check out our [***game wiki***](Game_wiki.md)!
 
-### Start Screen
-### Gameplay
-### Win Condition
-### Effectiveness and Results
+To find out more about our programming decisions, principles, and documentation, check out our [***code documentation***](Code_documentation.md)!
 
-## Concepts
-Any ideas that were deemed unfeasible or reserved for 'later' goes here. Not like we're gonna do anything after this is over but still just for documentation purposes.
+<br>
 
-## Snippets and Dependencies (native)
-### GitHub Copilot
-GitHub Copilot is an AI Software that acts as a pair programmer, giving suggestions to code from what has been used by other programmers worldwide.
+# For Internal Use:
+### Quick Links:
+- [Python 3.9 Standard Library](https://docs.python.org/3.9/library/)
+- [Official Tkinter documentation](https://docs.python.org/3/library/tk.html)
+- [TkDocs](https://tkdocs.com/about.html)
+- [Collaborative Sketchbook](https://magma.com/d/nsQyi1jE0h)
 
-GitHub Copilot has been used to complete rather large sections of code. Since it uses public code to provide suggestions, it is rather impossible to know the sources that Copilot uses to suggest code snippets.
 
-Learn more: https://github.com/features/copilot
+### Progress Tracker
+| Item                               | Category | Due Date | Status |
+| :--------------------------------- | :------- | :------: | :----: |
+| Read project brief                 | Admin    | 14 Nov   | ✅
+| Set up GitHub repository           | Admin    | 14 Nov   | ✅
+| Come up with game ideas            | Meeting  | 17 Nov   | ✅
+| Create game wiki                   | Admin    | 21 Nov   | ✅
+| Submission of deliverables         | Admin    | 07 Dec   | ✅
