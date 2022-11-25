@@ -1,13 +1,10 @@
-# Description
-\[Title] is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
+# About
+\[Title\] is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
 
-There is no lore. (unless?? n = years left to live?? and cancer patient????)
+> *Become the best Grim Reaper the world has ever seen by punching in digits. Upgrade your stats in meaningful ways and come up with unique strategies for each enemy until you become the most feared upon psychopomp in the history of the afterlife.*
 
-<!--line breaks are such a mess. delete this later-->
-\
-Become the best Grim Reaper the world has ever seen by not doing math homework. Upgrade your stats in meaningful ways and come up with unique strategies for each enemy until you become the most feared upon psychopomp in the history of the afterlife.
-
-> *There is no lore. STAR WARS™: The Old Republic™ is a free-to-play MMORPG that puts you at the center of your own story-driven saga. Play as a Jedi, Sith, Bounty Hunter, or one of many other iconic STAR WARS roles in the galaxy far, far away over three thousand years before the classic films.*
+Despite having the impressive title of Grim Reaper, you are an overworked office worker who has to deal with uncooperative clients 24/7.\
+One day, the IT department sends you a calculator, explaining how it should make your job much more efficient. All you have to do is create equations to match numbers given to you, and your client will be sent to the afterlife! Like taking candy from a baby! ~~Or lives, for that matter.~~
 
 <br>
 
