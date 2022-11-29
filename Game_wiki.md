@@ -1,13 +1,10 @@
-# Description
-\[Title] is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
+# About
+*A Reaper's Arithmetic* is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
 
-There is no lore. (unless?? n = years left to live?? and cancer patient????)
+> *Become the best Grim Reaper the world has ever seen by punching in digits. Upgrade your stats in meaningful ways and come up with unique strategies for each enemy until you become the most feared upon psychopomp in the history of the afterlife.*
 
-<!--line breaks are such a mess. delete this later-->
-\
-Become the best Grim Reaper the world has ever seen by not doing math homework. Upgrade your stats in meaningful ways and come up with unique strategies for each enemy until you become the most feared upon psychopomp in the history of the afterlife.
-
-> *There is no lore. STAR WARS™: The Old Republic™ is a free-to-play MMORPG that puts you at the center of your own story-driven saga. Play as a Jedi, Sith, Bounty Hunter, or one of many other iconic STAR WARS roles in the galaxy far, far away over three thousand years before the classic films.*
+Despite having the impressive title of Grim Reaper, you are an overworked office worker who has to deal with uncooperative clients 24/7.\
+One day, the IT department sends you a calculator, explaining how it should make your job much more efficient. All you have to do is create equations to match numbers given to you, and your client will be sent to the afterlife! Like taking candy from a baby! ~~Or lives, for that matter.~~
 
 <br>
 
@@ -58,6 +55,9 @@ Enemies also have similar properties; [different enemies](#enemy-types) have dif
 
 
 ## Calculator
+The calculator is the standard user interface that the player is expected to interact with, and use to control the player character.\
+It consists of numeric operands, standard operators, parentheses, and navigation buttons.
+
 ### Each Turn:
 1. A new `n` is generated
    - The range of `n` is determined by the [type of enemy](#enemy-types).
@@ -92,7 +92,7 @@ Each enemy has the following properties:
 Different enemies have different values for each property, requiring unique strategies and promoting dynamic combat.
 
 Most enemies have a single stat buffed, while another stat is debuffed. ([Read more about buffs and nerfs](https://en.wikipedia.org/wiki/Game_balance#Buffs_and_nerfs))\
-Some enemies, called Bosses, have multiple buffs with little or no nerfs. Bosses appear every few levels.
+Some enemies, called Bosses, have multiple buffs with little or no nerfs. Bosses appear every few levels and drop extra [Upgrade Coins](#upgrade-shop)
 
 Complete list of enemies can be found in this table. Bosses are labelled with an `*`.
 | Enemy          | Buffs / Debuffs       |
@@ -103,7 +103,7 @@ Complete list of enemies can be found in this table. Bosses are labelled with an
 | Bepis Man      | 🔼 Atk  <br> 🔽 Def  |
 | The Rock       | 🔼 Def  <br> 🔼 Time |
 
-*Note that `🔽 Time` is actually a debuff to the player, as they have less time to compute possible permutations.*
+*Note that* `🔽Time` *is actually a debuff to the player, as they have less time to compute possible permutations.*
 
 Every enemy is buffed or debuffed a different amount. The buff/debuff multipliers are finely tuned to scale with the [player's progression](#upgrade-shop) so that as they reach new levels, they are constantly challenged by stronger enemies.\
 Power scaling with the player character, the enemies should scale at a slightly higher rate than the player, so that the player's skill ceiling is reached at a certain point. Failure to achieve this balance means the player would find the late game tedious rather than challenging and fun.
@@ -131,7 +131,11 @@ Every turn, there is a chance for the player's damage to be multiplied by 2 time
 Initial critical hit rate is 0%. Each upgrade increases it by 2 pp.
 
 ### Bonus Conditions
-`decide if bonus condition is for bosses or just random`
+During an encounter with a Boss, the Boss may impose bonus conditions that the player may be required to fulfill.
+
+A bonus condition limits the player from using the calculator to its full potential. Instead, players have to work under special constraints to fulfill their goal of calculating `n`. For example, players may be barred from using the <kbd>+</kbd> operator, or they may be only limited to using odd numbers as operands.
+
+Some bonus conditions are optional, while others are mandated. All bonus conditions grant an extra 5 Upgrade Coins upon completion.
 
 <br>
 
@@ -139,4 +143,6 @@ Initial critical hit rate is 0%. Each upgrade increases it by 2 pp.
 ## Styleguide
 <kbd>Alt</kbd>+<kbd>F4</kbd> your life
 
+
+## Bonus Art
 btw can you add relative links in the readme.md file so it links to this and maybe the todo list thanks
