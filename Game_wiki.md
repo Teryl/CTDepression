@@ -55,27 +55,26 @@ Enemies also have similar properties; [different enemies](#enemy-types) have dif
 
 
 ## Calculator
-The calculator is the standard user interface that the player is expected to interact with, and use to control the player character.\
-It consists of numeric operands, standard operators, parentheses, and navigation buttons.
+The calculator is the standard user interface that the player is expected to interact with, and use to control the player character.
 
-### Each Turn:
+It consists of numeric operands, standard operators, parentheses, and navigation buttons. While this sounds quite overwhelming, the GUI itself is quite simplistic, and it has a 8-bit pixel look.
+
+Players are only allowed to hit each key once, after which they are greyed out (excluding parentheses and equals).\
+The player can also use the backspace key to undo their input.
+
+### Each Turn (Run):
 1. A new `n` is generated
    - The range of `n` is determined by the [type of enemy](#enemy-types).
 2. Within the time limit, the player has to obtain `n` using the available operands, operators, and parentheses.
-   - If the player fails to calculate `n`, or if time limit is reached, base damage = 0
-   - If the player succeeds, base damage is calculated as per following:
-```
-permutation points = value of each
-total sum points = unique permutation regardless of order
-base damage = constant\*total sum points
-idk what is going on here @teryl pls take over
+   - If the player fails to calculate `n`, or if time limit is reached, run value = 0
+   - If the player succeeds, run value is calculated as per following:
 
-permutation points = value of a permutation = total number of operations and numbers used
-total sum points = sum of all permutation points
-base damage = sum of all permutation points
-i think??? halp @teryl
+$p_0 = $ number of buttons used\
+$w_0 = $ number of buttons used (invalid permutation)\
+$n_w = $ number of wrong permutations.\
+$r = (p_0 + p_1 \space...\space p_i) - 2\left(\dfrac{w_0 + w_1 \space...\space w_i}{n_w} \right)$
 
-```
+Where $r$ is the run value, and $p_i$ and $w_i$ are the values of the $i^{th}$ correct and wrong permutation respectively.
 
 
 ## Other Features
