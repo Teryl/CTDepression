@@ -6,7 +6,7 @@
 | Lim Donggeon                       | 1007068 | Markdown enthusiast |
 | David Ling De Wei                  | 1007175 | Copilot replacement |
 | Evan Ang Jun Ting                  | 1006616 | Rare sane person    |
-| Mithunbalaji Mageswari Ganeshkumar | 1007494 | hours.asleep() = 0  |
+| Mithunbalaji Mageswari Ganeshkumar | 1007494 | "owoaughAASDHAJS"  |
 | Pham Hong Quan                     | 1007131 | Taking commissions  |
 
 ## Project Summary
