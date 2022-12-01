@@ -1,15 +1,6 @@
-public static void main(String[] args){ ## someones too used to java programming huh
-
-
-a = 12
-for i in range(2,2):
-    a = a + i
-    i = i + 1
-    print(a)
-
-a = input(int("Enter your number "))
-
-print ("You will never get bitches")
-
-print("Give me my fking hell calculator')")}
-print("Give me my fking hell calculator')")
+import math
+import random
+while(True):
+    globalTime = 0
+    globalStage = 1
+       
