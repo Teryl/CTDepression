@@ -1,5 +1,5 @@
 # About
-*A Reaper's Arithmetic* is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
+*Mortal Math* is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
 
 > *Become the best Grim Reaper the world has ever seen by punching in digits. Upgrade your stats in meaningful ways and come up with unique strategies for each enemy until you become the most feared upon psychopomp in the history of the afterlife.*
 
@@ -69,10 +69,9 @@ The player can also use the backspace key to undo their input.
    - If the player fails to calculate `n`, or if time limit is reached, run value = 0
    - If the player succeeds, run value is calculated as per following:
 
-$p_0 = $ number of buttons used\
-$w_0 = $ number of buttons used (invalid permutation)\
-$n_w = $ number of wrong permutations.\
-$r = (p_0 + p_1 \space...\space p_i) - 2\left(\dfrac{w_0 + w_1 \space...\space w_i}{n_w} \right)$
+$p_0 =$ number of buttons used\
+$w_0 =$ number of buttons used (invalid permutation)\
+$r = (p_0 + p_1 \space...\space p_i) - (w_0 + w_1 \space...\space w_i)$
 
 Where $r$ is the run value, and $p_i$ and $w_i$ are the values of the $i^{th}$ correct and wrong permutation respectively.
 
