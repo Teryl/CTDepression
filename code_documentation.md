@@ -36,11 +36,11 @@
 
 - playerDict: 
 {<br>
-"HP": playerStatlist[0], <br>
-"Atk": playerStatlist[0], <br>
-"Def": playerStatlist[0], <br>
-"Luck": playerStatlist[0], <br>
-"Time": playerStatlist[0]<br>}
+"HP": playerStatlist["HP"][0], <br>
+"Atk": playerStatlist[Atk"][0], <br>
+"Def": playerStatlist["Def"][0], <br>
+"Time": playerStatlist["Time"][0], <br>
+"Luck": playerStatlist["Luck"][0]<br>}
 
 - playerStatlist:
 {<br>
