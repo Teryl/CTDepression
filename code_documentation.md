@@ -26,8 +26,7 @@
 | `playerDict`    | dict - int        | Stats of player currrently |
 | `playerStatlist`|dict - dict - int  | Int value of each stat |
 | `playerDmg`     | int               | Damage done by player |
-| `playerCrit`          | int               | Critical multiplier |
-| `playerRed`          | int               | Damage Reduction multiplier |
+| `playerCritRed`          | int               | Critical/Reduction multiplier |
 | `finalDmg` | int               | Contains the results of the clash |
 
 ## Dictionaries
@@ -52,12 +51,15 @@
 <br>}
 
 ### Enemy
-- enemyDict = 
-     enemyTypelist["Man"] <i> Default Value </i> <br>
+- enemyDict = randomizeEnemy(enemyTypelist) <br>
+     - also apply scalers to Atk and Def stats
+     - enemyDict["Atk"] *= `globalStage` <sup> 1.2 </sup> /  `globalStage`
+     - enemyDict["Def"] *= `globalStage` / `globalStage` <sup> 1.2 </sup>
+     
 
 - enemyStatlist:
      {<br>
-     {"HP":{0:25,1:45,2:80},
+     {"HP":{0:0.75,1:1,2:1.25},
      <br>
      {"Atk":{0:0.75,1:1,2,2:1.25},
      <br>
@@ -72,7 +74,7 @@
 - enemyTypelist:
 {<br>
      - "man": {<br>
-        "Name": "Man",<br>
+        "Name": randomizeName(),<br>
         "HP": enemyStatlist["HP"][1],<br>
         "Atk": enemyStatlist["Atk"][1],<br>
         "Def": enemyStatlist["Def"][1],<br>
@@ -112,22 +114,64 @@
 
 ### Calculator
 
-- randomizeEnemy(`enemyTypelist`, `enemyStatlist`):
-    - Randomly selects an enemy from the enemy list
+- randomizeEnemy(`enemyTypelist`):
+    - Randomly selects an enemy from the enemy type list
     - Returns the enemy dictionary, `enemyDict`
 
 - randomizeN(`globalNRange`):
      - Randomly selects a number from the random number range
      - Returns the number, `randN`
 
+- randomizeName():
+     - Randomly selects a name from the list for the name of Man
+     - Returns the name, `randName`
+     - Names:
+          - "David"
+          - "Donggeon"
+          - "Dianthe"
+          - "Mithun"
+          - "Quan Pham"
+          - "Jon"
+          - "Muhammad"
+          - "Tanjiro"
+
+- calcEnemyDmg(`enemyDict, globalStage`):
+     - Calculates the damage done by the enemy
+     - Returns the damage done, `enemyDmg`
+          - `enemyDmg` = `enemyDict["Atk"]` * `globalStage` <sup> 1.2 </sup>
+
+- calcEnemyHP(`enemyDict`, `globalStage`):
+     - Calculates the HP of the enemy
+     - Returns the HP of the enemy, `enemyHP`
+          - `enemyHP` = `enemyDict["HP"]` * `globalStage` <sup> 1.2 </sup> + 10
+
 - calcPlayerDmg(`timeRemaining`, `inputPerm`, `randN`, `playerDict`):
      - Calculates the damage done by the player
      - If player input matches `randN`, returns the damage done, `playerDmg`
-     - `playerDmg` = `playerDict["Atk"]` * `timeRemaining`
+          - `playerDmg` = `playerDict["Atk"]` * `timeRemaining`
      - If player input does not match `randN`, returns 0
 
-- calcEnemyDmg(`enemyDict`):
-     - Calculates the damage done by the enemy
-     - Returns the damage done, `enemyDmg`
-     - `enemyDmg` = `enemyDict["Atk"]` * `globalStage` <sup> 1.2 </sup>
+- calcPlayerCrit (`playerDmg`, `enemyDmg`, `playerDict["Luck"]`):
+     - Calculates either critical damage or damage reduction
+     - Crit chance is based on `playerDict["Luck"]`, higher the value of `playerDict["Luck"]`, the lower the chance of crit/damage reduction.
+          - `playerCritRed` = `playerDmg` * `playerDict["Luck"]` / 100
+     - If damage is being done to the enemy, damage is increased by x1.6
+         -  If `playerDmg` > `enemyDmg`, `finalDmg` *= 1.6  
+     - If damage is being done to the player, damage is reduced by x0.6
+          - If `playerDmg` < 0, `enemyDmg` *= 0.6
+     - returns `playerCritRed`, the critical damage or damage reduction multiplier
+
+- calcFinalDmg (`playerDmg`, `enemyDmg`, `playerDict`, `enemyDict`):
+     - Calculates the final damage done by both the player and the enemy
+     - Returns the final damage done, `finalDmg`
+          - `finalDmg` = `playerDmg` - `enemyDmg`
+     - If `playerDmg` > `enemyDmg`, returns damage done to enemy:
+          - `finalDmg` = `finalDmg` * `enemyDict["Def"]` * `calcPlayerCrit(playerDmg, enemyDmg, playerDict["Luck"])`
+     - If `playerDmg` < `enemyDmg`, returns damage done to player:
+          - `finalDmg` = `finalDmg` * `playerDict["Def"]` *
+          `calcPlayerCrit(playerDmg, enemyDmg, playerDict["Luck"])`
+
+
+
+     
 
