@@ -40,14 +40,14 @@
 "Atk": playerStatlist[0], <br>
 "Def": playerStatlist[0], <br>
 "Luck": playerStatlist[0], <br>
-"Luck": playerStatlist[0]<br>}
+"Time": playerStatlist[0]<br>}
 
 - playerStatlist:
 {<br>
 "HP":{0:15,1:25,2:45,3:65,4:90,5:120}, <br>
 "Atk":{0:1,1:1.2,2:1.4,3:1.6,4:1.8,5:2}, <br>
 "Def":{0:1,1:0.97,2:0.92,3:0.85,4:0.75,5:0.62}, <br>
-"Time": {0:0,1:1,2:2,3:3,4:4,5:5}, c
+"Time": {0:0,1:1,2:2,3:3,4:4,5:5}, <br>
 "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
 <br>}
 
