@@ -40,7 +40,7 @@
 "Atk": playerStatlist[Atk"][0], <br>
 "Def": playerStatlist["Def"][0], <br>
 "Time": playerStatlist["Time"][0], <br>
-"Luck": playerStatlist["Luck"][0]<br>}
+"Luck": playerStatlist["Luck"][0]<br>} <br><i> Default Value </i> <br>
 
 - playerStatlist:
 {<br>
@@ -52,21 +52,22 @@
 <br>}
 
 ### Enemy
-- enemyDict:
-{enemyTypelist["Man"]} <i> Default Value </i>
+- enemyDict = 
+     enemyTypelist["Man"] <i> Default Value </i> <br>
 
 - enemyStatlist:
-{<br>
-{"HP":{0:25,1:45,2:80},
-<br>
-{"Atk":{0:0.75,1:1,2,2:1.25},
-<br>
-{"Def":{0:1.25,1:1.2,2:0.75},
-<br>
-{"Time": {0:10,1:15,2:20},
-<br>
-{"NRange": {0:[0,10], 1:[5,25], 2:[25,100], 3:[100,1000]},
-<br>}
+     {<br>
+     {"HP":{0:25,1:45,2:80},
+     <br>
+     {"Atk":{0:0.75,1:1,2,2:1.25},
+     <br>
+     {"Def":{0:1.25,1:1.2,2:0.75},
+     <br>
+     {"Time": {0:10,1:15,2:20},
+     <br>
+     {"NRange": {0:[0,10], 1:[5,25], 2:[25,100], 3:[100,1000]},
+     <br>
+     }
 
 - enemyTypelist:
 {<br>
