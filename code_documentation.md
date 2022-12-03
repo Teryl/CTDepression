@@ -112,6 +112,22 @@
 
 ### Calculator
 
-- randomizeEnemy(enemyTypelist, enemyStatlist):
+- randomizeEnemy(`enemyTypelist`, `enemyStatlist`):
     - Randomly selects an enemy from the enemy list
-    - Returns the enemy dictionary
+    - Returns the enemy dictionary, `enemyDict`
+
+- randomizeN(`globalNRange`):
+     - Randomly selects a number from the random number range
+     - Returns the number, `randN`
+
+- calcPlayerDmg(`timeRemaining`, `inputPerm`, `randN`, `playerDict`):
+     - Calculates the damage done by the player
+     - If player input matches `randN`, returns the damage done, `playerDmg`
+     - `playerDmg` = `playerDict["Atk"]` * `timeRemaining`
+     - If player input does not match `randN`, returns 0
+
+- calcEnemyDmg(`enemyDict`):
+     - Calculates the damage done by the enemy
+     - Returns the damage done, `enemyDmg`
+     - `enemyDmg` = `enemyDict["Atk"]` * `globalStage` <sup> 1.2 </sup>
+
