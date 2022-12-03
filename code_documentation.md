@@ -74,7 +74,7 @@
 - enemyTypelist:
 {<br>
      - "man": {<br>
-        "Name": "Man",<br>
+        "Name": randomizeName(),<br>
         "HP": enemyStatlist["HP"][1],<br>
         "Atk": enemyStatlist["Atk"][1],<br>
         "Def": enemyStatlist["Def"][1],<br>
@@ -121,6 +121,19 @@
 - randomizeN(`globalNRange`):
      - Randomly selects a number from the random number range
      - Returns the number, `randN`
+
+- randomizeName():
+     - Randomly selects a name from the list for the name of Man
+     - Returns the name, `randName`
+     - Names:
+          - "David"
+          - "Donggeon"
+          - "Dianthe"
+          - "Mithun"
+          - "Quan Pham"
+          - "Jon"
+          - "Muhammad"
+          - "Tanjiro"
 
 - calcEnemyDmg(`enemyDict, globalStage`):
      - Calculates the damage done by the enemy
