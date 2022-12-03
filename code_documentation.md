@@ -27,9 +27,12 @@
 | `playerStatlist`|dict - dict - int  | Int value of each stat |
 | `playerDmg`     | int               | Damage done by player |
 | `playerCrit`          | int               | Critical multiplier |
+| `playerRed`          | int               | Damage Reduction multiplier |
 | `finalDmg` | int               | Contains the results of the clash |
 
-Player Dictionaries:
+## Dictionaries:
+
+### Player:
 
 - playerDict: 
 {<br>
@@ -48,7 +51,7 @@ Player Dictionaries:
 "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
 <br>}
 
-Enemy Dictionaries: 
+### Enemy: 
 - enemyDict:
 {enemyTypelist["Man"]} <i> Default Value </i>
 
