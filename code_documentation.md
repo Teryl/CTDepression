@@ -70,36 +70,36 @@
 
 - enemyTypelist:
 {<br>
-     - Man: {<br>
+     - "Man": {<br>
         "Name": "Man",<br>
         "HP": enemyStatlist["HP"][1],<br>
         "Atk": enemyStatlist["Atk"][1],<br>
         "Def": enemyStatlist["Def"][1],<br>
         "Time": enemyStatlist["Time"][1]},<br>
 <br>
-     - CancerPatient: {<br>
+     - "CancerPatient": {<br>
      "Name": "Cancer Patient",<br>
      "HP": enemyStatlist["HP"][1],<br>
      "Atk": enemyStatlist["Atk"][1],<br>
      "Def": enemyStatlist["Def"][0],<br>
      "Time": enemyStatlist["Time"][0]},<br>
 <br>
-     - FloridaMan: {<br>
+     - "FloridaMan": {<br>
      "Name": "Florida Man",<br>
      "HP": enemyStatlist["HP"][2],<br>
      "Atk": enemyStatlist["Atk"][0],<br>
      "Def": enemyStatlist["Def"][1],<br>
      "Time": enemyStatlist["Time"][1]},<br>
 <br>
-     - PepsiMan: {<br>
+     - "PepsiMan": {<br>
      "Name": "Pepsi Man",<br>
      "HP": enemyStatlist["HP"][1],<br>
      "Atk": enemyStatlist["Atk"][2],<br>
      "Def": enemyStatlist["Def"][0],<br>
      "Time": enemyStatlist["Time"][1]},<br>
 <br>
-     - TheRock: {<br>
-     "Name": "Man",<br>
+     - "TheRock": {<br>
+     "Name": "The Rock",<br>
      "HP": enemyStatlist["HP"][1],<br>
      "Atk": enemyStatlist["Atk"][1],<br>
      "Def": enemyStatlist["Def"][2],<br>
@@ -111,3 +111,6 @@
 
 ### Calculator
 
+- randomizeEnemy(enemyTypelist, enemyStatlist):
+    - Randomly selects an enemy from the enemy list
+    - Returns the enemy dictionary
