@@ -1,6 +1,6 @@
 # Code Documentation
 
-## Variable Table
+## Variable Tables
 
 ### Global
 | Variable        | Type              | Description   |
@@ -30,9 +30,9 @@
 | `playerRed`          | int               | Damage Reduction multiplier |
 | `finalDmg` | int               | Contains the results of the clash |
 
-## Dictionaries:
+## Dictionaries
 
-### Player:
+### Player
 
 - playerDict: 
 {<br>
@@ -51,7 +51,7 @@
 "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
 <br>}
 
-### Enemy: 
+### Enemy
 - enemyDict:
 {enemyTypelist["Man"]} <i> Default Value </i>
 
@@ -65,7 +65,7 @@
 <br>
 {"Time": {0:10,1:15,2:20},
 <br>
-{"globalNRange": {0:[0,10], 1:[5,25], 2:[25,100], 3:[100,1000]},
+{"NRange": {0:[0,10], 1:[5,25], 2:[25,100], 3:[100,1000]},
 <br>}
 
 - enemyTypelist:
@@ -106,3 +106,8 @@
      "Time": enemyStatlist["Time"][2]},
 <br>
 }
+
+## Functions
+
+### Calculator
+
