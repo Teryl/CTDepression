@@ -25,6 +25,17 @@ FR_NOT_ENUM = 0x20
 GLOBAL_PRECISION = 5
 
 
+attributes = {
+    "HP" : 0,
+    "ATK" : 0,
+    "DEF" : 0,
+    "LUCK" : 0,
+    "LVL" : 0,
+    "N" : 0,
+    "TIME" : 0,
+}
+
+
 def PLACEHOLDER_FUNCTION():
     pass
 
@@ -90,16 +101,45 @@ class assetHandler():
 
             ### FightUI
             "combatBG" : [os.path.join(self.fightPath, "01_Background.png"), 4, 110, 50],
-
-
-
+            "Time_10" : [os.path.join(self.fightPath, "02_Time_10.png"), 4, 40, 3],
+            "Time_9" : [os.path.join(self.fightPath, "03_Time_9.png"), 4, 40, 3],
+            "Time_8" : [os.path.join(self.fightPath, "04_Time_8.png"), 4, 40, 3],
+            "Time_7" : [os.path.join(self.fightPath, "05_Time_7.png"), 4, 40, 3],
+            "Time_6" : [os.path.join(self.fightPath, "06_Time_6.png"), 4, 40, 3],
+            "Time_5" : [os.path.join(self.fightPath, "07_Time_5.png"), 4, 40, 3],
+            "Time_4" : [os.path.join(self.fightPath, "08_Time_4.png"), 4, 40, 3],
+            "Time_3" : [os.path.join(self.fightPath, "09_Time_3.png"), 4, 40, 3],
+            "Time_2" : [os.path.join(self.fightPath, "10_Time_2.png"), 4, 40, 3],
+            "Time_1" : [os.path.join(self.fightPath, "11_Time_1.png"), 4, 40, 3],
+            "Time_0" : [os.path.join(self.fightPath, "12_Time_0.png"), 4, 40, 3],
+            "Atk_5" : [os.path.join(self.fightPath, "13_Atk_5.png"), 4, 10, 3],
+            "Atk_4" : [os.path.join(self.fightPath, "14_Atk_4.png"), 4, 10, 3],
+            "Atk_3" : [os.path.join(self.fightPath, "15_Atk_3.png"), 4, 10, 3],
+            "Atk_2" : [os.path.join(self.fightPath, "16_Atk_2.png"), 4, 10, 3],
+            "Atk_1" : [os.path.join(self.fightPath, "17_Atk_1.png"), 4, 10, 3],
+            "Atk_0" : [os.path.join(self.fightPath, "18_Atk_0.png"), 4, 10, 3],
+            "Def_5" : [os.path.join(self.fightPath, "19_Def_5.png"), 4, 10, 3],
+            "Def_4" : [os.path.join(self.fightPath, "20_Def_4.png"), 4, 10, 3],
+            "Def_3" : [os.path.join(self.fightPath, "21_Def_3.png"), 4, 10, 3],
+            "Def_2" : [os.path.join(self.fightPath, "22_Def_2.png"), 4, 10, 3],
+            "Def_1" : [os.path.join(self.fightPath, "23_Def_1.png"), 4, 10, 3],
+            "Def_0" : [os.path.join(self.fightPath, "24_Def_0.png"), 4, 10, 3],
+            "Luck_5" : [os.path.join(self.fightPath, "25_Luck_5.png"), 4, 10, 3],
+            "Luck_4" : [os.path.join(self.fightPath, "26_Luck_4.png"), 4, 10, 3],
+            "Luck_3" : [os.path.join(self.fightPath, "27_Luck_3.png"), 4, 10, 3],
+            "Luck_2" : [os.path.join(self.fightPath, "28_Luck_2.png"), 4, 10, 3],
+            "Luck_1" : [os.path.join(self.fightPath, "29_Luck_1.png"), 4, 10, 3],
+            "Luck_0" : [os.path.join(self.fightPath, "30_Luck_0.png"), 4, 10, 3],
+            "HP" : ['#424242', 16, 5],
+            "LVL" : ['#424242', 14, 5],
+            "N" : ['#424242', 14, 5],
         }
     
         
 
     ### Asset get method
     def getAsset(self, assetName):
-        if self.assets[assetName][0].isalpha() or self.assets[assetName][0][0] == "#":
+        if len(self.assets[assetName]) == 3:
             return self.assets[assetName][0]
         elif assetName in self.imageDict:
             return self.imageDict[assetName]
@@ -230,6 +270,7 @@ class gameInstance(Tk):
         self.create_buttons()
         self.assets.initialise_fonts()
         self.create_display()
+        self.create_combat()
         
         
 
@@ -261,6 +302,17 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["screen"], "display", image=self.assets.getAsset("displayBG"), width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5, anchor=CENTER)
         self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)), anchor=E)
 
+    def create_combat(self):
+        self.create_canvas(self.frameDict["combat"], "Time", image=self.assets.getAsset("Time_10"), width=self.assets.assets["Time_0"][2]*self.px, height=self.assets.assets["Time_0"][3]*self.px, padx=0, pady=0, relx=0.795, rely=0.225, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Atk", image=self.assets.getAsset("Atk_5"), width=self.assets.assets["Atk_0"][2]*self.px, height=self.assets.assets["Atk_0"][3]*self.px, padx=0, pady=0, relx=0.455, rely=0.085, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Def", image=self.assets.getAsset("Def_5"), width=self.assets.assets["Def_0"][2]*self.px, height=self.assets.assets["Def_0"][3]*self.px, padx=0, pady=0, relx=0.6825, rely=0.085, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Luck", image=self.assets.getAsset("Luck_5"), width=self.assets.assets["Luck_0"][2]*self.px, height=self.assets.assets["Luck_0"][3]*self.px, padx=0, pady=0, relx=0.93, rely=0.085, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "HP", bg=self.assets.getAsset("HP"), width=self.assets.assets["HP"][1]*self.px, height=self.assets.assets["HP"][2]*self.px, padx=0, pady=0, relx=0.203, rely=0.088, anchor=CENTER)
+        self.frameDict["HP"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
+        self.create_canvas(self.frameDict["combat"], "LVL", bg=self.assets.getAsset("LVL"), width=self.assets.assets["LVL"][1]*self.px, height=self.assets.assets["LVL"][2]*self.px, padx=0, pady=0, relx=0.21, rely=0.23, anchor=CENTER)
+        self.frameDict["LVL"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
+        self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.23, anchor=CENTER)
+        self.frameDict["N"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
 
     def create_buttons(self):
         for y in range(len(self.defaultLayout)):
@@ -312,13 +364,16 @@ class gameInstance(Tk):
     def update_button(self, id, **kwargs):
         self.buttonDict[id].config(**kwargs)
 
-    def update_display(self, text):
+    def update_displaytext(self, text):
         self.frameDict["display"].itemconfig(self.textfields['screenText'], text=text)
 
     def grid_item(self, item, **kwargs):
         item.grid(**kwargs)
    
-    
+    # Create Combat Display Update Loop
+    def update_combat_display(self):
+
+        self.after(100, self.update_combat_display)
 
 class actions():
     def __init__(self, game):
@@ -348,10 +403,10 @@ class actions():
         self.game.reset_buttons()
 
     def push_to_screen(self, text):
-        self.game.update_display(text)
+        self.game.update_displaytext(text)
     
     def clear_screen(self):
-        self.game.update_display("")
+        self.game.update_displaytext("")
         self.game.finishCalc = False
 
     def add_to_buffer(self, text):
