@@ -79,10 +79,26 @@ while True:
         return enemy
 
     # randomizeN() : select number from random number range
-    def randomizeN(globalNRange):
-        nRange = random.randrange(globalNRange[0], globalNRange[1])
-        return nRange
-  
+    def randomizeN(globalStage, enemyStatList):
+        # range of n is selected based on the globalStage
+        # the higher the stage, range is increased 
+        
+        if globalStage <= 3:
+            globalNRange = enemyStatlist["globalNRange"][0]
+        
+        elif globalStage > 3 and globalStage <= 7:
+            globalNRange = enemyStatlist["globalNRange"][1]
+        
+        elif globalStage > 7 and globalStage <= 8:
+            globalNRange = enemyStatlist["globalNRange"][2]
+        
+        elif globalStage > 8:
+            globalNRange = enemyStatlist["globalNRange"][3]
+
+        # choose n based on the globalNRange
+        n = random.randrange(globalNRange[0], globalNRange[1])
+        return n
+
     # calcPlayerDmg () : calculate damage done by player
     def calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict):
         # for now, player input taken using keyboard
@@ -92,13 +108,13 @@ while True:
         else:
             playerDmg = 0
         return playerDmg
-    
-    
+        
     # calcEnemyDmg() : calculate damage done by enemy
     def calcEnemyDmg(enemyDict):
         enemyDmg = enemyDict["Atk"] * globalStage
         return enemyDmg
 
+    
     
     # initializing globalStage as 1 before round runs
     globalStage = 1
@@ -108,15 +124,7 @@ while True:
         # playerDict is default
         playerDict = playerDict
 
-        # setting global stage and number range
-        if globalStage <= 3:
-            globalNRange = randomizeN(enemyStatlist["globalNRange"][0])
-        elif globalStage > 3 and globalStage <= 7:
-            globalNRange = randomizeN(enemyStatlist["globalNRange"][1])
-        elif globalStage > 7 and globalStage <= 8:
-            globalNRange = randomizeN(enemyStatlist["globalNRange"][2])
-        elif globalStage > 8:
-            globalNRange = randomizeN(enemyStatlist["globalNRange"][3])
+        
        
         # selecting random enemy
         enemyDict = randomizeEnemy(enemyTypeList)
