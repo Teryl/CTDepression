@@ -22,6 +22,7 @@ WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
+GLOBAL_PRECISION = 5
 
 
 def PLACEHOLDER_FUNCTION():
@@ -159,6 +160,7 @@ class gameInstance(Tk):
         self.textfields = {}
         self.buffer = ""
         self.result = ""
+        self.finishCalc = False
 
         self.binds = {}
 
@@ -350,10 +352,12 @@ class actions():
     
     def clear_screen(self):
         self.game.update_display("")
+        self.game.finishCalc = False
 
     def add_to_buffer(self, text):
         self.game.buffer += text
         self.push_to_screen(self.game.buffer)
+        self.game.finishCalc = False
 
     def clear_buffer(self):
         self.game.buffer = ""
@@ -365,20 +369,26 @@ class actions():
     def evaluate_buffer(self):
         try:
             result = eval(self.game.buffer)
-            if result.is_integer():
-                result = int(result)
+            if not(isinstance(result, int)):
+                if result.is_integer():
+                    final = int(result)
+                else:
+                    final = round(result, GLOBAL_PRECISION)
             else:
-                result = round(result, 5)
+                final = result
         except:
             self.push_to_screen("ERROR")
-            sleep(1)
-            self.push_to_screen(self.game.buffer)
+            self.game.buffer = ""
         else:
-            self.push_to_screen(result)
+            self.push_to_screen(final)
             self.game.result = str(result)
             self.game.buffer = ""
+            self.game.finishCalc = True
 
-
+    def retrieve_result(self):
+        #self.add_to_buffer(self.game.result)
+        #self.push_to_screen(self.game.result)
+        pass ###feature disabled
 
 class buttonPresses():
     def __init__(self, actions):
@@ -431,15 +441,23 @@ class buttonPresses():
         self.action.add_to_buffer(".")
 
     def press_Plus(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
         self.action.add_to_buffer("+")
 
     def press_Minus(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
         self.action.add_to_buffer("-")
 
     def press_Multiply(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
         self.action.add_to_buffer("*")
 
     def press_Divide(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
         self.action.add_to_buffer("/")
     
     def press_Equals(self):
