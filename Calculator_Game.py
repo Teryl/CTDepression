@@ -155,6 +155,7 @@ class gameInstance(Tk):
         self.container = []
         self.buttonDict = {}
         self.textfields = {}
+        self.buffer = ""
 
         self.binds = {}
 
@@ -275,6 +276,7 @@ class gameInstance(Tk):
                 if self.defaultLayout[y][x] != None:
                     self.change_button((y, x), self.defaultLayout[y][x])
 
+
     # compartmentalisation functions
     def create_frame(self, master, id, **kwargs):
         if "background" in kwargs:
@@ -339,6 +341,32 @@ class actions():
 
     def keypad_state_reset(self):
         self.game.reset_buttons()
+
+    def push_to_screen(self, text):
+        self.game.update_display(text)
+    
+    def clear_screen(self):
+        self.game.update_display("")
+
+    def add_to_buffer(self, text):
+        self.game.buffer += text
+        self.push_to_screen(self.game.buffer)
+
+    def clear_buffer(self):
+        self.game.buffer = ""
+        self.push_to_screen(self.game.buffer)
+
+    def backspace(self):
+        self.game.buffer = self.game.buffer[:-1]
+        self.push_to_screen(self.game.buffer)
+    
+
+
+
+class buttonPresses():
+    def __init__(self, actions):
+        self.action = actions
+    
 
 
         
