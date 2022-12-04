@@ -17,7 +17,7 @@ from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 1
+WINDOW_SCALE = 1.25
 WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
@@ -365,6 +365,10 @@ class actions():
     def evaluate_buffer(self):
         try:
             result = eval(self.game.buffer)
+            if result.is_integer():
+                result = int(result)
+            else:
+                result = round(result, 5)
         except:
             self.push_to_screen("ERROR")
             sleep(1)
