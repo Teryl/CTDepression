@@ -23,6 +23,7 @@
 | `enemyStatlist` | dict - dict - int | Values for stats of all enemies |
 | `enemyTypelist` | dict - dict - int | Values for each type of enemy |
 | `enemyDmg`      | int               | Damage done by enemy |
+| `enemyNamelist`      | list               | All possible names "Man" can take:|
 | `playerDict`    | dict - int        | Stats of player currrently |
 | `playerStatlist`|dict - dict - int  | Int value of each stat |
 | `playerDmg`     | int               | Damage done by player |
@@ -122,20 +123,6 @@
 - randomizeN(`globalNRange`):
      - Randomly selects a number from the random number range
      - Returns the number, `randN`
-
-- randomizeName():
-     - Randomly selects a name from the list for the name of Man
-     - Returns the name, `randName`
-     - Names:
-          - "David"
-          - "Donggeon"
-          - "Dianthe"
-          - "Mithun"
-          - "Evan"
-          - "Quan Pham"
-          - "Jon"
-          - "Muhammad"
-          - "Tanjiro"
 
 - calcEnemyDmg(`enemyDict, globalStage`):
      - Calculates the damage done by the enemy
