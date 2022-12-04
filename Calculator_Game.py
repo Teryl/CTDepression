@@ -216,8 +216,7 @@ class gameInstance(Tk):
        # Calculate Starting X and Y coordinates for Window
         x = (self.winfo_screenwidth()/2) - (WINDOW_SIZE[0]/2)
         y = (self.winfo_screenheight()/2) - (WINDOW_SIZE[1]/2)
-        
-        self.geometry('%dx%d+%d+%d' % (self.size[0], self.size[1], x, y))
+      
         self.resizable(True, True)
         self.minsize(int(WINDOW_SIZE[0]*WINDOW_SCALE), int(WINDOW_SIZE[1]*WINDOW_SCALE))
 
@@ -277,6 +276,7 @@ class gameInstance(Tk):
         self.assets.initialise_fonts()
         self.create_display()
         self.create_combat()
+        self.geometry('%dx%d+%d+%d' % (self.size[0], self.size[1], x, y))
         
         
         
