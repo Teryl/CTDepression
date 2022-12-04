@@ -24,16 +24,20 @@ FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
 GLOBAL_PRECISION = 5
 
+class player():
+    def __init__(self):
+        self.playerDict = {
+            "HP" : 0,
+            "Atk" : 0,
+            "Def" : 0,
+            "Luck" : 0,
+            "LVL" : 0,
+            "N" : 0,
+            "Time" : 0,
+        }
 
-playerDict = {
-    "HP" : 0,
-    "Atk" : 0,
-    "Def" : 0,
-    "Luck" : 0,
-    "LVL" : 0,
-    "N" : 0,
-    "Time" : 0,
-}
+    def update_playerDict(self, key, value):
+        self.playerDict[key] = value
 
 
 def PLACEHOLDER_FUNCTION():
@@ -203,6 +207,7 @@ class gameInstance(Tk):
         self.result = ""
         self.finishCalc = False
 
+        self.player = player()
         self.binds = {}
 
         self.configure(background=self.assets.getAsset("windowBG"))
@@ -272,7 +277,7 @@ class gameInstance(Tk):
         self.assets.initialise_fonts()
         self.create_display()
         self.create_combat()
-        self.update_combat_display()
+        
         
         
 
@@ -325,6 +330,8 @@ class gameInstance(Tk):
 
         self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.23, anchor=CENTER)
         self.textfields["N"] = self.frameDict["N"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
+
+        self.update_combat_display()
 
     def create_buttons(self):
         for y in range(len(self.defaultLayout)):
@@ -384,13 +391,13 @@ class gameInstance(Tk):
    
     # Create Combat Display Update Loop
     def update_combat_display(self):
-        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(playerDict["HP"]))
-        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(playerDict["LVL"]))
-        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(playerDict["N"]))
-        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(playerDict["Time"])))
-        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(playerDict["Atk"])))
-        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(playerDict["Def"])))
-        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(playerDict["Luck"])))
+        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.playerDict["HP"]))
+        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.playerDict["LVL"]))
+        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.playerDict["N"]))
+        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(self.player.playerDict["Time"])))
+        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.playerDict["Atk"])))
+        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.playerDict["Def"])))
+        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.playerDict["Luck"])))
         self.after(10, self.update_combat_display)
 
 class actions():
@@ -587,13 +594,12 @@ class buttonPresses():
     def press_Disabled(self):
         pass
 
-
         
 ### Main Game Loop
 def main():
     assets = assetHandler()
     game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets)
-
+ 
     game.mainloop()
     
 main()
