@@ -5,7 +5,6 @@
 ### Global
 | Variable        | Type              | Description   |
 | :-------------- | :---------------- | :-----------  |
-| `globalTime`    | int               | Total time for level in seconds|
 | `globalNRange`  | list[x,y]         | Range of numbers taken to make a prompt |
 | `globalStage`   | int               | Current stage the player is in |
 ### Calculator
