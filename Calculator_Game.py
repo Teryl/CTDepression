@@ -7,19 +7,22 @@ import time
 from math import *
 from tkinter import *
 from tkinter import messagebox
+from tkinter import font
 from tkinter.font import Font
 import os
 import winsound
+from time import sleep
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 1
+WINDOW_SCALE = 1.25
 WINDOW_SIZE_PX = (118, 214)
-WINDOW_TITLE = "Mortal Math"
+WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
+GLOBAL_PRECISION = 5
 
 
 def PLACEHOLDER_FUNCTION():
@@ -106,7 +109,7 @@ class assetHandler():
 
     # load fonts
     def initialise_fonts(self):
-        self.load_font(os.path.abspath("./assets/fonts/monogram.ttf"))
+        self.load_font(os.path.abspath("./assets/fonts/monogramRevised.otf"))
 
     ### Font loader
     def load_font(self, fontpath, private=True, enumerable=False):
@@ -156,6 +159,8 @@ class gameInstance(Tk):
         self.buttonDict = {}
         self.textfields = {}
         self.buffer = ""
+        self.result = ""
+        self.finishCalc = False
 
         self.binds = {}
 
@@ -171,46 +176,46 @@ class gameInstance(Tk):
         self.minsize(int(WINDOW_SIZE[0]*WINDOW_SCALE), int(WINDOW_SIZE[1]*WINDOW_SCALE))
 
         self.create_main()
-        action = actions(self)
+        press = buttonPresses(actions(self))
 
         self.buttons = {
-            "C" : action.keypad_state_reset,
-            "CE" : PLACEHOLDER_FUNCTION,
-            "LeftBracket" : PLACEHOLDER_FUNCTION,
-            "RightBracket" : PLACEHOLDER_FUNCTION,
-            "Divide" : PLACEHOLDER_FUNCTION,
-            "1" : PLACEHOLDER_FUNCTION,
-            "2" : PLACEHOLDER_FUNCTION,
-            "3" : PLACEHOLDER_FUNCTION,
-            "Multiply" : PLACEHOLDER_FUNCTION,
-            "4" : PLACEHOLDER_FUNCTION,
-            "5" : PLACEHOLDER_FUNCTION,
-            "6" : PLACEHOLDER_FUNCTION,
-            "Minus" : PLACEHOLDER_FUNCTION,
-            "7" : PLACEHOLDER_FUNCTION,
-            "8" : PLACEHOLDER_FUNCTION,
-            "9" : PLACEHOLDER_FUNCTION,
-            "Home" : action.keypad_state_change,
-            "0" : PLACEHOLDER_FUNCTION,
-            "Dot" : PLACEHOLDER_FUNCTION,
-            "Equals" : PLACEHOLDER_FUNCTION,
-            "Plus" : PLACEHOLDER_FUNCTION,
-            "UpArrow" : PLACEHOLDER_FUNCTION,
-            "RightArrow" : PLACEHOLDER_FUNCTION,
-            "LeftArrow" : PLACEHOLDER_FUNCTION,
-            "DownArrow" : PLACEHOLDER_FUNCTION,
-            "Disabled" : PLACEHOLDER_FUNCTION,
-            "BlankOrange" : PLACEHOLDER_FUNCTION,
-            "BlankLightGrey" : PLACEHOLDER_FUNCTION,
-            "BlankDarkGrey" : PLACEHOLDER_FUNCTION,
-            "BlankBlack" : PLACEHOLDER_FUNCTION,
-            "Yes" : PLACEHOLDER_FUNCTION,
-            "No" : PLACEHOLDER_FUNCTION,
-            "Circle" : PLACEHOLDER_FUNCTION,
-            "Triangle" : PLACEHOLDER_FUNCTION,
-            "Square" : PLACEHOLDER_FUNCTION,
-            "Pound" : PLACEHOLDER_FUNCTION,
-            "BlankPlus" : PLACEHOLDER_FUNCTION, 
+            "C" : press.press_C,
+            "CE" : press.press_CE,
+            "LeftBracket" : press.press_LeftBracket,
+            "RightBracket" : press.press_RightBracket,
+            "Divide" : press.press_Divide,
+            "1" : press.press_1,
+            "2" : press.press_2,
+            "3" : press.press_3,
+            "Multiply" : press.press_Multiply,
+            "4" : press.press_4,
+            "5" : press.press_5,
+            "6" : press.press_6,
+            "Minus" : press.press_Minus,
+            "7" : press.press_7,
+            "8" : press.press_8,
+            "9" : press.press_9,
+            "Home" : press.press_Home,
+            "0" : press.press_0,
+            "Dot" : press.press_Dot,
+            "Equals" : press.press_Equals,
+            "Plus" : press.press_Plus,
+            "UpArrow" : press.press_UpArrow,
+            "RightArrow" : press.press_RightArrow,
+            "LeftArrow" : press.press_LeftArrow,
+            "DownArrow" : press.press_DownArrow,
+            "Disabled" : press.press_Disabled,
+            "BlankOrange" : press.press_BlankOrange,
+            "BlankLightGrey" : press.press_BlankLightGrey,
+            "BlankDarkGrey" : press.press_BlankDarkGrey,
+            "BlankBlack" : press.press_BlankBlack,
+            "Yes" : press.press_Yes,
+            "No" : press.press_No,
+            "Circle" : press.press_Circle,
+            "Triangle" : press.press_Triangle,
+            "Square" : press.press_Square,
+            "Pound" : press.press_Pound,
+            "BlankPlus" : press.press_BlankPlus,
         }
 
         self.defaultLayout = [
@@ -218,7 +223,7 @@ class gameInstance(Tk):
             ["BlankBlack", "1", "2", "3", "Multiply"],
             ["BlankBlack", "4", "5", "6", "Minus"],
             ["BlankBlack", "7", "8", "9", "Plus"],
-            ["Home", "0", "Dot", "Equals", None],
+            ["Pound", "0", "Dot", "Equals", None],
         ]
 
         self.create_calc()
@@ -254,7 +259,7 @@ class gameInstance(Tk):
 
     def create_display(self):
         self.create_canvas(self.frameDict["screen"], "display", image=self.assets.getAsset("displayBG"), width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5, anchor=CENTER)
-        self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - self.px, text="300", font=self.assets.getFont("monogram", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)), anchor=E)
+        self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)), anchor=E)
 
 
     def create_buttons(self):
@@ -327,7 +332,7 @@ class actions():
 
     def keypad_state_change(self):
         self.altLayout = [
-            ["C", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
+            ["BlankOrange", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
             ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
             ["Triangle", "LeftArrow", "BlankDarkGrey", "RightArrow", "BlankLightGrey"],
             ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
@@ -347,26 +352,167 @@ class actions():
     
     def clear_screen(self):
         self.game.update_display("")
+        self.game.finishCalc = False
 
     def add_to_buffer(self, text):
         self.game.buffer += text
         self.push_to_screen(self.game.buffer)
+        self.game.finishCalc = False
 
     def clear_buffer(self):
         self.game.buffer = ""
-        self.push_to_screen(self.game.buffer)
 
     def backspace(self):
         self.game.buffer = self.game.buffer[:-1]
         self.push_to_screen(self.game.buffer)
     
+    def evaluate_buffer(self):
+        try:
+            result = eval(self.game.buffer)
+            if not(isinstance(result, int)):
+                if result.is_integer():
+                    final = int(result)
+                else:
+                    final = round(result, GLOBAL_PRECISION)
+            else:
+                final = result
+        except:
+            self.push_to_screen("ERROR")
+            self.game.buffer = ""
+        else:
+            self.push_to_screen(final)
+            self.game.result = str(result)
+            self.game.buffer = ""
+            self.game.finishCalc = True
 
-
+    def retrieve_result(self):
+        #self.add_to_buffer(self.game.result)
+        #self.push_to_screen(self.game.result)
+        pass ###feature disabled
 
 class buttonPresses():
     def __init__(self, actions):
         self.action = actions
     
+    def press_C(self):
+        self.action.clear_buffer()
+        self.action.clear_screen()
+    
+    def press_CE(self):
+        self.action.backspace()
+    
+    def press_LeftBracket(self):
+        self.action.add_to_buffer("(")
+
+    def press_RightBracket(self):
+        self.action.add_to_buffer(")")
+
+    def press_1(self):
+        self.action.add_to_buffer("1")
+    
+    def press_2(self):
+        self.action.add_to_buffer("2")
+
+    def press_3(self):
+        self.action.add_to_buffer("3")
+
+    def press_4(self):
+        self.action.add_to_buffer("4")
+
+    def press_5(self):
+        self.action.add_to_buffer("5")
+
+    def press_6(self):
+        self.action.add_to_buffer("6")
+
+    def press_7(self):
+        self.action.add_to_buffer("7")
+
+    def press_8(self):
+        self.action.add_to_buffer("8")
+
+    def press_9(self):
+        self.action.add_to_buffer("9")
+
+    def press_0(self):
+        self.action.add_to_buffer("0")
+
+    def press_Dot(self):
+        self.action.add_to_buffer(".")
+
+    def press_Plus(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
+        self.action.add_to_buffer("+")
+
+    def press_Minus(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
+        self.action.add_to_buffer("-")
+
+    def press_Multiply(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
+        self.action.add_to_buffer("*")
+
+    def press_Divide(self):
+        if self.action.game.finishCalc:
+            self.action.retrieve_result()
+        self.action.add_to_buffer("/")
+    
+    def press_Equals(self):
+        self.action.evaluate_buffer()
+    
+    def press_Pound(self):
+        self.action.keypad_state_change()
+
+    def press_Home(self):
+        self.action.keypad_state_reset()
+    
+    def press_UpArrow(self):
+        pass
+
+    def press_DownArrow(self):
+        pass
+
+    def press_LeftArrow(self):
+        pass
+
+    def press_RightArrow(self):
+        pass
+
+    def press_Yes(self):
+        pass
+
+    def press_No(self):
+        pass
+
+    def press_Circle(self):
+        pass
+
+    def press_Triangle(self):
+        pass
+
+    def press_Square(self):
+        pass
+
+    def press_BlankOrange(self):
+        pass
+
+    def press_BlankBlack(self):
+        pass
+
+    def press_BlankDarkGrey(self):
+        pass
+
+    def press_BlankLightGrey(self):
+        pass
+
+    def press_BlankPlus(self):
+        pass
+
+    def press_Disabled(self):
+        pass
 
 
         
