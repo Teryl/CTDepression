@@ -3,25 +3,10 @@ import random
 import time
 
 while True:  
-    ## set global stage and time
-    globalStage = 1
-    globalTime = 0
     '''For now, we have not set a time so we call it globalTime, timeRemaining'''
     timeRemaining = 10
 
-    ## initialize enemy dict and statlist
-    # for now initialize HP and attack as 100 and 50, later change depending on enemy and player3 type
-    enemyDict = {"HP": 100, "Atk": 50, "Def": 0, "Time": 0, "globalNRange": 0}
-    enemyStatlist = {
-        "HP":{0:25,1:45,2:80},
-        "Atk":{0:0.75,1:1,2:1.25},
-        "Def":{0:1.25,1:1.2,2:0.75},
-        "Time": {0:10,1:15,2:20},
-        "globalNRange": {0:[0,10], 1:[5,25], 2:[25,100], 3:[100,1000]}
-        }
-    
-    ## initialize player dict and statlist 
-    playerDict = {"HP": 100, "Atk": 50, "Def": 0, "Luck": 0, "Time": 0}
+    ## initialize playerStatlist and playerDict 
     playerStatlist = {
         "HP":{0:15,1:25,2:45,3:65,4:90,5:120},
         "Atk":{0:1,1:1.2,2:1.4,3:1.6,4:1.8,5:2}, 
@@ -29,70 +14,123 @@ while True:
         "Time": {0:0,1:1,2:2,3:3,4:4,5:5}, 
         "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
         }
-    
-    ## hardcode HP for now
-    enemyHP = enemyDict["HP"]
-    playerHP = playerDict["HP"]
-    
-    ## create while loop for clash-attack
-    # while player and enemy HP is greater than 0, round continues
-    # when HP reaches 0 for any entity, exit while loop and increase stage
-    while playerHP > 0 and enemyHP > 0:
-        # generate new number n based on enemy
-        # for now value will equate to 1st index in the list, 25
-        n = enemyStatlist['globalNRange'][globalStage][1]
+    playerDict = {
+        "HP": playerStatlist["HP"][0],
+        "Atk": playerStatlist["Atk"][0],
+        "Def": playerStatlist["Def"][0],
+        "Time": playerStatlist["Time"][0],
+        "Luck": playerStatlist["Luck"][0]}
         
-        print("Calculator value:",n)
-        print("Player HP: {}\nEnemy HP: {}".format(playerHP,enemyHP))
+    ## initialize enemyStatList, enemyTypelist, enemyDict (default enemy is man)
+    enemyStatlist = {
+        "HP":{0:25,1:45,2:80},
+        "Atk":{0:0.75,1:1,2:1.25},
+        "Def":{0:1.25,1:1.2,2:0.75},
+        "Time": {0:10,1:15,2:20},
+        "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
+        }
+    enemyTypeList = {
+        "man":{
+        "Name": "Man",
+        "HP": enemyStatlist["HP"][1],
+        "Atk": enemyStatlist["Atk"][1],
+        "Def": enemyStatlist["Def"][1],
+        "Time": enemyStatlist["Time"][1]
+        }, 
 
-        ## initialize first damage as 0
-        playerDmg = 0
-        enemyDmg = 0
-        print("Player Dmg: {}\nEnemy Dmg: {}".format(playerDmg,enemyDmg))
+        "cancerPatient":{
+        "Name": "Cancer Patient",
+        "HP": enemyStatlist["HP"][1],
+        "Atk": enemyStatlist["Atk"][1],
+        "Def": enemyStatlist["Def"][0],
+        "Time": enemyStatlist["Time"][0]
+        },
 
-        equation = eval(input("Write your equation here: "))
-        print(equation)
-        ## crit, multiplier hard coded for now
-        crit = 1
-        multiplier = 1.2
+        "floridaMan":{
+        "Name": "Florida Man",
+        "HP": enemyStatlist["HP"][2],
+        "Atk": enemyStatlist["Atk"][0],
+        "Def": enemyStatlist["Def"][1],
+        "Time": enemyStatlist["Time"][1]
+        },
 
-        # if player types wrong eqn, damage dealt to player
-        if equation != n:
-            enemyDmg = enemyDict["Atk"] * globalStage**(multiplier)
-            print("Damage dealt by enemy: ",enemyDmg)
-            playerHP = playerHP - enemyDmg
-        
-        # if player types right eqn, damage dealt to enemy
+        "pepsiMan":{
+        "Name": "Pepsi Man",
+        "HP": enemyStatlist["HP"][1],
+        "Atk": enemyStatlist["Atk"][2],
+        "Def": enemyStatlist["Def"][0],
+        "Time": enemyStatlist["Time"][1]
+        },
+
+        "theRock":{
+        "Name": "The Rock",
+        "HP": enemyStatlist["HP"][1],
+        "Atk": enemyStatlist["Atk"][1],
+        "Def": enemyStatlist["Def"][2],
+        "Time": enemyStatlist["Time"][2]
+        }
+    }
+    enemyDict = enemyTypeList["man"]
+
+    ## defining the functions
+    # randomizEnemy() : select an enemy from enemy list and returns the enemy dictionary
+    def randomizeEnemy(enemyTypeList):
+        enemy = random.choice(list(enemyTypeList.values()))
+        return enemy
+
+    # randomizeN() : select number from random number range
+    def randomizeN(globalNRange):
+        nRange = random.randrange(globalNRange[0], globalNRange[1])
+        return nRange
+  
+    # calcPlayerDmg () : calculate damage done by player
+    def calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict):
+        # for now, player input taken using keyboard
+        # during integration with UI, input taken from click
+        if inputPerm == randN:
+            playerDmg = playerDict["Atk"] * timeRemaining
         else:
-
-            playerDmg = playerDict["Atk"] * globalStage**(multiplier)
-            print("Damage dealt by player: ",playerDmg)
-            enemyHP = enemyHP - playerDmg
-        
-            
-
-            
-        
-        finalDmg = playerDmg - enemyDmg
-        print("New Player HP: {}\nNew Enemy HP: {}".format(playerHP,enemyHP))
-        if finalDmg > 0:
-            dmgToEnemy = crit * finalDmg * enemyDict["Def"]
-            dmgToPlayer = 0
-
-        if finalDmg < 0:
-            dmgToPlayer = finalDmg *  playerDict["Def"]
-            dmgToEnemy = 0
+            playerDmg = 0
+        return playerDmg
     
-    # calculate damage done by player, and damage done by enemy
-    # if damage done by player > 
+    
+    # calcEnemyDmg() : calculate damage done by enemy
+    def calcEnemyDmg(enemyDict):
+        enemyDmg = enemyDict["Atk"] * globalStage
+        return enemyDmg
 
+    
+    # initializing globalStage as 1 before round runs
+    globalStage = 1
 
+    ## game runs as long as playerHP > 0, increase globalStage every time
+    while playerDict["HP"] > 0:
+        # playerDict is default
+        playerDict = playerDict
 
-
-
-
+        # setting global stage and number range
+        if globalStage <= 3:
+            globalNRange = randomizeN(enemyStatlist["globalNRange"][0])
+        elif globalStage > 3 and globalStage <= 7:
+            globalNRange = randomizeN(enemyStatlist["globalNRange"][1])
+        elif globalStage > 7 and globalStage <= 8:
+            globalNRange = randomizeN(enemyStatlist["globalNRange"][2])
+        elif globalStage > 8:
+            globalNRange = randomizeN(enemyStatlist["globalNRange"][3])
+       
+        # selecting random enemy
+        enemyDict = randomizeEnemy(enemyTypeList)
+        print(enemyDict)
+        # defining global time
+        globalTime = enemyDict["Time"] + playerDict["Time"]
         
-        globalStage += 1
+        # add while loop for enemyHP > 0
+
+        ''' # Tested here
+        print("n:",globalNRange)
+        print("time remaining:",globalTime)
+        equation = eval(input("Write your equation here: "))
+        test = calcPlayerDmg(globalTime, equation, globalNRange, playerDict)
+        print("playerDmg:", test)
+        '''
         pass
-    
-    pass
