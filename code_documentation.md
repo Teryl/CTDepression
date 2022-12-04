@@ -5,7 +5,6 @@
 ### Global
 | Variable        | Type              | Description   |
 | :-------------- | :---------------- | :-----------  |
-| `globalTime`    | int               | Total time for level in seconds|
 | `globalNRange`  | list[x,y]         | Range of numbers taken to make a prompt |
 | `globalStage`   | int               | Current stage the player is in |
 ### Calculator
@@ -54,9 +53,10 @@
 
 ### Enemy
 - enemyDict = randomizeEnemy(enemyTypelist) <br>
-     - also apply scalers to Atk and Def stats
+     - also apply scalers to Atk, Def and HP stats
      - enemyDict["Atk"] *= `globalStage`<sup>1.15</sup> /  `globalStage`
      - enemyDict["Def"] *= `globalStage` / `globalStage`<sup>1.15</sup>
+     - enemyDict["HP"] = ( `enemyDict["HP]` * `globalStage`<sup>1.15</sup> ) + 10
      
 
 - enemyStatlist:
@@ -124,6 +124,7 @@
      - Randomly selects a number from the random number range
      - Returns the number, `randN`
 
+
 - calcEnemyDmg(`enemyDict, globalStage`):
      - Calculates the damage done by the enemy
      - Returns the damage done, `enemyDmg`
@@ -134,7 +135,7 @@
 - calcEnemyHP(`enemyDict`, `globalStage`):
      - Calculates the HP of the enemy
      - Returns the HP of the enemy, `enemyHP`
-          - `enemyHP` = w`enemyDict["HP"]` * `globalStage`<sup>1.15</sup> + 10
+          - `enemyHP` = `enemyDict["HP"]` * `globalStage`<sup>1.15</sup> + 10
 
 - calcPlayerDmg(`timeRemaining`, `inputPerm`, `randN`, `playerDict`):
      - Calculates the damage done by the player
@@ -142,14 +143,13 @@
           - `playerDmg` = `playerDict["Atk"]` * `timeRemaining`
      - If player input does not match `randN`, returns 0
 
-- calcPlayerCrit (`playerDmg`, `enemyDmg`, `playerDict["Luck"]`):
+- calcPlayerCrit (`playerDmg`, `enemyDmg`, `playerLuck`):
      - Calculates either critical damage or damage reduction
-     - Crit chance is based on `playerDict["Luck"]`, higher the value of `playerDict["Luck"]`, the lower the chance of crit/damage reduction.
-          - `playerCritRed` = `playerDmg` * `playerDict["Luck"]` / 100
+     - Crit chance is based on `playerLuck`, higher the value of `playerLuck`, the lower the chance of crit/damage reduction.
      - If damage is being done to the enemy, damage is increased by x1.6
-         -  If `playerDmg` > `enemyDmg`, `finalDmg` *= 1.6  
+         -  If `playerDmg` > `enemyDmg`, = 1.6  
      - If damage is being done to the player, damage is reduced by x0.6
-          - If `playerDmg` < 0, `enemyDmg` *= 0.6
+          - If `playerDmg` < 0, = 0.6
      - returns `playerCritRed`, the critical damage or damage reduction multiplier
 
 - calcFinalDmg (`playerDmg`, `enemyDmg`, `playerDict`, `enemyDict`):
@@ -160,7 +160,7 @@
           - `finalDmg` = `finalDmg` * `enemyDict["Def"]` * `calcPlayerCrit(playerDmg, enemyDmg, playerDict["Luck"])`
      - If `playerDmg` < `enemyDmg`, returns damage done to player:
           - `finalDmg` = `finalDmg` * `playerDict["Def"]` *
-          `calcPlayerCrit(playerDmg, enemyDmg, playerDict["Luck"])`
+          `calcPlayerCrit(playerDmg, enemyDmg, playerLuck)`
 
 
 
