@@ -39,7 +39,8 @@
 "Atk": playerStatlist[Atk"][0], <br>
 "Def": playerStatlist["Def"][0], <br>
 "Time": playerStatlist["Time"][0], <br>
-"Luck": playerStatlist["Luck"][0]<br>} <br><i> Default Value </i> <br>
+"Luck": playerStatlist["Luck"][0]<br>
+} <br><i> Default Value </i> <br>
 
 - playerStatlist:
 {<br>
@@ -53,8 +54,8 @@
 ### Enemy
 - enemyDict = randomizeEnemy(enemyTypelist) <br>
      - also apply scalers to Atk and Def stats
-     - enemyDict["Atk"] *= `globalStage` <sup> 1.2 </sup> /  `globalStage`
-     - enemyDict["Def"] *= `globalStage` / `globalStage` <sup> 1.2 </sup>
+     - enemyDict["Atk"] *= `globalStage`<sup>1.15</sup> /  `globalStage`
+     - enemyDict["Def"] *= `globalStage` / `globalStage`<sup>1.15</sup>
      
 
 - enemyStatlist:
@@ -130,6 +131,7 @@
           - "Donggeon"
           - "Dianthe"
           - "Mithun"
+          - "Evan"
           - "Quan Pham"
           - "Jon"
           - "Muhammad"
@@ -138,12 +140,14 @@
 - calcEnemyDmg(`enemyDict, globalStage`):
      - Calculates the damage done by the enemy
      - Returns the damage done, `enemyDmg`
-          - `enemyDmg` = `enemyDict["Atk"]` * `globalStage` <sup> 1.2 </sup>
+          - `enemyDmg` = `enemyDict["Atk"]` * `globalStage`<sup>1.2</sup>
+     
+### Clash
 
 - calcEnemyHP(`enemyDict`, `globalStage`):
      - Calculates the HP of the enemy
      - Returns the HP of the enemy, `enemyHP`
-          - `enemyHP` = `enemyDict["HP"]` * `globalStage` <sup> 1.2 </sup> + 10
+          - `enemyHP` = w`enemyDict["HP"]` * `globalStage`<sup>1.15</sup> + 10
 
 - calcPlayerDmg(`timeRemaining`, `inputPerm`, `randN`, `playerDict`):
      - Calculates the damage done by the player
