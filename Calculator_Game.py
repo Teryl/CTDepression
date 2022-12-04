@@ -24,16 +24,20 @@ FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
 GLOBAL_PRECISION = 5
 
+class player():
+    def __init__(self):
+        self.playerDict = {
+            "HP" : 10,
+            "Atk" : 5,
+            "Def" : 5,
+            "Luck" : 5,
+            "LVL" : 10,
+            "N" : 10,
+            "Time" : 10,
+        }
 
-attributes = {
-    "HP" : 0,
-    "ATK" : 0,
-    "DEF" : 0,
-    "LUCK" : 0,
-    "LVL" : 0,
-    "N" : 0,
-    "TIME" : 0,
-}
+    def update_playerDict(self, key, value):
+        self.playerDict[key] = value
 
 
 def PLACEHOLDER_FUNCTION():
@@ -101,17 +105,17 @@ class assetHandler():
 
             ### FightUI
             "combatBG" : [os.path.join(self.fightPath, "01_Background.png"), 4, 110, 50],
-            "Time_10" : [os.path.join(self.fightPath, "02_Time_10.png"), 4, 40, 3],
-            "Time_9" : [os.path.join(self.fightPath, "03_Time_9.png"), 4, 40, 3],
-            "Time_8" : [os.path.join(self.fightPath, "04_Time_8.png"), 4, 40, 3],
-            "Time_7" : [os.path.join(self.fightPath, "05_Time_7.png"), 4, 40, 3],
-            "Time_6" : [os.path.join(self.fightPath, "06_Time_6.png"), 4, 40, 3],
-            "Time_5" : [os.path.join(self.fightPath, "07_Time_5.png"), 4, 40, 3],
-            "Time_4" : [os.path.join(self.fightPath, "08_Time_4.png"), 4, 40, 3],
-            "Time_3" : [os.path.join(self.fightPath, "09_Time_3.png"), 4, 40, 3],
-            "Time_2" : [os.path.join(self.fightPath, "10_Time_2.png"), 4, 40, 3],
-            "Time_1" : [os.path.join(self.fightPath, "11_Time_1.png"), 4, 40, 3],
-            "Time_0" : [os.path.join(self.fightPath, "12_Time_0.png"), 4, 40, 3],
+            "Time_10" : [os.path.join(self.fightPath, "02_Time_10.png"), 4, 41, 3],
+            "Time_9" : [os.path.join(self.fightPath, "03_Time_9.png"), 4, 41, 3],
+            "Time_8" : [os.path.join(self.fightPath, "04_Time_8.png"), 4, 41, 3],
+            "Time_7" : [os.path.join(self.fightPath, "05_Time_7.png"), 4, 41, 3],
+            "Time_6" : [os.path.join(self.fightPath, "06_Time_6.png"), 4, 41, 3],
+            "Time_5" : [os.path.join(self.fightPath, "07_Time_5.png"), 4, 41, 3],
+            "Time_4" : [os.path.join(self.fightPath, "08_Time_4.png"), 4, 41, 3],
+            "Time_3" : [os.path.join(self.fightPath, "09_Time_3.png"), 4, 41, 3],
+            "Time_2" : [os.path.join(self.fightPath, "10_Time_2.png"), 4, 41, 3],
+            "Time_1" : [os.path.join(self.fightPath, "11_Time_1.png"), 4, 41, 3],
+            "Time_0" : [os.path.join(self.fightPath, "12_Time_0.png"), 4, 41, 3],
             "Atk_5" : [os.path.join(self.fightPath, "13_Atk_5.png"), 4, 10, 3],
             "Atk_4" : [os.path.join(self.fightPath, "14_Atk_4.png"), 4, 10, 3],
             "Atk_3" : [os.path.join(self.fightPath, "15_Atk_3.png"), 4, 10, 3],
@@ -198,10 +202,12 @@ class gameInstance(Tk):
         self.container = []
         self.buttonDict = {}
         self.textfields = {}
+        self.imagefields = {}
         self.buffer = ""
         self.result = ""
         self.finishCalc = False
 
+        self.player = player()
         self.binds = {}
 
         self.configure(background=self.assets.getAsset("windowBG"))
@@ -210,7 +216,7 @@ class gameInstance(Tk):
        # Calculate Starting X and Y coordinates for Window
         x = (self.winfo_screenwidth()/2) - (WINDOW_SIZE[0]/2)
         y = (self.winfo_screenheight()/2) - (WINDOW_SIZE[1]/2)
-        
+      
         self.geometry('%dx%d+%d+%d' % (self.size[0], self.size[1], x, y))
         self.resizable(True, True)
         self.minsize(int(WINDOW_SIZE[0]*WINDOW_SCALE), int(WINDOW_SIZE[1]*WINDOW_SCALE))
@@ -273,6 +279,7 @@ class gameInstance(Tk):
         self.create_combat()
         
         
+        
 
        
     # set keybinds
@@ -291,7 +298,7 @@ class gameInstance(Tk):
         self.frameDict["mainContainer"].config(width=self.size[0], height=self.size[1])
 
         self.create_canvas(self.frameDict["mainContainer"], "main", image=self.assets.getAsset("mainBG"), width=self.assets.assets["mainBG"][2]*self.px, height=self.assets.assets["mainBG"][3]*self.px, padx=2*self.px, pady=3*self.px, relx=0.5, rely=1 - 3 /WINDOW_SIZE_PX[1], anchor=S)
-        self.create_canvas(self.frameDict["mainContainer"], "combat", image=self.assets.getAsset("combatBG"), width=self.assets.assets["combatBG"][2]*self.px, height=self.assets.assets["combatBG"][3]*self.px, padx=2*self.px, pady=self.px, relx=0.5, rely=3 /WINDOW_SIZE_PX[1], anchor=N)
+        self.create_canvas(self.frameDict["mainContainer"], "combat", image=self.assets.getAsset("combatBG"), width=self.assets.assets["combatBG"][2]*self.px, height=self.assets.assets["combatBG"][3]*self.px, padx=4*self.px, pady=3*self.px, relx=0.5, rely=3 /WINDOW_SIZE_PX[1], anchor=N)
 
     # create calculator frame structure
     def create_calc(self):
@@ -303,16 +310,28 @@ class gameInstance(Tk):
         self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)), anchor=E)
 
     def create_combat(self):
-        self.create_canvas(self.frameDict["combat"], "Time", image=self.assets.getAsset("Time_10"), width=self.assets.assets["Time_0"][2]*self.px, height=self.assets.assets["Time_0"][3]*self.px, padx=0, pady=0, relx=0.795, rely=0.225, anchor=CENTER)
-        self.create_canvas(self.frameDict["combat"], "Atk", image=self.assets.getAsset("Atk_5"), width=self.assets.assets["Atk_0"][2]*self.px, height=self.assets.assets["Atk_0"][3]*self.px, padx=0, pady=0, relx=0.455, rely=0.085, anchor=CENTER)
-        self.create_canvas(self.frameDict["combat"], "Def", image=self.assets.getAsset("Def_5"), width=self.assets.assets["Def_0"][2]*self.px, height=self.assets.assets["Def_0"][3]*self.px, padx=0, pady=0, relx=0.6825, rely=0.085, anchor=CENTER)
-        self.create_canvas(self.frameDict["combat"], "Luck", image=self.assets.getAsset("Luck_5"), width=self.assets.assets["Luck_0"][2]*self.px, height=self.assets.assets["Luck_0"][3]*self.px, padx=0, pady=0, relx=0.93, rely=0.085, anchor=CENTER)
-        self.create_canvas(self.frameDict["combat"], "HP", bg=self.assets.getAsset("HP"), width=self.assets.assets["HP"][1]*self.px, height=self.assets.assets["HP"][2]*self.px, padx=0, pady=0, relx=0.203, rely=0.088, anchor=CENTER)
-        self.frameDict["HP"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
-        self.create_canvas(self.frameDict["combat"], "LVL", bg=self.assets.getAsset("LVL"), width=self.assets.assets["LVL"][1]*self.px, height=self.assets.assets["LVL"][2]*self.px, padx=0, pady=0, relx=0.21, rely=0.23, anchor=CENTER)
-        self.frameDict["LVL"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
-        self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.23, anchor=CENTER)
-        self.frameDict["N"].create_text(0, self.px, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=W)
+        self.create_canvas(self.frameDict["combat"], "Time", width=self.assets.assets["Time_0"][2]*self.px, height=self.assets.assets["Time_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.795, rely=0.24, anchor=CENTER)
+        self.imagefields['Time'] = self.frameDict["Time"].create_image(0, self.assets.assets["Time_0"][3]*self.px/2, image=self.assets.getAsset("Time_10"), anchor=W)
+
+        self.create_canvas(self.frameDict["combat"], "Atk", width=self.assets.assets["Atk_0"][2]*self.px, height=self.assets.assets["Atk_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.455, rely=0.101, anchor=CENTER)
+        self.imagefields['Atk'] = self.frameDict["Atk"].create_image(0, self.assets.assets["Atk_0"][3]*self.px/2, image=self.assets.getAsset("Atk_5"), anchor=W)
+
+        self.create_canvas(self.frameDict["combat"], "Def", width=self.assets.assets["Def_0"][2]*self.px, height=self.assets.assets["Def_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.6825, rely=0.101, anchor=CENTER)
+        self.imagefields['Def'] = self.frameDict["Def"].create_image(0, self.assets.assets["Def_0"][3]*self.px/2, image=self.assets.getAsset("Def_5"), anchor=W)
+
+        self.create_canvas(self.frameDict["combat"], "Luck", width=self.assets.assets["Luck_0"][2]*self.px, height=self.assets.assets["Luck_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.93, rely=0.101, anchor=CENTER)
+        self.imagefields['Luck'] = self.frameDict["Luck"].create_image(0, self.assets.assets["Luck_0"][3]*self.px/2, image=self.assets.getAsset("Luck_5"), anchor=W)
+
+        self.create_canvas(self.frameDict["combat"], "HP", bg=self.assets.getAsset("HP"), width=self.assets.assets["HP"][1]*self.px, height=self.assets.assets["HP"][2]*self.px, padx=0, pady=0, relx=0.203, rely=0.1025, anchor=CENTER)
+        self.textfields["HP"] = self.frameDict["HP"].create_text(0, self.px*5, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=SW)
+
+        self.create_canvas(self.frameDict["combat"], "LVL", bg=self.assets.getAsset("LVL"), width=self.assets.assets["LVL"][1]*self.px, height=self.assets.assets["LVL"][2]*self.px, padx=0, pady=0, relx=0.21, rely=0.2415, anchor=CENTER)
+        self.textfields["LVL"] = self.frameDict["LVL"].create_text(0, self.px*5, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=SW)
+
+        self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.2415, anchor=CENTER)
+        self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=SW)
+
+        self.update_combat_display()
 
     def create_buttons(self):
         for y in range(len(self.defaultLayout)):
@@ -351,7 +370,7 @@ class gameInstance(Tk):
             width = kwargs.pop("width", None) + kwargs.pop("padx", None)
             height = kwargs.pop("height", None) + kwargs.pop("pady", None)
             bg = kwargs.pop("bg", None)
-            self.frameDict[id] = Canvas(master, bd=-2, bg=bg, width=width, height=height)
+            self.frameDict[id] = Canvas(master, bd=-2, bg=bg, highlightthickness=0, width=width, height=height)
             if "image" in kwargs:
                 image = kwargs.pop("image", None)
                 self.frameDict[id].create_image(width/2, height/2, image=image, anchor=CENTER)
@@ -372,8 +391,14 @@ class gameInstance(Tk):
    
     # Create Combat Display Update Loop
     def update_combat_display(self):
-
-        self.after(100, self.update_combat_display)
+        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.playerDict["HP"]))
+        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.playerDict["LVL"]))
+        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.playerDict["N"]))
+        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(self.player.playerDict["Time"])))
+        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.playerDict["Atk"])))
+        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.playerDict["Def"])))
+        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.playerDict["Luck"])))
+        self.after(10, self.update_combat_display)
 
 class actions():
     def __init__(self, game):
@@ -569,13 +594,12 @@ class buttonPresses():
     def press_Disabled(self):
         pass
 
-
         
 ### Main Game Loop
 def main():
     assets = assetHandler()
     game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets)
-
+ 
     game.mainloop()
     
 main()
