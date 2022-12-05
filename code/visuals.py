@@ -61,8 +61,8 @@ def PLACEHOLDER_FUNCTION():
 ### Asset Class
 class assetHandler():
     def __init__(self):
-        self.calcPath = "./assets/CalcUI/"
-        self.fightPath = "./assets/FightUI/"
+        self.calcPath = "././assets/CalcUI/"
+        self.fightPath = "././assets/FightUI/"
         self.imageDict = {}
         self.fontDict = {}
 
@@ -166,7 +166,7 @@ class assetHandler():
 
     # load fonts
     def initialise_fonts(self):
-        self.load_font(os.path.abspath("./assets/fonts/monogramRevised.otf"))
+        self.load_font(os.path.abspath("././assets/fonts/monogramRevised.otf"))
 
     ### Font loader
     def load_font(self, fontpath, private=True, enumerable=False):
