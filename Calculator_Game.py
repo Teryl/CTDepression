@@ -3,26 +3,39 @@
 ### Versioned as of 04/12/22
 
 ### Importing Modules
-import time
+from time import sleep
 from math import *
 from tkinter import *
 from tkinter import messagebox
 from tkinter import font
 from tkinter.font import Font
 import os
+import sys
 import winsound
-from time import sleep
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+
 
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 1.25
+WINDOW_SCALE = 1.0 #0.75 - 1.75, increments of 0.25
 WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
 GLOBAL_PRECISION = 5
+
+if len(sys.argv) == 2:
+    if sys.argv[1] == int(sys.argv[1]) and (sys.argv[1] >= 1 and sys.argv[1] <= 5):
+        WINDOW_SCALE = int(sys.argv[1])*0.25 + 0.75
+
+# Global Sacling Coefficients
+scaleMul = {
+    "Time" : {0.75: (1.01, 1.53) , 1: (1.00, 1.40) , 1.25: (0.99, 1.30) , 1.5: (0.99, 1.28) , 1.75: (0.99, 1.24)}, #Width, Height
+    "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
+    "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
+    "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
+}
 
 class player():
     def __init__(self):
@@ -306,30 +319,31 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["main"], "keypad", image=self.assets.getAsset("keypadBG"), width=self.assets.assets["keypadBG"][2]*self.px, height=self.assets.assets["keypadBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.625, anchor=CENTER)
 
     def create_display(self):
-        self.create_canvas(self.frameDict["screen"], "display", image=self.assets.getAsset("displayBG"), width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5, anchor=CENTER)
-        self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)), anchor=E)
+        self.create_canvas(self.frameDict["screen"], "display", image=self.assets.getAsset("displayBG"), width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
+        self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Display"][WINDOW_SCALE][1]), anchor=E)
 
+    # create combat screen frame structure
     def create_combat(self):
-        self.create_canvas(self.frameDict["combat"], "Time", width=self.assets.assets["Time_0"][2]*self.px, height=self.assets.assets["Time_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.795, rely=0.24, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Time", width=self.assets.assets["Time_0"][2]*self.px*scaleMul["Time"][WINDOW_SCALE][0], height=self.assets.assets["Time_0"][3]*self.px*scaleMul["Time"][WINDOW_SCALE][1], padx=0, pady=0, relx=0.795, rely=0.24, anchor=CENTER)
         self.imagefields['Time'] = self.frameDict["Time"].create_image(0, self.assets.assets["Time_0"][3]*self.px/2, image=self.assets.getAsset("Time_10"), anchor=W)
 
-        self.create_canvas(self.frameDict["combat"], "Atk", width=self.assets.assets["Atk_0"][2]*self.px, height=self.assets.assets["Atk_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.455, rely=0.101, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Atk", width=self.assets.assets["Atk_0"][2]*self.px*scaleMul["Bars"][WINDOW_SCALE][0], height=self.assets.assets["Atk_0"][3]*self.px*scaleMul["Bars"][WINDOW_SCALE][1], padx=0, pady=0, relx=0.455, rely=0.101, anchor=CENTER)
         self.imagefields['Atk'] = self.frameDict["Atk"].create_image(0, self.assets.assets["Atk_0"][3]*self.px/2, image=self.assets.getAsset("Atk_5"), anchor=W)
 
-        self.create_canvas(self.frameDict["combat"], "Def", width=self.assets.assets["Def_0"][2]*self.px, height=self.assets.assets["Def_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.6825, rely=0.101, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Def", width=self.assets.assets["Def_0"][2]*self.px*scaleMul["Bars"][WINDOW_SCALE][0], height=self.assets.assets["Def_0"][3]*self.px*scaleMul["Bars"][WINDOW_SCALE][1], padx=0, pady=0, relx=0.6825, rely=0.101, anchor=CENTER)
         self.imagefields['Def'] = self.frameDict["Def"].create_image(0, self.assets.assets["Def_0"][3]*self.px/2, image=self.assets.getAsset("Def_5"), anchor=W)
 
-        self.create_canvas(self.frameDict["combat"], "Luck", width=self.assets.assets["Luck_0"][2]*self.px, height=self.assets.assets["Luck_0"][3]*self.px*1.25, padx=0, pady=0, relx=0.93, rely=0.101, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "Luck", width=self.assets.assets["Luck_0"][2]*self.px*scaleMul["Bars"][WINDOW_SCALE][0], height=self.assets.assets["Luck_0"][3]*self.px*scaleMul["Bars"][WINDOW_SCALE][1], padx=0, pady=0, relx=0.93, rely=0.101, anchor=CENTER)
         self.imagefields['Luck'] = self.frameDict["Luck"].create_image(0, self.assets.assets["Luck_0"][3]*self.px/2, image=self.assets.getAsset("Luck_5"), anchor=W)
 
         self.create_canvas(self.frameDict["combat"], "HP", bg=self.assets.getAsset("HP"), width=self.assets.assets["HP"][1]*self.px, height=self.assets.assets["HP"][2]*self.px, padx=0, pady=0, relx=0.203, rely=0.1025, anchor=CENTER)
-        self.textfields["HP"] = self.frameDict["HP"].create_text(0, self.px*5, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=SW)
+        self.textfields["HP"] = self.frameDict["HP"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
 
         self.create_canvas(self.frameDict["combat"], "LVL", bg=self.assets.getAsset("LVL"), width=self.assets.assets["LVL"][1]*self.px, height=self.assets.assets["LVL"][2]*self.px, padx=0, pady=0, relx=0.21, rely=0.2415, anchor=CENTER)
-        self.textfields["LVL"] = self.frameDict["LVL"].create_text(0, self.px*5, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=SW)
+        self.textfields["LVL"] = self.frameDict["LVL"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
 
         self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.2415, anchor=CENTER)
-        self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5, text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)), fill="white", anchor=SW)
+        self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
 
         self.update_combat_display()
 
