@@ -462,6 +462,8 @@ class actions():
     
     def evaluate_buffer(self):
         try:
+            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").isalnum():
+                raise CheatException("You can't do that!")
             result = eval(self.game.buffer)
             if not(isinstance(result, int)):
                 if result.is_integer():
