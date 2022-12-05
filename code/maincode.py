@@ -1,3 +1,7 @@
+### Calculator Game ver 0.8
+### By: Mithunbalaji MG and Dianthe
+### Date: 12/06/2022
+
 import math
 import random
 import time
@@ -56,7 +60,7 @@ while True:
         }
     enemyTypeList = {
         "man":{
-        "Name": enemyNamelist[random.randrange(len(enemyNamelist))],
+        "Name": {"Name": enemyNamelist[random.randrange(len(enemyNamelist))], "Gender": },
         "HP": enemyStatlist["HP"][1],
         "Atk": enemyStatlist["Atk"][1],
         "Def": enemyStatlist["Def"][1],
