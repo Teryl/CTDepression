@@ -3,7 +3,7 @@
 ### Date: 12/06/2022
 
 import math
-import random, time, os, threading, copy, sys, functools
+import random, time, os, threading, copy, sys
 from threading import Thread
 
 while True:  
@@ -13,7 +13,7 @@ while True:
 
     ## initialize playerStatlist and playerDict 
     playerStatlist = {
-        "HP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
+        "HP":{0:1, 1:45, 2:75, 3:100, 4:140, 5:200},
         "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
         "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
         "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
@@ -236,6 +236,16 @@ while True:
             elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
                 print("That's not a valid input!")
                 pass
+    
+    def playerEndgame():
+        print("Game Over! What an L!")
+        os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        time.sleep(10)
+        print("Now leave my presence, peasant!")
+        # os.system("shutdown -l")
+        exit()
+
+
 
     # Initializing globalStage as 1 before round runs
     globalStage = 1
@@ -306,12 +316,10 @@ while True:
                 # Exit while loop and change enemy
                 if enemyDict["HP"] <= 0:
                     break
-        
-        # If player hp is 0, game over
-        if playerDict["HP"] <= 0:
-            print("GAME OVER")
-            break
 
+                if playerDict["HP"] <= 0:
+                    playerEndgame()
+    
         # Increase globalStage
         globalStage += 1
         
@@ -325,4 +333,4 @@ while True:
 
         print("done")
         pass
-    break
+    pass
