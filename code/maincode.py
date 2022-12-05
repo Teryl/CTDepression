@@ -8,6 +8,12 @@ import time
 import os
 import threading
 import copy
+import multiprocessing
+from threading import Thread 
+def gui():
+    import visuals
+
+Thread(target=gui).start()
 
 while True:  
     '''For now, we have not set a time so we call it globalTime, timeRemaining'''
@@ -60,7 +66,7 @@ while True:
         }
     enemyTypeList = {
         "man":{
-        "Name": "Name": enemyNamelist[random.randrange(len(enemyNamelist))],
+        "Name": enemyNamelist[random.randrange(len(enemyNamelist))],
         "HP": enemyStatlist["HP"][1],
         "Atk": enemyStatlist["Atk"][1],
         "Def": enemyStatlist["Def"][1],
