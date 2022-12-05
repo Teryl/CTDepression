@@ -3,19 +3,11 @@
 ### Date: 12/06/2022
 
 import math
-import random
-import time
-import os
-import threading
-import copy
-import multiprocessing
-from threading import Thread 
-def gui():
-    import visuals
-
-Thread(target=gui).start()
+import random, time, os, threading, copy, sys, functools
+from threading import Thread
 
 while True:  
+    
     '''For now, we have not set a time so we call it globalTime, timeRemaining'''
     timeRemaining = 10
 
@@ -116,6 +108,7 @@ while True:
     enemyDict = enemyTypeList["man"]
 
     ## Defining Functions
+
     # Randomize Number Range:
     def randomizeN(globalStage, enemyStatlist):
         # range of n is selected based on the globalStage
@@ -158,7 +151,7 @@ while True:
         elif enchance > 90:
             return enemyTypeList["kanyeEast"]
         pass
-        
+
     # Calculate Enemy Damage
     def calcEnemyDmg(enemyDict, globalStage):
         enemyDmg = enemyDict["Atk"] * globalStage
@@ -172,6 +165,7 @@ while True:
             playerDmg = (playerDict["Atk"] * timeRemaining)**1.05
         else:
             playerDmg = 0
+            pass
         return playerDmg
 
     # Calculate critical damage or damage reduction
@@ -239,9 +233,9 @@ while True:
             elif playerUpgradeChoice == "n":
                 break
 
-            else:
-                print("You have no more upgrade coins!")
-                break
+            elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
+                print("That's not a valid input!")
+                pass
 
     # Initializing globalStage as 1 before round runs
     globalStage = 1
@@ -251,7 +245,7 @@ while True:
 
         # playerDict is default
         playerDict = playerDict
-        print(playerDict)
+        print("You: ", playerDict)
 
         # Selecting random enemy
         # Deepcopy the dictionary so that when same enemy is selected HP resets
@@ -259,7 +253,7 @@ while True:
         enemyDict = copy.deepcopy(randomizeEnemy(enemyTypeList))
        
         # Scale intial enemy HP, Atk value, and Defense value 
-        enemyDict["HP"] = (enemyDict["HP"] * globalStage**1.07) + 10
+        enemyDict["HP"] = enemyDict["HP"] * (globalStage**1.07 + 10)
         enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)
         enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
         print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
@@ -313,6 +307,10 @@ while True:
                 if enemyDict["HP"] <= 0:
                     break
         
+        # If player hp is 0, game over
+        if playerDict["HP"] <= 0:
+            print("GAME OVER")
+            break
 
         # Increase globalStage
         globalStage += 1
@@ -327,4 +325,4 @@ while True:
 
         print("done")
         pass
-    pass
+    break

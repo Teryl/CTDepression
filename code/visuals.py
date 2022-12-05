@@ -51,6 +51,7 @@ class player():
 
     def update_playerDict(self, key, value):
         self.playerDict[key] = value
+        print("updated player stats")
 
 
 def PLACEHOLDER_FUNCTION():
@@ -61,8 +62,8 @@ def PLACEHOLDER_FUNCTION():
 ### Asset Class
 class assetHandler():
     def __init__(self):
-        self.calcPath = "././assets/CalcUI/"
-        self.fightPath = "././assets/FightUI/"
+        self.calcPath = "./ctd1D/assets/CalcUI/"
+        self.fightPath = "./ctd1D/assets/FightUI/"
         self.imageDict = {}
         self.fontDict = {}
 
@@ -166,7 +167,7 @@ class assetHandler():
 
     # load fonts
     def initialise_fonts(self):
-        self.load_font(os.path.abspath("././assets/fonts/monogramRevised.otf"))
+        self.load_font(os.path.abspath("./ctd1D/assets/fonts/monogramRevised.otf"))
 
     ### Font loader
     def load_font(self, fontpath, private=True, enumerable=False):
@@ -428,7 +429,7 @@ class gameInstance(Tk):
         self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.playerDict["Atk"])))
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.playerDict["Def"])))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.playerDict["Luck"])))
-
+        
         self.increment_timers()
 
         self.after(10, self.update_combat_display)
