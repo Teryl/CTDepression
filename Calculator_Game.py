@@ -18,7 +18,7 @@ from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 1.0 #0.75 - 1.75, increments of 0.25
+WINDOW_SCALE = 1.0 #0.75 - 1.75, increments of 0.25, default is 1.0
 WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
