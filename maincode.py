@@ -176,6 +176,62 @@ while True:
         else:
             playerCritRed = 1
         return playerCritRed
+    
+    # Present option to upgrade abilities
+    def upgradeAbility(playerDict, playerStatlist):
+        while playerDict["Skill"] > 0:
+            playerUpgradeChoice = input("Would you like to upgrade your abilities? (hp/atk/def/time/luck/n): ")
+            if playerUpgradeChoice == "atk":
+                for i in playerStatlist["Atk"]:
+                    if playerStatlist["Atk"][i] == playerDict["Atk"]:
+                        playerDict["Atk"] = playerStatlist["Atk"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your attack!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+            elif playerUpgradeChoice == "def":
+                for i in playerStatlist["Def"]:
+                    if playerStatlist["Def"][i] == playerDict["Def"]:
+                        playerDict["Def"] = playerStatlist["Def"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your defense!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+            elif playerUpgradeChoice == "time":
+                for i in playerStatlist["Time"]:
+                    if playerStatlist["Time"][i] == playerDict["Time"]:
+                            playerDict["Time"] = playerStatlist["Time"][i+1]
+                            playerDict["Skill"] -= 1
+                            print("You have upgraded your time!")
+                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                            break
+
+            elif playerUpgradeChoice == "luck":
+                for i in playerStatlist["Luck"]:
+                    if playerStatlist["Luck"][i] == playerDict["Luck"]:
+                            playerDict["Luck"] = playerStatlist["Luck"][i+1]
+                            playerDict["Skill"] -= 1
+                            print("You have upgraded your luck!")
+                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                            break
+
+            elif playerUpgradeChoice == "hp":
+                for i in playerStatlist["HP"]:
+                    if playerStatlist["HP"][i] == playerDict["HP"]:
+                            playerDict["HP"] = playerStatlist["HP"][i+1]
+                            playerDict["Skill"] -= 1
+                            print("You have upgraded your HP!")
+                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                            break
+
+            elif playerUpgradeChoice == "n":
+                break
+
+            else:
+                print("You have no more upgrade coins!")
+                break
 
     # Initializing globalStage as 1 before round runs
     globalStage = 1
@@ -256,60 +312,9 @@ while True:
         print("You have gained an upgrade coin!")
         print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
 
-        # Present option to upgrade abilities
-        playerUpgradeChoice = input("Would you like to upgrade your abilities? (hp/atk/def/time/luck/n): ")
-        while playerDict["Skill"] > 0:
-            if playerUpgradeChoice == "atk" and playerDict["Atk"] <= 5:
-                for i in playerStatlist["Atk"]:
-                    if playerStatlist["Atk"][i] == playerDict["Atk"]:
-                        playerDict["Atk"] = playerStatlist["Atk"][i+1]
-                        playerDict["Skill"] -= 1
-                        print("You have upgraded your attack!")
-                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                        break
+        # Upgrade Abilities
+        upgradeAbility(playerDict, playerStatlist)
 
-            elif playerUpgradeChoice == "def" and playerDict["Def"] <= 5:
-                for i in playerStatlist["Def"]:
-                    if playerStatlist["Def"][i] == playerDict["Def"]:
-                        playerDict["Def"] = playerStatlist["Def"][i+1]
-                        playerDict["Skill"] -= 1
-                        print("You have upgraded your defense!")
-                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                        break
-
-            elif playerUpgradeChoice == "time" and playerDict["Time"] <= 5:
-                for i in playerStatlist["Time"]:
-                    if playerStatlist["Time"][i] == playerDict["Time"]:
-                            playerDict["Time"] = playerStatlist["Time"][i+1]
-                            playerDict["Skill"] -= 1
-                            print("You have upgraded your time!")
-                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                            break
-
-            elif playerUpgradeChoice == "luck" and playerDict["Luck"] <= 5:
-                for i in playerStatlist["Luck"]:
-                    if playerStatlist["Luck"][i] == playerDict["Luck"]:
-                            playerDict["Luck"] = playerStatlist["Luck"][i+1]
-                            playerDict["Skill"] -= 1
-                            print("You have upgraded your luck!")
-                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                            break
-
-            elif playerUpgradeChoice == "hp" and playerDict["HP"] <= 5:
-                for i in playerStatlist["HP"]:
-                    if playerStatlist["HP"][i] == playerDict["HP"]:
-                            playerDict["HP"] = playerStatlist["HP"][i+1]
-                            playerDict["Skill"] -= 1
-                            print("You have upgraded your HP!")
-                            print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                            break
-
-            elif playerUpgradeChoice == "n":
-                break
-
-            else:
-                print("You have no more upgrade coins!")
-                break
         print("done")
         pass
     pass
