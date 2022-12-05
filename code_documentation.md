@@ -219,9 +219,11 @@ from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
      - Several dictionaries that serve to link player inputs to the calculator keys
 
      ### Create Combat Display Update Loop
-     - Displays updates on the calculator in accordance to inputs by the players. Example: Pressing numerical keys on the calculator will cause the respective numbers to appear on the calculator screen
+     - Displays updates on the calculator in accordance to inputs by the players.<br>
+     Example: Pressing numerical keys on the calculator will cause the respective numbers to appear on the calculator screen
 
-     - It also evaluates equations keyed into the calculator, and returns the result on the calculator screen. Example: Inputting "(" , "1", "+" , "4", ")" , "x" , computes (1 + 4) * 2 = 10, and then displays 10 on the calculator screen
+     - It also evaluates equations keyed into the calculator, and returns the result on the calculator screen.<br>
+     Example: Inputting "(" , "1", "+" , "4", ")" , "x" , computes (1 + 4) * 2 = 10, and then displays 10 on the calculator screen
 
 ## Actions Class
      - Starts the tkinter loop
