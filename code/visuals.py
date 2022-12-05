@@ -29,7 +29,7 @@ if len(sys.argv) == 2:
     if sys.argv[1] == int(sys.argv[1]) and (sys.argv[1] >= 1 and sys.argv[1] <= 5):
         WINDOW_SCALE = int(sys.argv[1])*0.25 + 0.75
 
-# Global Sacling Coefficients
+# Global Scaling Coefficients
 scaleMul = {
     "Time" : {0.75: (1.01, 1.53) , 1: (1.00, 1.40) , 1.25: (0.99, 1.30) , 1.5: (0.99, 1.28) , 1.75: (0.99, 1.24)}, #Width, Height
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
@@ -241,6 +241,7 @@ class gameInstance(Tk):
         self.create_main()
         press = buttonPresses(actions(self))
 
+        # Button Function Allocation
         self.buttons = {
             "C" : press.press_C,
             "CE" : press.press_CE,
