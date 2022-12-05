@@ -510,11 +510,11 @@ class buttonPresses():
         self.action = actions
     
     def press_C(self):
-        self.action.clear_buffer()
-        self.action.clear_screen()
+        self.action.backspace()
     
     def press_CE(self):
-        self.action.backspace()
+        self.action.clear_buffer()
+        self.action.clear_screen()
     
     def press_LeftBracket(self):
         self.action.add_to_buffer("(")
