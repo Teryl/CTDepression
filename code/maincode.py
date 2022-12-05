@@ -60,7 +60,7 @@ while True:
         }
     enemyTypeList = {
         "man":{
-        "Name": {"Name": enemyNamelist[random.randrange(len(enemyNamelist))], "Gender": },
+        "Name": "Name": enemyNamelist[random.randrange(len(enemyNamelist))],
         "HP": enemyStatlist["HP"][1],
         "Atk": enemyStatlist["Atk"][1],
         "Def": enemyStatlist["Def"][1],
