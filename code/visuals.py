@@ -11,7 +11,6 @@ from tkinter import font
 from tkinter.font import Font
 import os
 import sys
-import winsound
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 
 
@@ -29,7 +28,7 @@ if len(sys.argv) == 2:
     if sys.argv[1] == int(sys.argv[1]) and (sys.argv[1] >= 1 and sys.argv[1] <= 5):
         WINDOW_SCALE = int(sys.argv[1])*0.25 + 0.75
 
-# Global Sacling Coefficients
+# Global Scaling Coefficients
 scaleMul = {
     "Time" : {0.75: (1.01, 1.53) , 1: (1.00, 1.40) , 1.25: (0.99, 1.30) , 1.5: (0.99, 1.28) , 1.75: (0.99, 1.24)}, #Width, Height
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
@@ -40,13 +39,13 @@ scaleMul = {
 class player():
     def __init__(self):
         self.playerDict = {
-            "HP" : 10,
-            "Atk" : 5,
-            "Def" : 5,
-            "Luck" : 5,
-            "LVL" : 10,
-            "N" : 10,
-            "Time" : 10,
+            "HP" : 0,
+            "Atk" : 0,
+            "Def" : 0,
+            "Luck" : 0,
+            "LVL" : 0,
+            "N" : 0,
+            "Time" : 0,
         }
 
     def update_playerDict(self, key, value):
@@ -242,6 +241,7 @@ class gameInstance(Tk):
         self.create_main()
         press = buttonPresses(actions(self))
 
+        # Button Function Allocation
         self.buttons = {
             "C" : press.press_C,
             "CE" : press.press_CE,
@@ -598,16 +598,17 @@ class buttonPresses():
         pass
 
     def press_Yes(self):
-        pass
+        for key in self.action.game.player.playerDict:
+            self.action.game.player.playerDict[key] += 1
 
     def press_No(self):
         pass
 
     def press_Circle(self):
-        self.action.game.stall_timer(0)
+        pass
 
     def press_Triangle(self):
-        self.action.game.modify_timer(0, 0)
+        pass
 
     def press_Square(self):
         pass
