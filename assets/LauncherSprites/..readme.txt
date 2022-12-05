@@ -1,0 +1,13 @@
+Contents:
+Folder: logo_frames
+0. This readme.txt
+1. Full_Spritesheet.png
+2. Logo_Animated.gif
+3. Logo_Animated_HD.gif
+4. Logo_Black.png
+5. Logo_Black_4K.png
+6. Logo_Transparent.png
+7. Logo_Transparent_4K.png
+8. 00 to 05: UI elements
+9. LauncherSprites.pixil
+10. LogoAnim.pixil
