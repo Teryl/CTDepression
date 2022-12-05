@@ -223,6 +223,10 @@ class gameInstance(Tk):
         self.player = player()
         self.binds = {}
 
+        # timer pseudothreads
+        self.threads = [0, 0, 0]
+        self.threadbuffer = [0, 0, 0]
+
         self.configure(background=self.assets.getAsset("windowBG"))
         self.title(self.name)
        
@@ -292,7 +296,19 @@ class gameInstance(Tk):
         self.create_combat()
         
         
-        
+    def modify_timer(self, thread, time):
+        self.threads[thread] = time
+    
+    def increment_timers(self):
+        for i in range(len(self.threads)):
+            self.threads[i] += 1
+    
+    def stall_timer(self, thread):
+        self.threadbuffer[thread] = self.threads[thread]
+        self.threads[thread] = 0
+
+    def get_saved_timer(self, thread):
+        return self.threadbuffer[thread]
 
        
     # set keybinds
@@ -412,6 +428,9 @@ class gameInstance(Tk):
         self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.playerDict["Atk"])))
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.playerDict["Def"])))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.playerDict["Luck"])))
+
+        self.increment_timers()
+
         self.after(10, self.update_combat_display)
 
 class actions():
@@ -584,10 +603,10 @@ class buttonPresses():
         pass
 
     def press_Circle(self):
-        pass
+        self.action.game.stall_timer(0)
 
     def press_Triangle(self):
-        pass
+        self.action.game.modify_timer(0, 0)
 
     def press_Square(self):
         pass
