@@ -11,7 +11,6 @@ from tkinter import font
 from tkinter.font import Font
 import os
 import sys
-import winsound
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 
 
@@ -40,13 +39,13 @@ scaleMul = {
 class player():
     def __init__(self):
         self.playerDict = {
-            "HP" : 10,
-            "Atk" : 5,
-            "Def" : 5,
-            "Luck" : 5,
-            "LVL" : 10,
-            "N" : 10,
-            "Time" : 10,
+            "HP" : 0,
+            "Atk" : 0,
+            "Def" : 0,
+            "Luck" : 0,
+            "LVL" : 0,
+            "N" : 0,
+            "Time" : 0,
         }
 
     def update_playerDict(self, key, value):
@@ -598,16 +597,17 @@ class buttonPresses():
         pass
 
     def press_Yes(self):
-        pass
+        for key in self.action.game.player.playerDict:
+            self.action.game.player.playerDict[key] += 1
 
     def press_No(self):
         pass
 
     def press_Circle(self):
-        self.action.game.stall_timer(0)
+        pass
 
     def press_Triangle(self):
-        self.action.game.modify_timer(0, 0)
+        pass
 
     def press_Square(self):
         pass
