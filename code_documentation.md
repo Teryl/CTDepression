@@ -164,6 +164,49 @@
 
 
 
+# Main Code Explanation
+
+## Initialising playerStatlist and playerDict
+- playerDict is a dictionary indicating the current value of each player attribute.
+- playerStatlist is a dictionary containing the attribute values for each upgrade level
+
+## Initialising enemyNamelist, enemyStatList, enemyTypelist, enemyDict
+- enemyNamelist is the list of possible names for the default enemy classified as 'man'
+- enemyStatlist is a dictionary containing the attribute values for each level(ranges from 0 - 2. An attribute level of 0 means that the attribute is of a lower value, while the converse applies for an attribute level of 2
+- enemyTypelist is a dictionary defining the attribute values of each attribute for each enemy type.
+
+## Defining Functions
+### Randomising Number Range
+- Randomises the number that the player has to get using the calculator. The value of the number falls within a range, and this range increases as the stage number increases.
+
+### Randomising Enemy Type
+- Randomises the enemy faced each stage. There is a greater chance to face the 'man' enemy type as compared to the other enemy types.
+
+### Calculating Enemy Damage
+- Calculates the enemy damage per round based on the enemy's atk attribute value and the stage number
+
+### Calculating Damage Done By Player Per Attack
+- Calculates the damage done by the player per attack, based on the player's attack attribute and the time remaining in the round. Finding an equation which equals the value of the displayed number on the calculator would result in more damage being done.
+- Giving an equation which does not equal the value of the given number would result in the player's damage being 0 for that round.
+
+### Calculating Critical Damage or Damage Reduction
+- Randomly generates a number between 0 and 100. If this number generated is greater than the luck attribute value (starts at 100 and decreases by 2 per attribute level), then for that round:\
+If player damage > enemy damage, the player gets a 1.6 times multiplier on damage.\
+If player damage < enemy damage, the player gets a 0.6 times multiplier on damage received.
+
+### Upgrading Abilities
+- Players will gain a skill point for each stage they clear. When the number of skill points they have is greater than 0, they will be given the choice to upgrade any one of their attributes. 
+- Choosing to upgrade an attribute will increase the selected attribute value by 1 in the playerDict, which will increase the value of that attribute in accordance to the values given in the playerStatlist dictionary.
+
+### Stage and Running of Game
+- When the game starts, initalises the variable globalStage as 1.
+- While loop is set up such that as long as HP value of player is greater than 0, the game will continue.
+- Attributes of the enemy will increase by a multiple each round
+
+### Enemy Selection and Difficulty Scaling
+
+### Skill Points
+
 # Visual Code Explanation
 
 ## Imported Modules
@@ -191,7 +234,7 @@ from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 ## Global Variables
 - Determines the properties of the window and also establishes commonly used unit values for late referencing.
 
-## Assets Class(Calc UI and Fight UI)
+## Assets Class (Calc UI and Fight UI)
 -  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the assets when needed
 
 ### Calc UI (Calculator UI) and CalcButtons
