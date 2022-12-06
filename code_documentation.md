@@ -1,5 +1,14 @@
 # Code Documentation
 
+## Conventions
+- We chose to utilise the camelCase naming system to name our functions, as it is faster to type, and easier to read in paragraphs with multiple functions.
+- We decided on the following naming convention: [(function type)(function use)] to increase clarity of our code. Function type indicates the general category of the function.
+- We also made sure to avoid hardcoding by using functions instead of constants. We have done so in order to:
+  1. Increase versatility of code - Should we need to make changes, they can be implemented a lot easier than if they were hardcoded.
+  2. Increase clarity - As all functions are named, the purpose of each value is clearer. Thus while troubleshooting, we do not have to spend as much time figuring out what each value means
+
+     Examples:
+     The dictionaries we created for the player and the different enemy types. By doing this, we can simply change the variables in the dictionary directly, instead of going through all of our code and making the changes manually.
 ## Variable Tables
 
 ### Global
@@ -224,7 +233,8 @@ If player damage < enemy damage, the player gets a 0.6 times multiplier on damag
 ## Finishing the Game
 - If player HP drops to 0, then the function playerEndgame() is run and the game ends.
 
-
+<br>
+<br>
 
 # Visual Code Explanation
 
