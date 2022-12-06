@@ -599,6 +599,8 @@ class gameInstance(Tk):
                 self.toggle_switch_sprites("enemy", False)
             elif status == "enemySpawned":
                 self.toggle_switch_sprites("enemy", True)
+            elif status == "enemyHit":
+                self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack"))
         if not(self.shopQueue.empty()):
             status = shopQueue.get()
             if status == "shopOpen":
@@ -817,7 +819,7 @@ class buttonPresses():
         self.action.make_shop_choice("n")
 
     def press_Circle(self):
-        self.action.do_animate("Player", self.action.game.assets.getAnimate("playerAttack"), self.action.game.assets.getDelay("playerAttack"))
+        pass
 
     def press_Triangle(self):
         pass
@@ -1039,6 +1041,9 @@ def maingame():
 
                 # Prompt user input 
                 inputPerm = queueResult.get()
+                if inputPerm == randN:
+                    spriteQueue.put("enemyHit")
+                    time.sleep(1.2)
                 print(inputPerm)
                 if inputPerm == "quit":
                     exit()
