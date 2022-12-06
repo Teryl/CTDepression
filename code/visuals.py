@@ -3,7 +3,9 @@
 ### Versioned as of 04/12/22
 
 ### Importing Modules
-from time import sleep
+import time
+import random
+import copy
 from math import *
 from tkinter import *
 from tkinter import messagebox
@@ -12,6 +14,7 @@ from tkinter.font import Font
 import os
 import sys
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+from threading import Thread
 
 
 ### Setting Global Variables
@@ -36,22 +39,113 @@ scaleMul = {
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
 }
 
+globalStage = 1
+
 class player():
     def __init__(self):
+        ## initialize playerStatlist and playerDict 
+        self.playerStatlist = {
+            "HP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
+            "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
+            "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
+            "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
+            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
+            }
         self.playerDict = {
-            "HP" : 0,
-            "Atk" : 0,
-            "Def" : 0,
-            "Luck" : 0,
-            "LVL" : 0,
-            "N" : 0,
-            "Time" : 0,
+            "HP": self.playerStatlist["HP"][0],
+            "Atk": self.playerStatlist["Atk"][1],
+            "Def": self.playerStatlist["Def"][2],
+            "Time": self.playerStatlist["Time"][5],
+            "Luck": self.playerStatlist["Luck"][5],
+            "LVL": globalStage,
+            "N": 0,
+            "Skill": 0}
+
+player = player()
+
+class enemy():
+    def __init__(self):
+        ## initialize enemyNamelist, enemy.enemyStatlist, enemyTypelist, enemyDict (default enemy is man)
+        self.enemyNamelist = [
+            "David",
+            "Donggeon",
+            "Dianthe",
+            "Mithun",
+            "Evan",
+            "Quan Pham",
+            "Jon",
+            "Muhammad",
+            "Tanjiro",
+            "Dashawn",
+            "Cindy",
+            "Tanya",
+            "Joseph",
+            "Chaya",
+            "Brent",
+            "Kim Jeong",
+            "Chanel",
+            "Jamal",
+            os.getlogin()
+        ]
+        self.enemyStatlist = {
+            "HP":{0:0.25,1:1,2:1.25},
+            "Atk":{0:0.75,1:1,2:1.25},
+            "Def":{0:1.25,1:1,2:0.75},
+            "Time": {0:10,1:15,2:20},
+            "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
+            }
+        self.enemyTypeList = {
+            "man":{
+            "Name": self.enemyNamelist[random.randrange(len(self.enemyNamelist))],
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][1],
+            "Def": self.enemyStatlist["Def"][1],
+            "Time": self.enemyStatlist["Time"][1]
+            }, 
+
+            "cancerPatient":{
+            "Name": "Cancer Patient",
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][1],
+            "Def": self.enemyStatlist["Def"][0],
+            "Time": self.enemyStatlist["Time"][0]
+            },
+
+            "floridaMan":{
+            "Name": "Florida Man",
+            "HP": self.enemyStatlist["HP"][2],
+            "Atk": self.enemyStatlist["Atk"][0],
+            "Def": self.enemyStatlist["Def"][1],
+            "Time": self.enemyStatlist["Time"][1]
+            },
+
+            "pepsiMan":{
+            "Name": "Pepsi Man",
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][2],
+            "Def": self.enemyStatlist["Def"][0],
+            "Time": self.enemyStatlist["Time"][1]
+            },
+
+            "theRock":{
+            "Name": "The Rock",
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][1],
+            "Def": self.enemyStatlist["Def"][2],
+            "Time": self.enemyStatlist["Time"][2]
+            },
+
+            "kanyeEast":{
+            "Name": "Kanye East",
+            "HP": self.enemyStatlist["HP"][0],
+            "Atk": self.enemyStatlist["Atk"][2],
+            "Def": self.enemyStatlist["Def"][1],
+            "Time": self.enemyStatlist["Time"][1]
+            }
         }
+        self.enemyDict = self.enemyTypeList["man"]
 
-    def update_playerDict(self, key, value):
-        self.playerDict[key] = value
-        print("updated player stats")
-
+enemy = enemy()
 
 def PLACEHOLDER_FUNCTION():
     pass
@@ -61,8 +155,8 @@ def PLACEHOLDER_FUNCTION():
 ### Asset Class
 class assetHandler():
     def __init__(self):
-        self.calcPath = "./ctd1D/assets/CalcUI/"
-        self.fightPath = "./ctd1D/assets/FightUI/"
+        self.calcPath = "./assets/CalcUI/"
+        self.fightPath = "./assets/FightUI/"
         self.imageDict = {}
         self.fontDict = {}
 
@@ -166,7 +260,7 @@ class assetHandler():
 
     # load fonts
     def initialise_fonts(self):
-        self.load_font(os.path.abspath("./ctd1D/assets/fonts/monogramRevised.otf"))
+        self.load_font(os.path.abspath("./assets/fonts/monogramRevised.otf"))
 
     ### Font loader
     def load_font(self, fontpath, private=True, enumerable=False):
@@ -220,7 +314,7 @@ class gameInstance(Tk):
         self.result = ""
         self.finishCalc = False
 
-        self.player = player()
+        self.player = player
         self.binds = {}
 
         # timer pseudothreads
@@ -362,6 +456,8 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.2415, anchor=CENTER)
         self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
 
+        
+
         self.update_combat_display()
 
     def create_buttons(self):
@@ -425,10 +521,10 @@ class gameInstance(Tk):
         self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.playerDict["HP"]))
         self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.playerDict["LVL"]))
         self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.playerDict["N"]))
-        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(self.player.playerDict["Time"])))
-        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.playerDict["Atk"])))
-        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.playerDict["Def"])))
-        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.playerDict["Luck"])))
+        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(5)))
+        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(list(self.player.playerStatlist["Atk"].keys())[list(self.player.playerStatlist["Atk"].values()).index(self.player.playerDict["Atk"])])))
+        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(list(self.player.playerStatlist["Def"].keys())[list(self.player.playerStatlist["Def"].values()).index(self.player.playerDict["Def"])])))
+        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(list(self.player.playerStatlist["Luck"].keys())[list(self.player.playerStatlist["Luck"].values()).index(self.player.playerDict["Luck"])])))
         
         self.increment_timers()
 
@@ -450,7 +546,7 @@ class actions():
             ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
             ["Triangle", "LeftArrow", "BlankDarkGrey", "RightArrow", "BlankLightGrey"],
             ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
-            ["Home", "No", "BlankDarkGrey", "Yes", None]
+            ["Home", "No", "BlankBlack", "Yes", None]
         ]
 
         for y in range(len(self.game.defaultLayout)):
@@ -516,7 +612,7 @@ class buttonPresses():
     def press_CE(self):
         self.action.clear_buffer()
         self.action.clear_screen()
-    
+     
     def press_LeftBracket(self):
         self.action.add_to_buffer("(")
 
@@ -631,7 +727,156 @@ class buttonPresses():
     def press_Disabled(self):
         pass
 
-        
+
+# Randomize Number Range:
+def randomizeN(globalStage, enemyStatlist):
+    # range of n is selected based on the globalStage
+    # the higher the stage, range is increased 
+    
+    if globalStage <= 3:
+        globalNRange = enemyStatlist["globalNRange"][0]
+    
+    elif globalStage > 3 and globalStage <= 7:
+        globalNRange = enemyStatlist["globalNRange"][1]
+    
+    elif globalStage > 7 and globalStage <= 12:
+        globalNRange = enemyStatlist["globalNRange"][2]
+    
+    elif globalStage > 12:
+        globalNRange = enemyStatlist["globalNRange"][3]
+
+    # choose n based on the globalNRange
+    n = random.randrange(globalNRange[0], globalNRange[1])
+    return n
+
+# Randomize Enemy Type:
+def randomizeEnemy(enemyTypeList):
+    enchance = random.randrange(0,101)
+    if enchance <= 50:
+        return enemyTypeList["man"]
+
+    elif enchance > 50 and enchance <= 60:
+        return enemyTypeList["cancerPatient"]
+
+    elif enchance > 60 and enchance <= 70:
+        return enemyTypeList["floridaMan"]
+
+    elif enchance > 70 and enchance <= 80:
+        return enemyTypeList["pepsiMan"]
+
+    elif enchance > 80 and enchance <= 90:
+        return enemyTypeList["theRock"]
+
+    elif enchance > 90:
+        return enemyTypeList["kanyeEast"]
+    pass
+
+# Calculate Enemy Damage
+def calcEnemyDmg(enemyDict, globalStage):
+    enemyDmg = enemyDict["Atk"] * globalStage
+    return enemyDmg
+
+# Calcualate Damage done by Player for each attack
+def calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict):
+    # for now, player input taken using keyboard
+    # during integration with UI, input taken from click
+    if inputPerm == randN:
+        playerDmg = (playerDict["Atk"] * timeRemaining)**1.05
+    else:
+        playerDmg = 0
+        pass
+    return playerDmg
+
+# Calculate critical damage or damage reduction
+def calcPlayerCrit(playerDmg, enemyDmg, playerLuck):
+    if random.randrange(0,101) > playerLuck:
+        if playerDmg > enemyDmg:
+            playerCritRed = 1.6
+        elif playerDmg < enemyDmg:
+            playerCritRed = 0.6
+        else:
+            playerCritRed = 1
+    else:
+        playerCritRed = 1
+    return playerCritRed
+
+# Present option to upgrade abilities
+def upgradeAbility(playerDict, playerStatlist):
+    while playerDict["Skill"] > 0:
+        playerUpgradeChoice = input("Would you like to upgrade your abilities? (hp/atk/def/time/luck/n): ")
+        if playerUpgradeChoice == "atk":
+            for i in playerStatlist["Atk"]:
+                if playerStatlist["Atk"][i] == playerDict["Atk"]:
+                    playerDict["Atk"] = playerStatlist["Atk"][i+1]
+                    playerDict["Skill"] -= 1
+                    print("You have upgraded your attack!")
+                    print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                    break
+
+        elif playerUpgradeChoice == "def":
+            for i in playerStatlist["Def"]:
+                if playerStatlist["Def"][i] == playerDict["Def"]:
+                    playerDict["Def"] = playerStatlist["Def"][i+1]
+                    playerDict["Skill"] -= 1
+                    print("You have upgraded your defense!")
+                    print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                    break
+
+        elif playerUpgradeChoice == "time":
+            for i in playerStatlist["Time"]:
+                if playerStatlist["Time"][i] == playerDict["Time"]:
+                        playerDict["Time"] = playerStatlist["Time"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your time!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+        elif playerUpgradeChoice == "luck":
+            for i in playerStatlist["Luck"]:
+                if playerStatlist["Luck"][i] == playerDict["Luck"]:
+                        playerDict["Luck"] = playerStatlist["Luck"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your luck!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+        elif playerUpgradeChoice == "hp":
+            for i in playerStatlist["HP"]:
+                if playerStatlist["HP"][i] == playerDict["HP"]:
+                        playerDict["HP"] = playerStatlist["HP"][i+1]
+                        playerDict["Skill"] -= 1
+                        print("You have upgraded your HP!")
+                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+                        break
+
+        elif playerUpgradeChoice == "n":
+            break
+
+        elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
+            print("That's not a valid input!")
+            pass
+
+def playerEndgame():
+    print("Game Over! What an L!")
+    os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    time.sleep(10)
+    print("Now leave my presence, peasant!")
+    # os.system("shutdown -l")
+    exit()
+
+def timer():
+    for i in range(45):
+        time.sleep(1)   #waits 45 seconds
+    sys.exit() #stops program after timer runs out, you could also have it print something or keep the user from attempting to answer any longer
+
+def question():
+    answer = input("foo?")
+
+t1 = Thread(target=timer)
+t2 = Thread(target=question)
+t1.start() #Calls first function
+t2.start() #Calls second function to run at same time
+
 ### Main Game Loop
 def main():
     assets = assetHandler()
@@ -639,4 +884,6 @@ def main():
  
     game.mainloop()
     
+
 main()
+
