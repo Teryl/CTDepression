@@ -159,7 +159,7 @@ class enemyClass():
             "Time": self.enemyStatlist["Time"][2]
             },
 
-            "KanyeEast":{
+            "Kanye":{
             "Name": "Kanye East",
             "HP": self.enemyStatlist["HP"][0],
             "Atk": self.enemyStatlist["Atk"][2],
@@ -284,6 +284,7 @@ class assetHandler():
             "Florida" : [os.path.join(self.charPath, "08_Florida.png"), 4, 20, 20],
             "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
+            "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
             "Player" : [os.path.join(self.animPath, "0.png"), 4, 40, 20],
         }
 
@@ -350,7 +351,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets, queue, spriteQueue):
+    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -366,7 +367,8 @@ class gameInstance(Tk):
         self.finishCalc = False
         self.queueResult = queue
         self.spriteQueue = spriteQueue
-
+        self.shopQueue = shopQueue
+        self.actions = actions(self)
         self.player = player
         self.enemy = enemy
         self.binds = {}
@@ -387,7 +389,8 @@ class gameInstance(Tk):
         self.minsize(int(WINDOW_SIZE[0]*WINDOW_SCALE), int(WINDOW_SIZE[1]*WINDOW_SCALE))
 
         self.create_main()
-        press = buttonPresses(actions(self))
+        
+        press = buttonPresses(self.actions)
 
         # Button Function Allocation
         self.buttons = {
@@ -588,10 +591,23 @@ class gameInstance(Tk):
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
-        if not(self.spriteQueue.empty()) and self.spriteQueue.get() == "enemyKilled":
-            self.toggle_switch_sprites("enemy", False)
-        elif self.spriteQueue.get() == "enemySpawned":
-            self.toggle_switch_sprites("enemy", True)
+        if not(self.spriteQueue.empty()):
+            status = spriteQueue.get()
+            if status == "enemyKilled":
+                self.toggle_switch_sprites("enemy", False)
+            elif status == "enemySpawned":
+                self.toggle_switch_sprites("enemy", True)
+        if not(self.shopQueue.empty()):
+            status = shopQueue.get()
+            if status == "shopOpen":
+                self.actions.keypad_state_change()
+                self.actions.clear_buffer()
+                self.actions.clear_screen()
+            elif status == "shopClose":
+                self.actions.keypad_state_reset()
+                time.sleep(1)
+        
+
 
         
         self.increment_timers()
@@ -615,6 +631,7 @@ class actions():
     def quitGame(self):
         quitQuery = messagebox.askyesno("Quit", "Are you sure you want to quit?", icon="warning")
         if quitQuery:
+            self.game.queueResult.put("quit")
             exit()
 
     def keypad_state_change(self):
@@ -859,7 +876,7 @@ def randomizeEnemy():
         return "Therock"
 
     elif enchance > 90:
-        return "KanyeEast"
+        return "Kanye"
     pass
 
 # Calculate Damage done by enemy
@@ -893,6 +910,7 @@ def calcPlayerCrit(playerDmg, enemyDmg, playerLuck):
 
 # Present option to upgrade abilities
 def upgradeAbility():
+    shopQueue.put("shopOpen")
     while player.get_stat("Skill") > 0:
         playerUpgradeChoice = queueResult.get()
         if playerUpgradeChoice == "atk":
@@ -951,6 +969,7 @@ def upgradeAbility():
         elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
             print("You can't upgrade that! Enter a valid input this time...")
             pass
+    shopQueue.put("shopClose")
 
 def playerEndgame():
     print("Game Over! What an L!")
@@ -977,10 +996,11 @@ def maingame():
         # Deepcopy the dictionary so that when same enemy is selected HP resets
         # Ensure enemyDict is just a copy not an alias
         global enemyDict
+        
         newEnemy = randomizeEnemy()
         enemy.currentEnemy = assets.getAsset(newEnemy)
         enemyDict = copy.deepcopy(enemy.enemyTypeList[newEnemy])
-        spriteQueue.put("enemySpawned")
+
         
         
         # Scale intial enemy HP, Atk value, and Defense value 
@@ -988,7 +1008,7 @@ def maingame():
         enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)
         enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
         print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
-
+        spriteQueue.put("enemySpawned")
         # Setting global time
         globalTime = enemyDict["Time"] + player.get_statlist("Time")
         timeRemaining = copy.deepcopy(globalTime)
@@ -1009,6 +1029,7 @@ def maingame():
 
                 # Prompt user input 
                 inputPerm = queueResult.get()
+                print(inputPerm)
                 if inputPerm == "quit":
                     exit()
 
@@ -1050,6 +1071,7 @@ def maingame():
         # Increase globalStage
         globalStage += 1
         
+        
         # Give Skill Points
         player.set_stat("Skill", player.get_stat("Skill") + 1)
         print("You have gained an upgrade coin!")
@@ -1057,7 +1079,7 @@ def maingame():
 
         # Upgrade Abilities
         upgradeAbility()
-
+        player.set_stat("LVL", globalStage)
         print("done")
         
 
@@ -1068,15 +1090,16 @@ player = playerClass()
 enemy = enemyClass()
 
 
-def main(queue, spriteQueue):
+def main(queue, spriteQueue, shopQueue):
     assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue)
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue)
     game.mainloop()
 
 queueResult = Queue()
 spriteQueue = Queue()
+shopQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, spriteQueue,))
+gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue,))
 gui.start()
 
 eternum = Thread(target=maingame)
