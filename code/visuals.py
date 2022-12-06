@@ -350,7 +350,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets, queue, quit):
+    def __init__(self, size, title, assets, queue, spriteQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -365,7 +365,7 @@ class gameInstance(Tk):
         self.result = ""
         self.finishCalc = False
         self.queueResult = queue
-        self.quit = quit
+        self.spriteQueue = spriteQueue
 
         self.player = player
         self.enemy = enemy
@@ -588,6 +588,11 @@ class gameInstance(Tk):
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
+        if not(self.spriteQueue.empty()) and self.spriteQueue.get() == "enemyKilled":
+            self.toggle_switch_sprites("enemy", False)
+        elif self.spriteQueue.get() == "enemySpawned":
+            self.toggle_switch_sprites("enemy", True)
+
         
         self.increment_timers()
 
@@ -610,7 +615,6 @@ class actions():
     def quitGame(self):
         quitQuery = messagebox.askyesno("Quit", "Are you sure you want to quit?", icon="warning")
         if quitQuery:
-            queueResult.put("quit")
             exit()
 
     def keypad_state_change(self):
@@ -957,13 +961,13 @@ def playerEndgame():
     exit()
 
 
-def maingame(quit):
+def maingame():
 
 ## Game runs as long as playerHP > 0, increase globalStage every time
     assets = assetHandler()
     global globalStage
     globalStage = 1
-    while player.get_stat("HP") > 0 and quit.is_set() == False:
+    while player.get_stat("HP") > 0:
 
         # playerDict is default player stats
         print("Your Player Attributes: ", {k: player.get_statlist(k) for k in list(player.playerDict.keys()) if k not in ['Skill', 'HP', 'LVL', 'N']})
@@ -976,6 +980,7 @@ def maingame(quit):
         newEnemy = randomizeEnemy()
         enemy.currentEnemy = assets.getAsset(newEnemy)
         enemyDict = copy.deepcopy(enemy.enemyTypeList[newEnemy])
+        spriteQueue.put("enemySpawned")
         
         
         # Scale intial enemy HP, Atk value, and Defense value 
@@ -1005,7 +1010,6 @@ def maingame(quit):
                 # Prompt user input 
                 inputPerm = queueResult.get()
                 if inputPerm == "quit":
-                    quit.set()
                     exit()
 
                 # Calculate damage done by player, if wrong, playerDmg = 0    
@@ -1041,6 +1045,8 @@ def maingame(quit):
                 if player.get_stat("HP") <= 0:
                     playerEndgame()
 
+        spriteQueue.put("enemyKilled")
+
         # Increase globalStage
         globalStage += 1
         
@@ -1062,17 +1068,17 @@ player = playerClass()
 enemy = enemyClass()
 
 
-def main(queue, quit):
+def main(queue, spriteQueue):
     assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, quit)
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue)
     game.mainloop()
 
 queueResult = Queue()
-quit = Event()
+spriteQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, quit,))
+gui = Thread(target=main, args=(queueResult, spriteQueue,))
 gui.start()
 
-eternum = Thread(target=maingame, args=(quit,))
+eternum = Thread(target=maingame)
 eternum.start()
 
