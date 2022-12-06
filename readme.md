@@ -10,10 +10,11 @@
 | Pham Hong Quan                     | 1007131 | Taking commissions  |
 
 ## Project Summary
-Data pertaining to the initial plan of code developed goes here
+Our game is titled *Eternal Number Slumber*:
 
-## Project Details
-To find out more about the gameplay, design directions, and concept artworks, check out our [***game wiki***](game_wiki.md)!
+<img src="assets/LauncherSprites/.Logo_Transparent_4K.png" width="600"/>
+
+To find out more about the the game, its gameplay, design directions, and concept artworks, check out our [***game wiki***](game_wiki.md)!
 
 To find out more about our programming decisions, principles, and documentation, check out our [***code documentation***](code_documentation.md)!
 
@@ -34,5 +35,5 @@ To find out more about our programming decisions, principles, and documentation,
 | Create [game wiki](Game_wiki.md)          | 21 Nov   | ✅
 | Create [code docs](Code_documentation.md) | 01 Dec   | ✅
 | Start programming                         | 01 Dec   | ✅
-| Final assembly and playtesting            | 05 Dec   | ⬛
+| Final assembly and playtesting            | 06 Dec   | ⬛
 | Submission of deliverables                | 07 Dec   | ⬛
