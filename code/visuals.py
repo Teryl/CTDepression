@@ -54,10 +54,10 @@ class player():
             }
         self.playerDict = {
             "HP": self.playerStatlist["HP"][0],
-            "Atk": self.playerStatlist["Atk"][1],
-            "Def": self.playerStatlist["Def"][2],
-            "Time": self.playerStatlist["Time"][5],
-            "Luck": self.playerStatlist["Luck"][5],
+            "Atk": self.playerStatlist["Atk"][0],
+            "Def": self.playerStatlist["Def"][0],
+            "Time": self.playerStatlist["Time"][0],
+            "Luck": self.playerStatlist["Luck"][0],
             "LVL": globalStage,
             "N": 0,
             "Skill": 0}
@@ -1006,5 +1006,9 @@ def main():
     game.mainloop()
     
 
-main()
+gui = Thread(target=main)
+gui.start()
+
+eternum = Thread(target=maingame)
+eternum.start()
 
