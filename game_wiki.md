@@ -10,9 +10,11 @@ One day, the IT department sends you a calculator, explaining how it should make
 
 
 ## Motivation
-This game is aimed to help primary school kids with their mental calculations. As many kids struggle to find the motivation to study, we have created a game that tests their abilities in Math, and at the same time giving them a purpose to do so through a fun game.
+This game is aimed to help primary school kids with their mental calculations. Many kids struggle to find the motivation to study. Thus, we have created a game that tests their abilities in mathematics, while simultaneously providing an interesting solution to this prevailing problem.
 
-For instance, Frinz (Primary 4), a brother of one of our members, struggles with multiplication and mental calculation. Although he does not have the drive to study, he loves playing games on his iPad and enjoys the adrenaline that comes with it. Taking inspiration from Frinz, we ensured that our game is entertaining and competitive, thus making it time-based and included interesting characters.
+Children of this generation rely mostly on gadgets and technology. They often use apps such as YouTube and other online software in their schools (WGU.edu, Oct 3 2019). For instance, Frinz (Primary 4), a brother of one of our members, struggles with multiplication and mental calculation. Although he does not have the drive to study, he loves playing games on his iPad. He enjoys the adrenaline that comes with the challenge and motivation to win the game.
+
+Taking inspiration from Frinz, we created *Eternal Number Slumber* to be an entertaining and competitive game. Our game involves interesting and iconic characters that are sure to pique the interest of our target users. Essentially a calculator game, it exercises the user's mathematical knowledge to defeat the enemies.
 
 <br>
 
@@ -103,6 +105,7 @@ Complete list of enemies can be found in this table. Bosses are labelled with an
 | Florida Man    | 🔼 HP   <br> 🔽 Atk  |
 | Bepis Man      | 🔼 Atk  <br> 🔽 Def  |
 | The Rock       | 🔼 Def  <br> 🔼 Time |
+| Kanye East     | 🔼 Atk  <br> 🔽 HP   |
 
 *Note that* `🔽Time` *is actually a debuff to the player, as they have less time to compute possible permutations.*
 
