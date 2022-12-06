@@ -1,4 +1,6 @@
 # About
+<img src="assets/LauncherSprites/.Logo_Animated_HD.gif" width=""/>
+
 *Eternal Number Slumber* is a fast-paced educational game that combines roguelike gameplay with puzzle mechanics; complete with procedurally generated levels, enemy variety, and player progression for infinite fun.
 
 > *Become the best Grim Reaper the world has ever seen by punching in digits. Upgrade your stats in meaningful ways and come up with unique strategies for each enemy until you become the most feared upon psychopomp in the history of the afterlife.*
@@ -7,8 +9,10 @@ Despite having the impressive title of Grim Reaper, you are an overworked office
 One day, the IT department sends you a calculator, explaining how it should make your job much more efficient. All you have to do is create equations to match numbers given to you, and your client will be sent to the afterlife! Like taking candy from a baby! ~~Or lives, for that matter.~~
 
 
-## Motivations
-This game is aimed to help primary school kids with their mental calculations. As many kids struggle to find the motivation to study, we have created a game that tests their abilities in Math, and at the same time giving them a purpose to do so through a fun game. For instance, Frinz (Primary 4), a brother of one of our members, struggles with multiplication and mental calculation. Although he does not have the drive to study, he loves playing games on his iPad and enjoys the adrenaline that comes with it. Taking inspiration from Frinz, we ensured that our game is entertaining and competitive, thus making it time-based and included interesting characters.
+## Motivation
+This game is aimed to help primary school kids with their mental calculations. As many kids struggle to find the motivation to study, we have created a game that tests their abilities in Math, and at the same time giving them a purpose to do so through a fun game.
+
+For instance, Frinz (Primary 4), a brother of one of our members, struggles with multiplication and mental calculation. Although he does not have the drive to study, he loves playing games on his iPad and enjoys the adrenaline that comes with it. Taking inspiration from Frinz, we ensured that our game is entertaining and competitive, thus making it time-based and included interesting characters.
 
 <br>
 
@@ -62,7 +66,9 @@ Enemies also have similar properties; [different enemies](#enemy-types) have dif
 ## Calculator
 The calculator is the standard user interface that the player is expected to interact with, and use to control the player character.
 
-It consists of numeric operands, standard operators, parentheses, and navigation buttons. While this sounds quite overwhelming, the GUI itself is quite simplistic, and it has a 8-bit pixel look.
+It consists of numeric operands, standard operators, parentheses, and navigation buttons, sporting a pixel art look.
+
+<img src="assets/CalcUI/.Full_HD.png" width="200"/>
 
 ### Each Turn:
 1. A new `n` is generated
@@ -139,9 +145,12 @@ Initial critical hit rate is 0%. Each upgrade increases it by 2 pp.
 <br>
 
 # Art and Assets
-## Styleguide
-<kbd>Alt</kbd>+<kbd>F4</kbd> your life
+<img src="assets/CharSprites/.CharAnim_HD.gif" width="600"/>\
+*Our Grim Reaper (pixel ver.) in all of her animated pixel glory*
 
+## Direction
+Because this project only makes use of the [Python standard library](https://docs.python.org/3.9/library/), Tkinter had to be used to create the GUI for the game.\
+In order to make asset alignment and composition less painful to code, pixel art was chosen as the primary art style.\
+Colours make use the full 24 bits of standard RGB values, since the memory pool is large enough to accomodate full colour sprites, especially at such small sizes.
 
-## Bonus Art
-btw can you add relative links in the readme.md file so it links to this and maybe the todo list thanks
+Assets were created using Excel, and animated on [Pixilart](https://www.pixilart.com/). All assets used and more can be found in the [assets folder](/assets).
