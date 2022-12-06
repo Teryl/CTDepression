@@ -121,7 +121,7 @@ class enemyClass():
             }
         self.enemyTypeList = {
             "man":{
-            "Name": self.enemyNamelist[self.randomName()],
+            "Name": "man",
             "HP": self.enemyStatlist["HP"][1],
             "Atk": self.enemyStatlist["Atk"][1],
             "Def": self.enemyStatlist["Def"][1],
@@ -171,7 +171,7 @@ class enemyClass():
         self.enemyDict = self.enemyTypeList["man"]
 
     def randomName(self):
-        return random.randrange(len(self.enemyNamelist))
+        return self.enemyNamelist[random.randrange(len(self.enemyNamelist))]
 
 def PLACEHOLDER_FUNCTION():
     pass
@@ -1026,7 +1026,10 @@ def maingame():
         newEnemy = randomizeEnemy()
         enemy.currentEnemy = assets.getAsset(newEnemy)
         enemyDict = copy.deepcopy(enemy.enemyTypeList[newEnemy])
-
+        if enemyDict["Name"] == "man":
+            enemyName = enemy.randomName()
+        else:
+            enemyName = enemyDict["Name"]
         
         
         # Scale intial enemy HP, Atk value, and Defense value 
@@ -1035,7 +1038,7 @@ def maingame():
         enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
         print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
         spriteQueue.put("enemySpawned")
-        enemyQueue.put(enemyDict['Name'])
+        enemyQueue.put(enemyName)
         # Setting global time
         globalTime = enemyDict["Time"] + player.get_statlist("Time")
         timeRemaining = copy.deepcopy(globalTime)
