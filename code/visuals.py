@@ -42,30 +42,51 @@ scaleMul = {
 
 globalStage = 1
 
-class player():
+class playerClass():
     def __init__(self):
         ## initialize playerStatlist and playerDict 
         self.playerStatlist = {
-            "HP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
+            "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
             "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
             }
         self.playerDict = {
-            "HP": self.playerStatlist["HP"][0],
-            "Atk": self.playerStatlist["Atk"][0],
-            "Def": self.playerStatlist["Def"][0],
-            "Time": self.playerStatlist["Time"][0],
-            "Luck": self.playerStatlist["Luck"][0],
+            "maxHP": 0,
+            "HP": 0,
+            "Atk": 0,
+            "Def": 0,
+            "Time": 0,
+            "Luck": 0,
             "LVL": globalStage,
             "N": 0,
             "Skill": 0}
 
-player = player()
+        self.set_stat("HP", self.get_statlist("maxHP"))
 
-class enemy():
+    def level_up(self, stat):
+        if stat == "HP":
+            self.set_stat("maxHP", self.get_stat("maxHP") + 1)
+            self.set_stat("HP", self.get_statlist("maxHP"))
+        else:
+            self.set_stat(stat, self.get_stat(stat) + 1)
+            self.set_stat("Skill", self.get_stat("Skill") - 1)
+        
+
+    def set_stat(self, stat, value):
+        self.playerDict[stat] = value
+
+    def get_stat(self, stat):
+        return self.playerDict[stat]
+
+    def get_statlist(self, stat):
+        return self.playerStatlist[stat][self.get_stat(stat)]
+
+
+class enemyClass():
     def __init__(self):
+        self.currentEnemy = "man"
         ## initialize enemyNamelist, enemy.enemyStatlist, enemyTypelist, enemyDict (default enemy is man)
         self.enemyNamelist = [
             "David",
@@ -146,7 +167,7 @@ class enemy():
         }
         self.enemyDict = self.enemyTypeList["man"]
 
-enemy = enemy()
+
 
 def PLACEHOLDER_FUNCTION():
     pass
@@ -263,7 +284,7 @@ class assetHandler():
             "Player" : [os.path.join(self.charPath, "PlayerAnim_1.png"), 4, 40, 20],
         }
 
-        self.animate["playerAttack"] = [os.path.join(self.charPath, "PlayerAnim_" + str(i) + ".png") for i in range(1, 19)]
+        self.animate["playerAttack"] = [os.path.join(self.charPath, "PlayerAnim_" + str(i) + ".png") for i in range(1, 19)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
     
         
 
@@ -278,7 +299,10 @@ class assetHandler():
             return self.imageDict[assetName]
 
     def getAnimate(self, idAnimation):
-        return [PhotoImage(file=os.path.abspath(i)).zoom(int(4 * WINDOW_SCALE)) for i in self.animate[idAnimation]]
+        return [PhotoImage(file=os.path.abspath(i)).zoom(int(4 * WINDOW_SCALE)) for i in self.animate[idAnimation][0]]
+
+    def getDelay(self, idAnimation):
+        return self.animate[idAnimation][1]
 
     # load fonts
     def initialise_fonts(self):
@@ -548,13 +572,13 @@ class gameInstance(Tk):
    
     # Create Combat Display Update Loop
     def update_combat_display(self):
-        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.playerDict["HP"]))
-        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.playerDict["LVL"]))
-        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.playerDict["N"]))
+        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.get_stat("HP")))
+        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.get_stat("LVL")))
+        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.get_stat("N")))
         self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(5)))
-        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(list(self.player.playerStatlist["Atk"].keys())[list(self.player.playerStatlist["Atk"].values()).index(self.player.playerDict["Atk"])])))
-        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(list(self.player.playerStatlist["Def"].keys())[list(self.player.playerStatlist["Def"].values()).index(self.player.playerDict["Def"])])))
-        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(list(self.player.playerStatlist["Luck"].keys())[list(self.player.playerStatlist["Luck"].values()).index(self.player.playerDict["Luck"])])))
+        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.get_stat("Atk"))))
+        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
+        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         
         self.increment_timers()
 
@@ -644,10 +668,10 @@ class actions():
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
         self.game.toggle_switch_sprites(idFrame, visible, idSprite)
 
-    def do_animate(self, idFrame, framesArr, delay=100, frame=0):
+    def do_animate(self, idFrame, framesArr, delayArr, frame=0):
         if frame < len(framesArr):
             self.game.update_animation(idFrame, framesArr[frame])
-            self.game.after(delay, lambda: self.do_animate(idFrame, framesArr, delay, frame+1))
+            self.game.after(delayArr[frame], lambda: self.do_animate(idFrame, framesArr, delayArr, frame+1))
         else:
             self.toggle_switch_sprites(idFrame, True, idFrame)
 
@@ -749,7 +773,7 @@ class buttonPresses():
         pass
 
     def press_Circle(self):
-        self.action.do_animate("Player", self.action.game.assets.getAnimate("playerAttack"), 75)
+        self.action.do_animate("Player", self.action.game.assets.getAnimate("playerAttack"), self.action.game.assets.getDelay("playerAttack"))
 
     def press_Triangle(self):
         pass
@@ -798,38 +822,38 @@ def randomizeN(globalStage, enemyStatlist):
     return n
 
 # Randomize Enemy Type:
-def randomizeEnemy(enemyTypeList):
+def randomizeEnemy():
     enchance = random.randrange(0,101)
     if enchance <= 50:
-        return enemyTypeList["man"]
+        return "man"
 
     elif enchance > 50 and enchance <= 60:
-        return enemyTypeList["cancerPatient"]
+        return "cancerPatient"
 
     elif enchance > 60 and enchance <= 70:
-        return enemyTypeList["floridaMan"]
+        return "floridaMan"
 
     elif enchance > 70 and enchance <= 80:
-        return enemyTypeList["pepsiMan"]
+        return "pepsiMan"
 
     elif enchance > 80 and enchance <= 90:
-        return enemyTypeList["theRock"]
+        return "theRock"
 
     elif enchance > 90:
-        return enemyTypeList["kanyeEast"]
+        return "kanyeEast"
     pass
 
-# Calculate Enemy Damage
+# Calculate Damage done by enemy
 def calcEnemyDmg(enemyDict, globalStage):
     enemyDmg = enemyDict["Atk"] * globalStage
     return enemyDmg
 
 # Calcualate Damage done by Player for each attack
-def calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict):
+def calcPlayerDmg(timeRemaining, inputPerm, randN):
     # for now, player input taken using keyboard
     # during integration with UI, input taken from click
     if inputPerm == randN:
-        playerDmg = (playerDict["Atk"] * timeRemaining)**1.05
+        playerDmg = (player.get_statlist("Atk") * timeRemaining)**1.05
     else:
         playerDmg = 0
         pass
@@ -849,59 +873,64 @@ def calcPlayerCrit(playerDmg, enemyDmg, playerLuck):
     return playerCritRed
 
 # Present option to upgrade abilities
-def upgradeAbility(playerDict, playerStatlist):
-    while playerDict["Skill"] > 0:
+def upgradeAbility():
+    while player.get_stat("Skill") > 0:
         playerUpgradeChoice = input("Would you like to upgrade your abilities? (hp/atk/def/time/luck/n): ")
         if playerUpgradeChoice == "atk":
-            for i in playerStatlist["Atk"]:
-                if playerStatlist["Atk"][i] == playerDict["Atk"]:
-                    playerDict["Atk"] = playerStatlist["Atk"][i+1]
-                    playerDict["Skill"] -= 1
-                    print("You have upgraded your attack!")
-                    print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                    break
+            if player.get_stat("Atk") < 5:
+                player.level_up("Atk")
+                print("You have upgraded your attack!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                break
+            else:
+                print("You have reached the maximum level for attack!")
+                continue
 
         elif playerUpgradeChoice == "def":
-            for i in playerStatlist["Def"]:
-                if playerStatlist["Def"][i] == playerDict["Def"]:
-                    playerDict["Def"] = playerStatlist["Def"][i+1]
-                    playerDict["Skill"] -= 1
-                    print("You have upgraded your defense!")
-                    print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                    break
+            if player.get_stat("Def") < 5:
+                player.level_up("Def")
+                print("You have upgraded your defense!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                break
+            else:
+                print("You have reached the maximum level for defense!")
+                continue
 
         elif playerUpgradeChoice == "time":
-            for i in playerStatlist["Time"]:
-                if playerStatlist["Time"][i] == playerDict["Time"]:
-                        playerDict["Time"] = playerStatlist["Time"][i+1]
-                        playerDict["Skill"] -= 1
-                        print("You have upgraded your time!")
-                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                        break
+            if player.get__stat("Time") < 10:
+                player.level_up("Time")
+                print("You have upgraded your time!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                break
+            else:
+                print("You have reached the maximum level for time!")
+                continue
 
         elif playerUpgradeChoice == "luck":
-            for i in playerStatlist["Luck"]:
-                if playerStatlist["Luck"][i] == playerDict["Luck"]:
-                        playerDict["Luck"] = playerStatlist["Luck"][i+1]
-                        playerDict["Skill"] -= 1
-                        print("You have upgraded your luck!")
-                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                        break
+            if player.get_stat("Luck") < 5:
+                player.level_up("Luck")
+                print("You have upgraded your luck!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                break
+            else:
+                print("You have reached the maximum level for luck!")
+                continue
 
         elif playerUpgradeChoice == "hp":
-            for i in playerStatlist["HP"]:
-                if playerStatlist["HP"][i] == playerDict["HP"]:
-                        playerDict["HP"] = playerStatlist["HP"][i+1]
-                        playerDict["Skill"] -= 1
-                        print("You have upgraded your HP!")
-                        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
-                        break
+            if player.get_stat("maxHP") < 5:
+                player.level_up("maxHP")
+                print("You have upgraded your HP!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                break
+            else:
+                print("You have reached the maximum level for HP!")
+                continue
 
         elif playerUpgradeChoice == "n":
             break
 
         elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
-            print("That's not a valid input!")
+            print("You can't upgrade that! Enter a valid input this time...")
             pass
 
 def playerEndgame():
@@ -915,16 +944,21 @@ def playerEndgame():
 
 def maingame():
 ## Game runs as long as playerHP > 0, increase globalStage every time
-    while playerDict["HP"] > 0:
+    global globalStage
+    globalStage = 1
+    while player.get_stat("HP") > 0:
 
-        # playerDict is default
-        playerDict = playerDict
-        print("You: ", playerDict)
+        # playerDict is default player stats
+        print("Your Player Attributes: ", {k: player.get_statlist(k) for k in list(player.playerDict.keys()) if k not in ['Skill', 'HP', 'LVL', 'N']})
+        print("Your Current Stats:\nHP: {HP}\nSkill Points: {Skill}".format(HP = player.get_stat("HP"), Skill = player.get_stat("Skill")))
 
         # Selecting random enemy
         # Deepcopy the dictionary so that when same enemy is selected HP resets
         # Ensure enemyDict is just a copy not an alias
-        enemyDict = copy.deepcopy(randomizeEnemy(enemyTypeList))
+        global enemyDict
+        enemy.currentEnemy = randomizeEnemy()
+        enemyDict = copy.deepcopy(enemy.enemyTypeList[enemy.currentEnemy])
+        
         
         # Scale intial enemy HP, Atk value, and Defense value 
         enemyDict["HP"] = enemyDict["HP"] * (globalStage**1.07 + 10)
@@ -933,7 +967,7 @@ def maingame():
         print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
 
         # Setting global time
-        globalTime = enemyDict["Time"] + playerDict["Time"]
+        globalTime = enemyDict["Time"] + player.get_statlist("Time")
         timeRemaining = copy.deepcopy(globalTime)
         
         # Setting values of initial variables
@@ -946,14 +980,16 @@ def maingame():
 
             while timeRemaining >= 0:
                 # Set a random N
-                randN = randomizeN(globalStage, enemyStatlist)
+                randN = randomizeN(globalStage, enemy.enemyStatlist)
+                player.set_stat("N", randN)
                 print("n:",randN)
 
                 # Prompt user input 
-                inputPerm = eval(input("Write your equation here: "))
+                while game.finishCalc == False:
+                    continue
 
                 # Calculate damage done by player, if wrong, playerDmg = 0    
-                playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict)
+                playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
 
                 # Decrease time remaining
                 timeRemaining = timeRemaining - 1
@@ -965,7 +1001,7 @@ def maingame():
                 print(playerDmg, enemyDmg)
                 
                 # Critical hit calculation
-                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, playerDict["Luck"])
+                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, player.get_stat("Luck"))
                 
                 '''TEST FUNCTION'''
                 if playerDmg >= enemyDmg:
@@ -973,38 +1009,41 @@ def maingame():
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
                 
                 elif playerDmg < enemyDmg:
-                    playerDict["HP"] = int(playerDict["HP"] + ((finalDmg * playerDict["Def"]) * playerCritRed))
+                    player.set_stat("HP", int(player.get_stat("HP") + ((finalDmg * player.get_stat("Def")) * playerCritRed)))
                     print("You took {} damage!".format(abs(finalDmg)), "TIMES", playerCritRed)
                 
-                print("Final HP - You: {}, Enemy: {}".format(playerDict["HP"], enemyDict["HP"]))
+                print("Final HP - You: {}, Enemy: {}".format(player.get_stat("HP"), enemyDict["HP"]))
                 
                 # Exit while loop and change enemy
                 if enemyDict["HP"] <= 0:
                     break
 
-                if playerDict["HP"] <= 0:
+                if player.get_stat("HP") <= 0:
                     playerEndgame()
 
         # Increase globalStage
         globalStage += 1
         
         # Give Skill Points
-        playerDict["Skill"] += 1
+        player.set_stat("Skill", player.get_stat("Skill") + 1)
         print("You have gained an upgrade coin!")
-        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+        print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
 
         # Upgrade Abilities
-        upgradeAbility(playerDict, playerStatlist)
+        upgradeAbility()
 
         print("done")
 
 ### Main Game Loop
 def main():
     assets = assetHandler()
+    global game
     game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets)
  
     game.mainloop()
-    
+
+player = playerClass()
+enemy = enemyClass()
 
 gui = Thread(target=main)
 gui.start()
