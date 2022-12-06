@@ -21,7 +21,7 @@ from queue import Queue
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 0.75 #0.75 - 1.75, increments of 0.25, default is 1.0
+WINDOW_SCALE = 1 #0.75 - 1.75, increments of 0.25, default is 1.0
 WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
@@ -39,6 +39,7 @@ scaleMul = {
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
     "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
+    "Info" : {0.75: (1.00, 1.00) , 1: (0.2, 0.85) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
 }
 
 globalStage = 1
@@ -120,7 +121,7 @@ class enemyClass():
             }
         self.enemyTypeList = {
             "man":{
-            "Name": self.enemyNamelist[random.randrange(len(self.enemyNamelist))],
+            "Name": self.enemyNamelist[self.randomName()],
             "HP": self.enemyStatlist["HP"][1],
             "Atk": self.enemyStatlist["Atk"][1],
             "Def": self.enemyStatlist["Def"][1],
@@ -169,7 +170,8 @@ class enemyClass():
         }
         self.enemyDict = self.enemyTypeList["man"]
 
-
+    def randomName(self):
+        return random.randrange(len(self.enemyNamelist))
 
 def PLACEHOLDER_FUNCTION():
     pass
@@ -272,9 +274,9 @@ class assetHandler():
             "HP" : ['#424242', 16, 5],
             "LVL" : ['#424242', 14, 5],
             "N" : ['#424242', 14, 5],
-            "EnemyHP" : ['#424242', 30, 10],
-            "EnemyName" : ['#424242', 30, 10],
-            "DamageNum" : ['#424242', 30, 10],
+            "EnemyHP" : ['#424242', 20, 8],
+            "EnemyName" : ['#424242', 40, 6],
+            "DamageNum" : ['#424242', 20, 8],
 
 
             ### Char Sprites
@@ -523,12 +525,12 @@ class gameInstance(Tk):
 
     # create combat elements (sprites, text)
     def create_combat_elements(self):
-        self.create_canvas(self.frameDict["combat"], "enemy", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.95, rely=0.75, anchor=E)
+        self.create_canvas(self.frameDict["combat"], "enemy", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.88, rely=0.65, anchor=E)
         self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW)
-        self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.05, rely=0.75, anchor=W)
+        self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.05, rely=0.65, anchor=W)
         self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
-        # self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.95, rely=0.65, anchor=E)
-        # self.textfields
+        self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["EnemyName"][1]*self.px, height=self.assets.assets["EnemyName"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.4, anchor=CENTER)
+        self.textfields["enemyName"] = self.frameDict["enemyName"].create_text(self.assets.assets["EnemyName"][1]*self.px/2, self.assets.assets["EnemyName"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
 
         
 
@@ -538,7 +540,7 @@ class gameInstance(Tk):
         for y in range(len(self.defaultLayout)):
             for x in range(len(self.defaultLayout[y])):
                 if self.defaultLayout[y][x] != None:
-                    self.create_button(self.frameDict["keypad"], (y, x), image=self.assets.getAsset(self.defaultLayout[y][x]), width=self.assets.assets[self.defaultLayout[y][x]][2]*self.px, height=self.assets.assets[self.defaultLayout[y][x]][3]*self.px, padx=0, pady=0, bd=0, command=self.buttons[self.defaultLayout[y][x]])
+                    self.create_button(self.frameDict["keypad"], (y, x), image=self.assets.getAsset(self.defaultLayout[y][x]), bg="#424242", width=self.assets.assets[self.defaultLayout[y][x]][2]*self.px, height=self.assets.assets[self.defaultLayout[y][x]][3]*self.px, padx=0, pady=0, bd=0, command=self.buttons[self.defaultLayout[y][x]])
                     if self.defaultLayout[y][x] == "Plus":
                         self.grid_item(self.buttonDict[(y, x)], row=y, column=x, padx=self.px, pady=self.px ,rowspan=2, sticky=NSEW)
                         continue
@@ -600,10 +602,14 @@ class gameInstance(Tk):
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
+        if not(self.enemyQueue.empty()):
+            status = self.enemyQueue.get()
+            self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text=status)
         if not(self.spriteQueue.empty()):
             status = spriteQueue.get()
             if status == "enemyKilled":
                 self.toggle_switch_sprites("enemy", False)
+                self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text="")
             elif status == "enemySpawned":
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
@@ -717,6 +723,7 @@ class actions():
 
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
         self.game.toggle_switch_sprites(idFrame, visible, idSprite)
+        
 
     def do_animate(self, idFrame, framesArr, delayArr, frame=0):
         if frame < len(framesArr):
@@ -1028,6 +1035,7 @@ def maingame():
         enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
         print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
         spriteQueue.put("enemySpawned")
+        enemyQueue.put(enemyDict['Name'])
         # Setting global time
         globalTime = enemyDict["Time"] + player.get_statlist("Time")
         timeRemaining = copy.deepcopy(globalTime)
