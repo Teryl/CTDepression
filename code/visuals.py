@@ -21,7 +21,7 @@ from queue import Queue
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 1.0 #0.75 - 1.75, increments of 0.25, default is 1.0
+WINDOW_SCALE = 0.75 #0.75 - 1.75, increments of 0.25, default is 1.0
 WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
@@ -272,6 +272,9 @@ class assetHandler():
             "HP" : ['#424242', 16, 5],
             "LVL" : ['#424242', 14, 5],
             "N" : ['#424242', 14, 5],
+            "EnemyHP" : ['#424242', 30, 10],
+            "EnemyName" : ['#424242', 30, 10],
+            "DamageNum" : ['#424242', 30, 10],
 
 
             ### Char Sprites
@@ -352,7 +355,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue):
+    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, damageQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -369,6 +372,8 @@ class gameInstance(Tk):
         self.queueResult = queue
         self.spriteQueue = spriteQueue
         self.shopQueue = shopQueue
+        self.enemyQueue = enemyQueue
+        self.damageQueue = damageQueue
         self.actions = actions(self)
         self.player = player
         self.enemy = enemy
@@ -522,6 +527,8 @@ class gameInstance(Tk):
         self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW)
         self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.05, rely=0.75, anchor=W)
         self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
+        # self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.95, rely=0.65, anchor=E)
+        # self.textfields
 
         
 
@@ -1105,16 +1112,18 @@ player = playerClass()
 enemy = enemyClass()
 
 
-def main(queue, spriteQueue, shopQueue):
+def main(queue, spriteQueue, shopQueue, enemyQueue, damageQueue):
     assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue)
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, damageQueue)
     game.mainloop()
 
 queueResult = Queue()
 spriteQueue = Queue()
 shopQueue = Queue()
+enemyQueue = Queue()
+damageQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue,))
+gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, damageQueue))
 gui.start()
 
 eternum = Thread(target=maingame)
