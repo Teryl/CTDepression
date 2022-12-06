@@ -3,7 +3,9 @@
 ### Versioned as of 04/12/22
 
 ### Importing Modules
-from time import sleep
+import time
+import random
+import copy
 from math import *
 from tkinter import *
 from tkinter import messagebox
@@ -12,6 +14,8 @@ from tkinter.font import Font
 import os
 import sys
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+from threading import Thread, Event
+from queue import Queue
 
 
 ### Setting Global Variables
@@ -34,23 +38,137 @@ scaleMul = {
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
+    "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
 }
 
-class player():
-    def __init__(self):
-        self.playerDict = {
-            "HP" : 0,
-            "Atk" : 0,
-            "Def" : 0,
-            "Luck" : 0,
-            "LVL" : 0,
-            "N" : 0,
-            "Time" : 0,
-        }
+globalStage = 1
 
-    def update_playerDict(self, key, value):
-        self.playerDict[key] = value
-        print("updated player stats")
+class playerClass():
+    def __init__(self):
+        ## initialize playerStatlist and playerDict 
+        self.playerStatlist = {
+            "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
+            "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
+            "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
+            "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
+            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
+            }
+        self.playerDict = {
+            "maxHP": 0,
+            "HP": 0,
+            "Atk": 0,
+            "Def": 0,
+            "Time": 0,
+            "Luck": 0,
+            "LVL": globalStage,
+            "N": 0,
+            "Skill": 0}
+
+        self.set_stat("HP", self.get_statlist("maxHP"))
+
+    def level_up(self, stat):
+        if stat == "maxHP":
+            self.set_stat("maxHP", self.get_stat("maxHP") + 1)
+            self.set_stat("HP", self.get_statlist("maxHP"))
+        else:
+            self.set_stat(stat, self.get_stat(stat) + 1)
+        self.set_stat("Skill", self.get_stat("Skill") - 1)
+        
+
+    def set_stat(self, stat, value):
+        self.playerDict[stat] = value
+
+    def get_stat(self, stat):
+        return self.playerDict[stat]
+
+    def get_statlist(self, stat):
+        return self.playerStatlist[stat][self.get_stat(stat)]
+
+
+class enemyClass():
+    def __init__(self):
+        assets = assetHandler()
+        self.currentEnemy = ""
+        ## initialize enemyNamelist, enemy.enemyStatlist, enemyTypelist, enemyDict (default enemy is man)
+        self.enemyNamelist = [
+            "David",
+            "Donggeon",
+            "Dianthe",
+            "Mithun",
+            "Evan",
+            "Quan Pham",
+            "Jon",
+            "Muhammad",
+            "Tanjiro",
+            "Dashawn",
+            "Cindy",
+            "Tanya",
+            "Joseph",
+            "Chaya",
+            "Brent",
+            "Kim Jeong",
+            "Chanel",
+            "Jamal",
+            os.getlogin()
+        ]
+        self.enemyStatlist = {
+            "HP":{0:0.25,1:1,2:1.25},
+            "Atk":{0:0.75,1:1,2:1.25},
+            "Def":{0:1.25,1:1,2:0.75},
+            "Time": {0:10,1:15,2:20},
+            "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
+            }
+        self.enemyTypeList = {
+            "man":{
+            "Name": self.enemyNamelist[random.randrange(len(self.enemyNamelist))],
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][1],
+            "Def": self.enemyStatlist["Def"][1],
+            "Time": self.enemyStatlist["Time"][1]
+            }, 
+
+            "Cancer":{
+            "Name": "Cancer Patient",
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][1],
+            "Def": self.enemyStatlist["Def"][0],
+            "Time": self.enemyStatlist["Time"][0]
+            },
+
+            "Florida":{
+            "Name": "Florida Man",
+            "HP": self.enemyStatlist["HP"][2],
+            "Atk": self.enemyStatlist["Atk"][0],
+            "Def": self.enemyStatlist["Def"][1],
+            "Time": self.enemyStatlist["Time"][1]
+            },
+
+            "Bepis":{
+            "Name": "Pepsi Man",
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][2],
+            "Def": self.enemyStatlist["Def"][0],
+            "Time": self.enemyStatlist["Time"][1]
+            },
+
+            "Therock":{
+            "Name": "The Rock",
+            "HP": self.enemyStatlist["HP"][1],
+            "Atk": self.enemyStatlist["Atk"][1],
+            "Def": self.enemyStatlist["Def"][2],
+            "Time": self.enemyStatlist["Time"][2]
+            },
+
+            "KanyeEast":{
+            "Name": "Kanye East",
+            "HP": self.enemyStatlist["HP"][0],
+            "Atk": self.enemyStatlist["Atk"][2],
+            "Def": self.enemyStatlist["Def"][1],
+            "Time": self.enemyStatlist["Time"][1]
+            }
+        }
+        self.enemyDict = self.enemyTypeList["man"]
+
 
 
 def PLACEHOLDER_FUNCTION():
@@ -61,10 +179,13 @@ def PLACEHOLDER_FUNCTION():
 ### Asset Class
 class assetHandler():
     def __init__(self):
-        self.calcPath = "./ctd1D/assets/CalcUI/"
-        self.fightPath = "./ctd1D/assets/FightUI/"
+        self.calcPath = "./assets/CalcUI/"
+        self.fightPath = "./assets/FightUI/"
+        self.charPath = "./assets/CharSprites/"
+        self.animPath = "./assets/CharSprites/char_frames/"
         self.imageDict = {}
         self.fontDict = {}
+        self.animate = {}
 
         # get asset paths
         self.assets = {
@@ -102,7 +223,7 @@ class assetHandler():
             "RightArrow" : [os.path.join(self.calcPath, "25_Button_RightArrow.png"), 8, 18, 18],
             "LeftArrow" : [os.path.join(self.calcPath, "26_Button_LeftArrow.png"), 8, 18, 18],
             "DownArrow" : [os.path.join(self.calcPath, "27_Button_DownArrow.png"), 8, 18, 18],
-            "Disabled" : [os.path.join(self.calcPath, "28_Disabled.png"), 8, 18, 18],
+            "CenterArrow" : [os.path.join(self.calcPath, "28_CenterArrow.png"), 8, 18, 18],
             "BlankOrange" : [os.path.join(self.calcPath, "29_Button_BlankOrange.png"), 8, 18, 18],
             "BlankLightGrey" : [os.path.join(self.calcPath, "30_Button_BlankLightGrey.png"), 8, 18, 18],
             "BlankDarkGrey" : [os.path.join(self.calcPath, "31_Button_BlankDarkGrey.png"), 8, 18, 18],
@@ -150,12 +271,30 @@ class assetHandler():
             "HP" : ['#424242', 16, 5],
             "LVL" : ['#424242', 14, 5],
             "N" : ['#424242', 14, 5],
+
+
+            ### Char Sprites
+            "Man_1" : [os.path.join(self.charPath, "01_Man_1.png"), 4, 20, 20],
+            "Man_2" : [os.path.join(self.charPath, "02_Man_2.png"), 4, 20, 20],
+            "Man_3" : [os.path.join(self.charPath, "03_Man_3.png"), 4, 20, 20],
+            "Man_4" : [os.path.join(self.charPath, "04_Man_4.png"), 4, 20, 20],
+            "Man_5" : [os.path.join(self.charPath, "05_Man_5.png"), 4, 20, 20],
+            "Man_6" : [os.path.join(self.charPath, "06_Man_6.png"), 4, 20, 20],
+            "Cancer" : [os.path.join(self.charPath, "07_Cancer.png"), 4, 20, 20],
+            "Florida" : [os.path.join(self.charPath, "08_Florida.png"), 4, 20, 20],
+            "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
+            "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
+            "Player" : [os.path.join(self.animPath, "0.png"), 4, 40, 20],
         }
+
+        self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(0, 18)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
     
         
 
     ### Asset get method
     def getAsset(self, assetName):
+        if assetName == "man":
+            assetName = "Man_" + str(random.randint(1, 6))
         if len(self.assets[assetName]) == 3:
             return self.assets[assetName][0]
         elif assetName in self.imageDict:
@@ -164,9 +303,15 @@ class assetHandler():
             self.imageDict[assetName] = PhotoImage(file=os.path.abspath(self.assets[assetName][0])).zoom(int(self.assets[assetName][1] * WINDOW_SCALE))
             return self.imageDict[assetName]
 
+    def getAnimate(self, idAnimation):
+        return [PhotoImage(file=os.path.abspath(i)).zoom(int(4 * WINDOW_SCALE)) for i in self.animate[idAnimation][0]]
+
+    def getDelay(self, idAnimation):
+        return self.animate[idAnimation][1]
+
     # load fonts
     def initialise_fonts(self):
-        self.load_font(os.path.abspath("./ctd1D/assets/fonts/monogramRevised.otf"))
+        self.load_font(os.path.abspath("./assets/fonts/monogramRevised.otf"))
 
     ### Font loader
     def load_font(self, fontpath, private=True, enumerable=False):
@@ -205,7 +350,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets):
+    def __init__(self, size, title, assets, queue, spriteQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -219,8 +364,11 @@ class gameInstance(Tk):
         self.buffer = ""
         self.result = ""
         self.finishCalc = False
+        self.queueResult = queue
+        self.spriteQueue = spriteQueue
 
-        self.player = player()
+        self.player = player
+        self.enemy = enemy
         self.binds = {}
 
         # timer pseudothreads
@@ -268,7 +416,7 @@ class gameInstance(Tk):
             "RightArrow" : press.press_RightArrow,
             "LeftArrow" : press.press_LeftArrow,
             "DownArrow" : press.press_DownArrow,
-            "Disabled" : press.press_Disabled,
+            "CenterArrow" : press.press_CenterArrow,
             "BlankOrange" : press.press_BlankOrange,
             "BlankLightGrey" : press.press_BlankLightGrey,
             "BlankDarkGrey" : press.press_BlankDarkGrey,
@@ -295,6 +443,7 @@ class gameInstance(Tk):
         self.assets.initialise_fonts()
         self.create_display()
         self.create_combat()
+        self.create_combat_elements()
         
         
     def modify_timer(self, thread, time):
@@ -362,6 +511,15 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.2415, anchor=CENTER)
         self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
 
+    # create combat elements (sprites, text)
+    def create_combat_elements(self):
+        self.create_canvas(self.frameDict["combat"], "enemy", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.95, rely=0.75, anchor=E)
+        self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW)
+        self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.05, rely=0.75, anchor=W)
+        self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
+
+        
+
         self.update_combat_display()
 
     def create_buttons(self):
@@ -422,17 +580,32 @@ class gameInstance(Tk):
    
     # Create Combat Display Update Loop
     def update_combat_display(self):
-        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.playerDict["HP"]))
-        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.playerDict["LVL"]))
-        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.playerDict["N"]))
-        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(self.player.playerDict["Time"])))
-        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.playerDict["Atk"])))
-        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.playerDict["Def"])))
-        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.playerDict["Luck"])))
+        self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.get_stat("HP")))
+        self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.get_stat("LVL")))
+        self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.get_stat("N")))
+        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(5)))
+        self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.get_stat("Atk"))))
+        self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
+        self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
+        self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
+        if not(self.spriteQueue.empty()) and self.spriteQueue.get() == "enemyKilled":
+            self.toggle_switch_sprites("enemy", False)
+        elif self.spriteQueue.get() == "enemySpawned":
+            self.toggle_switch_sprites("enemy", True)
+
         
         self.increment_timers()
 
         self.after(10, self.update_combat_display)
+
+    def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
+        if idSprite != None:
+            self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], image=self.assets.getAsset(idSprite))
+        self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], state=NORMAL if visible else HIDDEN, anchor=NW)
+    
+    def update_animation(self, idFrame, image):
+        self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], image=image)
+
 
 class actions():
     def __init__(self, game):
@@ -442,7 +615,7 @@ class actions():
     def quitGame(self):
         quitQuery = messagebox.askyesno("Quit", "Are you sure you want to quit?", icon="warning")
         if quitQuery:
-            self.game.destroy()
+            exit()
 
     def keypad_state_change(self):
         self.altLayout = [
@@ -450,7 +623,7 @@ class actions():
             ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
             ["Triangle", "LeftArrow", "BlankDarkGrey", "RightArrow", "BlankLightGrey"],
             ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
-            ["Home", "No", "BlankDarkGrey", "Yes", None]
+            ["Home", "No", "BlankBlack", "Yes", None]
         ]
 
         for y in range(len(self.game.defaultLayout)):
@@ -480,7 +653,7 @@ class actions():
         self.game.buffer = self.game.buffer[:-1]
         self.push_to_screen(self.game.buffer)
     
-    def evaluate_buffer(self):
+    def evaluate_buffer(self, queueResult):
         try:
             if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").isalnum():
                 raise CheatException("You can't do that!")
@@ -500,11 +673,26 @@ class actions():
             self.game.result = str(result)
             self.game.buffer = ""
             self.game.finishCalc = True
+            queueResult.put(final)
+
 
     def retrieve_result(self):
         #self.add_to_buffer(self.game.result)
         #self.push_to_screen(self.game.result)
         pass ###feature disabled
+
+    def make_shop_choice(self, choice):
+        queueResult.put(choice)
+
+    def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
+        self.game.toggle_switch_sprites(idFrame, visible, idSprite)
+
+    def do_animate(self, idFrame, framesArr, delayArr, frame=0):
+        if frame < len(framesArr):
+            self.game.update_animation(idFrame, framesArr[frame])
+            self.game.after(delayArr[frame], lambda: self.do_animate(idFrame, framesArr, delayArr, frame+1))
+        else:
+            self.toggle_switch_sprites(idFrame, True, idFrame)
 
 class buttonPresses():
     def __init__(self, actions):
@@ -516,7 +704,7 @@ class buttonPresses():
     def press_CE(self):
         self.action.clear_buffer()
         self.action.clear_screen()
-    
+     
     def press_LeftBracket(self):
         self.action.add_to_buffer("(")
 
@@ -577,7 +765,7 @@ class buttonPresses():
         self.action.add_to_buffer("/")
     
     def press_Equals(self):
-        self.action.evaluate_buffer()
+        self.action.evaluate_buffer(self.action.game.queueResult)
     
     def press_Pound(self):
         self.action.keypad_state_change()
@@ -586,26 +774,25 @@ class buttonPresses():
         self.action.keypad_state_reset()
     
     def press_UpArrow(self):
-        pass
+        self.action.make_shop_choice("time")
 
     def press_DownArrow(self):
-        pass
+        self.action.make_shop_choice("luck")
 
     def press_LeftArrow(self):
-        pass
+        self.action.make_shop_choice("def")
 
     def press_RightArrow(self):
-        pass
+        self.action.make_shop_choice("atk")
 
     def press_Yes(self):
-        for key in self.action.game.player.playerDict:
-            self.action.game.player.playerDict[key] += 1
+        pass
 
     def press_No(self):
         pass
 
     def press_Circle(self):
-        pass
+        self.action.do_animate("Player", self.action.game.assets.getAnimate("playerAttack"), self.action.game.assets.getDelay("playerAttack"))
 
     def press_Triangle(self):
         pass
@@ -628,15 +815,270 @@ class buttonPresses():
     def press_BlankPlus(self):
         pass
 
-    def press_Disabled(self):
+    def press_CenterArrow(self):
         pass
 
-        
-### Main Game Loop
-def main():
-    assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets)
- 
-    game.mainloop()
+
+# Randomize Number Range:
+def randomizeN(globalStage, enemyStatlist):
+    # range of n is selected based on the globalStage
+    # the higher the stage, range is increased 
     
-main()
+    if globalStage <= 3:
+        globalNRange = enemyStatlist["globalNRange"][0]
+    
+    elif globalStage > 3 and globalStage <= 7:
+        globalNRange = enemyStatlist["globalNRange"][1]
+    
+    elif globalStage > 7 and globalStage <= 12:
+        globalNRange = enemyStatlist["globalNRange"][2]
+    
+    elif globalStage > 12:
+        globalNRange = enemyStatlist["globalNRange"][3]
+
+    # choose n based on the globalNRange
+    n = random.randrange(globalNRange[0], globalNRange[1])
+    return n
+
+# Randomize Enemy Type:
+def randomizeEnemy():
+    enchance = random.randrange(0,101)
+    if enchance <= 50:
+        return "man"
+
+    elif enchance > 50 and enchance <= 60:
+        return "Cancer"
+
+    elif enchance > 60 and enchance <= 70:
+        return "Florida"
+
+    elif enchance > 70 and enchance <= 80:
+        return "Bepis"
+
+    elif enchance > 80 and enchance <= 90:
+        return "Therock"
+
+    elif enchance > 90:
+        return "KanyeEast"
+    pass
+
+# Calculate Damage done by enemy
+def calcEnemyDmg(enemyDict, globalStage):
+    enemyDmg = enemyDict["Atk"] * globalStage
+    return enemyDmg
+
+# Calcualate Damage done by Player for each attack
+def calcPlayerDmg(timeRemaining, inputPerm, randN):
+    # for now, player input taken using keyboard
+    # during integration with UI, input taken from click
+    if inputPerm == randN:
+        playerDmg = (player.get_statlist("Atk") * timeRemaining)**1.05
+    else:
+        playerDmg = 0
+        pass
+    return playerDmg
+
+# Calculate critical damage or damage reduction
+def calcPlayerCrit(playerDmg, enemyDmg, playerLuck):
+    if random.randrange(0,101) > playerLuck:
+        if playerDmg > enemyDmg:
+            playerCritRed = 1.6
+        elif playerDmg < enemyDmg:
+            playerCritRed = 0.6
+        else:
+            playerCritRed = 1
+    else:
+        playerCritRed = 1
+    return playerCritRed
+
+# Present option to upgrade abilities
+def upgradeAbility():
+    while player.get_stat("Skill") > 0:
+        playerUpgradeChoice = queueResult.get()
+        if playerUpgradeChoice == "atk":
+            if player.get_stat("Atk") < 5:
+                player.level_up("Atk")
+                print("You have upgraded your attack!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                continue
+            else:
+                print("You have reached the maximum level for attack!")
+                continue
+
+        elif playerUpgradeChoice == "def":
+            if player.get_stat("Def") < 5:
+                player.level_up("Def")
+                print("You have upgraded your defense!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                continue
+            else:
+                print("You have reached the maximum level for defense!")
+                continue
+
+        elif playerUpgradeChoice == "time":
+            if player.get_stat("Time") < 10:
+                player.level_up("Time")
+                print("You have upgraded your time!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                continue
+            else:
+                print("You have reached the maximum level for time!")
+                continue
+
+        elif playerUpgradeChoice == "luck":
+            if player.get_stat("Luck") < 5:
+                player.level_up("Luck")
+                print("You have upgraded your luck!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                continue
+            else:
+                print("You have reached the maximum level for luck!")
+                continue
+
+        elif playerUpgradeChoice == "hp":
+            if player.get_stat("maxHP") < 5:
+                player.level_up("maxHP")
+                print("You have upgraded your HP!")
+                print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+                continue
+            else:
+                print("You have reached the maximum level for HP!")
+                continue
+
+        elif playerUpgradeChoice == "n":
+            break
+
+        elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
+            print("You can't upgrade that! Enter a valid input this time...")
+            pass
+
+def playerEndgame():
+    print("Game Over! What an L!")
+    os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    time.sleep(10)
+    print("Now leave my presence, peasant!")
+    # os.system("shutdown -l")
+    exit()
+
+
+def maingame():
+
+## Game runs as long as playerHP > 0, increase globalStage every time
+    assets = assetHandler()
+    global globalStage
+    globalStage = 1
+    while player.get_stat("HP") > 0:
+
+        # playerDict is default player stats
+        print("Your Player Attributes: ", {k: player.get_statlist(k) for k in list(player.playerDict.keys()) if k not in ['Skill', 'HP', 'LVL', 'N']})
+        print("Your Current Stats:\nHP: {HP}\nSkill Points: {Skill}".format(HP = player.get_stat("HP"), Skill = player.get_stat("Skill")))
+
+        # Selecting random enemy
+        # Deepcopy the dictionary so that when same enemy is selected HP resets
+        # Ensure enemyDict is just a copy not an alias
+        global enemyDict
+        newEnemy = randomizeEnemy()
+        enemy.currentEnemy = assets.getAsset(newEnemy)
+        enemyDict = copy.deepcopy(enemy.enemyTypeList[newEnemy])
+        spriteQueue.put("enemySpawned")
+        
+        
+        # Scale intial enemy HP, Atk value, and Defense value 
+        enemyDict["HP"] = enemyDict["HP"] * (globalStage**1.07 + 10)
+        enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)
+        enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
+        print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
+
+        # Setting global time
+        globalTime = enemyDict["Time"] + player.get_statlist("Time")
+        timeRemaining = copy.deepcopy(globalTime)
+        
+        # Setting values of initial variables
+        playerDmg = 0
+        enemyDmg = 0
+
+        # Add while loop for enemyHP > 0
+        while enemyDict["HP"] >= 0:
+            enemyDmg = calcEnemyDmg(enemyDict, globalStage)
+
+            while timeRemaining >= 0:
+                # Set a random N
+                randN = randomizeN(globalStage, enemy.enemyStatlist)
+                player.set_stat("N", randN)
+                print("n:",randN)
+
+                # Prompt user input 
+                inputPerm = queueResult.get()
+                if inputPerm == "quit":
+                    exit()
+
+                # Calculate damage done by player, if wrong, playerDmg = 0    
+                playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
+
+                # Decrease time remaining
+                timeRemaining = timeRemaining - 1
+                print("Time remaining:",timeRemaining)
+                time.sleep(1)
+                
+                # Calculate Final Damage
+                finalDmg = int(playerDmg - enemyDmg)            
+                print(playerDmg, enemyDmg)
+                
+                # Critical hit calculation
+                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, player.get_stat("Luck"))
+                
+                '''TEST FUNCTION'''
+                if playerDmg >= enemyDmg:
+                    enemyDict["HP"] = int(enemyDict["HP"] - ((finalDmg * enemyDict["Def"]) * playerCritRed))
+                    print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
+                
+                elif playerDmg < enemyDmg:
+                    player.set_stat("HP", int(player.get_stat("HP") + ((finalDmg * player.get_stat("Def")) * playerCritRed)))
+                    print("You took {} damage!".format(abs(finalDmg)), "TIMES", playerCritRed)
+                
+                print("Final HP - You: {}, Enemy: {}".format(player.get_stat("HP"), enemyDict["HP"]))
+                
+                # Exit while loop and change enemy
+                if enemyDict["HP"] <= 0:
+                    break
+
+                if player.get_stat("HP") <= 0:
+                    playerEndgame()
+
+        spriteQueue.put("enemyKilled")
+
+        # Increase globalStage
+        globalStage += 1
+        
+        # Give Skill Points
+        player.set_stat("Skill", player.get_stat("Skill") + 1)
+        print("You have gained an upgrade coin!")
+        print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
+
+        # Upgrade Abilities
+        upgradeAbility()
+
+        print("done")
+        
+
+### Main Game Loop
+
+
+player = playerClass()
+enemy = enemyClass()
+
+
+def main(queue, spriteQueue):
+    assets = assetHandler()
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue)
+    game.mainloop()
+
+queueResult = Queue()
+spriteQueue = Queue()
+
+gui = Thread(target=main, args=(queueResult, spriteQueue,))
+gui.start()
+
+eternum = Thread(target=maingame)
+eternum.start()
+

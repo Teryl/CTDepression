@@ -1,12 +1,155 @@
 # Code Documentation
 
-## Variable Tables
+## Conventions
+- We chose to utilise the camelCase naming system to name our functions, as it is faster to type, and easier to read in paragraphs with multiple functions.
+- We decided on the following naming convention: [(function type)(function use)] to increase clarity of our code. Function type indicates the general category of the function.
+- We also made sure to avoid hardcoding by using functions instead of constants. We have done so in order to:
+  1. Increase versatility of code - Should we need to make changes, they can be implemented a lot easier than if they were hardcoded.
+  2. Increase clarity - As all functions are named, the purpose of each value is clearer. Thus while troubleshooting, we do not have to spend as much time figuring out what each value means
+
+     Examples:
+     The dictionaries we created for the player and the different enemy types. By doing this, we can simply change the variables in the dictionary directly, instead of going through all of our code and making the changes manually.
+
+
+
+
+
+# Main Code Explanation
+
+## Initialising playerStatlist and playerDict
+- `playerDict` is a dictionary indicating the current value of each player attribute.
+- `playerStatlist` is a dictionary containing the attribute values for each upgrade level
+
+## Initialising enemyNamelist, enemyStatList, enemyTypelist, enemyDict
+- `enemyNamelist` is the list of possible names for the default enemy classified as 'man'
+- `enemyStatlist` is a dictionary containing the attribute values for each level(ranges from 0 - 2. \
+An attribute level of 0 means that the attribute is of a lower value, while the converse applies for an attribute level of 2
+- `enemyTypelist` is a dictionary defining the attribute values of each attribute for each enemy type.
+
+## Defining Functions
+### Randomising Number Range (`randomizeN`)
+- Randomises the number that the player has to get using the calculator. The value of the number falls within a range, and this range increases as the stage number increases.
+
+### Randomising Enemy Type (`randomizeEnemy`)
+- Randomises the enemy faced each stage. There is a greater chance to face the 'man' enemy type as compared to the other enemy types.
+
+### Calculating Enemy Damage (`calcEnemyDmg`)
+- Calculates the enemy damage per round based on the enemy's atk attribute value and the stage number
+
+### Calculating Damage Done By Player Per Attack (`calcPlayerDmg`)
+- Calculates the damage done by the player per attack, based on the player's attack attribute and the time remaining in the round. Finding an equation which equals the value of the displayed number on the calculator would result in more damage being done.
+- Giving an equation which does not equal the value of the given number would result in the player's damage being 0 for that round.
+
+### Calculating Critical Damage or Damage Reduction (`calcPlayerCrit`)
+- Randomly generates a number between 0 and 100. If this number generated is greater than the luck attribute value (starts at 100 and decreases by 2 per attribute level), then for that round:\
+If player damage > enemy damage, the player gets a 1.6 times multiplier on damage.\
+If player damage < enemy damage, the player gets a 0.6 times multiplier on damage received.
+
+### Upgrading Abilities (`upgradeAbility`)
+- Players will gain a skill point for each stage they clear. When the number of skill points they have is greater than 0, they will be given the choice to upgrade any one of their attributes. 
+- Choosing to upgrade an attribute will increase the selected attribute value by 1 in the playerDict, which will increase the value of that attribute in accordance to the values given in the `playerStatlist` dictionary.
+
+### Ending The Game (`playerEndgame`)
+- Happens once player HP attribute reaches 0 in `playerDict`.
+- Endgame sequence occurs once this function is called.
+
+## Running The Game
+- The following documentation below describes how the code makes the game run.
+
+## Stage Progress
+- When the game starts, initalises the variable `globalStage` as 1.
+- While loop is set up such that as long as HP value of player is greater than 0, the game will continue.
+- Attributes of the enemy will increase by a multiple each round
+- Time remaining in each round (`timeRemaining`) is calculated using sum of time attributes in `playerDict` and `enemyDict`.
+
+## Fighting Process
+- `randomizeN` generates a random number within a range and randomizeEnemy selects a random enemy for each round
+- `calcEnemyDmg`,`calcPlayerDmg` tabulates the amount of damage the enemy and the player do respectively. 
+- Using the `time.sleep(1)` function, `timeRemaining` decreases by a value of 1 each second
+- Total damage done is the product of the `timeRemaining` after the equation is submitted and the difference between `calcEnemyDmg` and `calcPlayerDmg`.
+
+## Progress and Skill Points
+- For the round, if enemy HP drops to 0, the process repeats and another enemy is selected.
+- Skill point value is increased by 1 for the player, and the `upgradeAbility` function is run.
+
+## Finishing the Game
+- If player HP drops to 0, then the function `playerEndgame()` is run and the game ends.
+
+<br>
+<br>
+
+# Visual Code Explanation
+
+## Imported Modules
+### from time import sleep
+- To buffer timings of visuals / delay mechanics
+
+### from math import *
+- To allow for usage of maths related functions for calculations
+
+### from tkinter import *
+### from tkinter import messagebox
+### from tkinter import font
+### from tkinter.font import Font
+- Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
+
+### import os
+- Built in python library to handle filepaths. Used to reference assets and other files used in the code.
+
+### import sys
+- Allows for passing of command line arguments to assign values to variables in the code from the command line.
+
+### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+- Python C language interpreter necessary for the importing of custom fonts.
+
+## Global Variables
+- Determines the properties of the window and also establishes commonly used unit values for late referencing.
+
+## Assets Class (Calc UI and Fight UI)
+-  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the assets when needed
+
+### Calc UI (Calculator UI) and CalcButtons
+- The assets used for our calculator. they consist of the number and operator buttons, as well as the frame and screen.
+
+### Fight UI (Fight UI)
+- The assets used in creating the background and elements for the fight screen
+
+### Asset Get Method
+- Loads visual assets and allows us to access them,
+
+## Fonts
+- Initialises and loads fonts for the calculator. The font used was MonogramRevised, which is a modified TrueType Font.
+
+## Game Class
+- The class which consists of functions which allow the game to run
+
+### Initialise
+- Initialises the class, setting attributes of the calculator
+
+### Button Function Allocation
+- Several dictionaries that serve to link player inputs to the calculator keys
+
+ ### Create Combat Display Update Loop
+- Displays updates on the calculator in accordance to inputs by the players.\
+Example: Pressing numerical keys on the calculator will cause the respective numbers to appear on the calculator screen
+
+- It also evaluates equations keyed into the calculator, and returns the result on the calculator screen.\
+Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 10, and then displays 10 on the calculator screen
+
+## Actions Class
+ -   Starts the tkinter loop
+
+
+
+
+ ## Variable Tables
 
 ### Global
 | Variable        | Type              | Description   |
 | :-------------- | :---------------- | :-----------  |
 | `globalNRange`  | list[x,y]         | Range of numbers taken to make a prompt |
 | `globalStage`   | int               | Current stage the player is in |
+
 ### Calculator
 | Variable        | Type              | Description   |
 | :-------------- | :---------------- | :-----------  |
@@ -15,7 +158,6 @@
 | `timeRemaining`    | int               | Time remaining when player gets the answer |
 
 ### Clash
-
 | Variable        | Type              | Description   | 
 | :-------------- | :---------------- | :-----------  |
 | `enemyDict`     | dict - int        | Current stats of enemy |
@@ -28,6 +170,7 @@
 | `playerDmg`     | int               | Damage done by player |
 | `playerCritRed`          | int               | Critical/Reduction multiplier |
 | `finalDmg` | int               | Contains the results of the clash |
+
 
 ## Dictionaries
 
@@ -112,6 +255,8 @@
 <br>
 }
 
+
+
 ## Functions
 
 ### Calculator
@@ -161,69 +306,3 @@
      - If `playerDmg` < `enemyDmg`, returns damage done to player:
           - `finalDmg` = `finalDmg` * `playerDict["Def"]` *
           `calcPlayerCrit(playerDmg, enemyDmg, playerLuck)`
-
-
-
-# Visual Code Explanation
-
-## Imported Modules
-from time import sleep
-- To buffer timings of visuals / delay mechanics
-
-from math import *
-- To allow for usage of maths related functions for calculations
-
-from tkinter import *
-from tkinter import messagebox
-from tkinter import font
-from tkinter.font import Font
-- Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
-
-import os
-- Built in python library to handle filepaths. Used to reference assets and other files used in the code.
-
-import sys
-- Allows for passing of command line arguments to assign values to variables in the code from the command line.
-
-from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
-- Python C language interpreter necessary for the importing of custom fonts.
-
-## Global Variables
-- Determines the properties of the window and also establishes commonly used unit values for late referencing.
-
-## Player Class
-- Sets values for initial player HP, Attack, Defence, Luck, Level and Time
-
-## Assets Class(Calc UI and Fight UI)
--  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the assets when needed
-
-### Calc UI (Calculator UI) and CalcButtons
-- The assets used for our calculator. they consist of the number and operator buttons, as well as the frame and screen.
-
-### Fight UI (Fight UI)
-- The assets used in creating the background and elements for the fight screen
-
-### Asset Get Method
-- Loads visual assets and allows us to access them,
-
-## Fonts
-- Initialises and loads fonts for the calculator. The font used was MonogramRevised, which is a modified TrueType Font.
-
-## Game Class
-- The class which consists of functions which allow the game to run
-
-### Initialise
-- Initialises the class, setting attributes of the calculator
-
-### Button Function Allocation
-- Several dictionaries that serve to link player inputs to the calculator keys
-
- ### Create Combat Display Update Loop
-- Displays updates on the calculator in accordance to inputs by the players.\
-Example: Pressing numerical keys on the calculator will cause the respective numbers to appear on the calculator screen
-
-- It also evaluates equations keyed into the calculator, and returns the result on the calculator screen.\
-Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 10, and then displays 10 on the calculator screen
-
-## Actions Class
- -   Starts the tkinter loop
