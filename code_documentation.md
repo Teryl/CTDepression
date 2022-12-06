@@ -22,7 +22,8 @@
 
 ## Initialising enemyNamelist, enemyStatList, enemyTypelist, enemyDict
 - `enemyNamelist` is the list of possible names for the default enemy classified as 'man'
-- `enemyStatlist` is a dictionary containing the attribute values for each level(ranges from 0 - 2. An attribute level of 0 means that the attribute is of a lower value, while the converse applies for an attribute level of 2
+- `enemyStatlist` is a dictionary containing the attribute values for each level(ranges from 0 - 2. \
+An attribute level of 0 means that the attribute is of a lower value, while the converse applies for an attribute level of 2
 - `enemyTypelist` is a dictionary defining the attribute values of each attribute for each enemy type.
 
 ## Defining Functions
@@ -52,7 +53,7 @@ If player damage < enemy damage, the player gets a 0.6 times multiplier on damag
 - Happens once player HP attribute reaches 0 in `playerDict`.
 - Endgame sequence occurs once this function is called.
 
-### Running The Game
+## Running The Game
 - The following documentation below describes how the code makes the game run.
 
 ## Stage Progress
