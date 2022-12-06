@@ -195,7 +195,8 @@ class assetHandler():
             "mainBG" : [os.path.join(self.calcPath, "01_Background.png"), 8 ,110, 148],
             "screenBG" : [os.path.join(self.calcPath, "02_Screen.png"), 8, 98, 34],
             "keypadBG" : [os.path.join(self.calcPath, "01_Background.png"), 8, 102, 102],
-            "displayBG" : [os.path.join(self.calcPath, "02_Screen.png"), 8, 90, 26],
+            "displayBG" : [os.path.join(self.calcPath, "02_Screen.png"), 8, 90, 31],
+            "Menu" : [os.path.join(self.calcPath, "99_Menu.png"), 4, 71, 31],
 
             ### CalcButtons
             "C" : [os.path.join(self.calcPath, "03_Button_C.png"), 8, 18, 18],
@@ -223,7 +224,7 @@ class assetHandler():
             "RightArrow" : [os.path.join(self.calcPath, "25_Button_RightArrow.png"), 8, 18, 18],
             "LeftArrow" : [os.path.join(self.calcPath, "26_Button_LeftArrow.png"), 8, 18, 18],
             "DownArrow" : [os.path.join(self.calcPath, "27_Button_DownArrow.png"), 8, 18, 18],
-            "CenterArrow" : [os.path.join(self.calcPath, "28_CenterArrow.png"), 8, 18, 18],
+            "CenterArrow" : [os.path.join(self.calcPath, "28_Button_CenterArrow.png"), 8, 18, 18],
             "BlankOrange" : [os.path.join(self.calcPath, "29_Button_BlankOrange.png"), 8, 18, 18],
             "BlankLightGrey" : [os.path.join(self.calcPath, "30_Button_BlankLightGrey.png"), 8, 18, 18],
             "BlankDarkGrey" : [os.path.join(self.calcPath, "31_Button_BlankDarkGrey.png"), 8, 18, 18],
@@ -438,7 +439,7 @@ class gameInstance(Tk):
             ["BlankBlack", "1", "2", "3", "Multiply"],
             ["BlankBlack", "4", "5", "6", "Minus"],
             ["BlankBlack", "7", "8", "9", "Plus"],
-            ["Pound", "0", "Dot", "Equals", None],
+            ["BlankBlack", "0", "Dot", "Equals", None],
         ]
 
         self.create_calc()
@@ -488,7 +489,8 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["main"], "keypad", image=self.assets.getAsset("keypadBG"), width=self.assets.assets["keypadBG"][2]*self.px, height=self.assets.assets["keypadBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.625, anchor=CENTER)
 
     def create_display(self):
-        self.create_canvas(self.frameDict["screen"], "display", image=self.assets.getAsset("displayBG"), width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
+        self.create_canvas(self.frameDict["screen"], "display", bg = "#438F4C", width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
+        self.imagefields['screenImage'] = self.frameDict["display"].create_image(self.assets.assets["displayBG"][2]*self.px/2, self.assets.assets["displayBG"][3]*self.px/2, image=self.assets.getAsset("displayBG"))
         self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Display"][WINDOW_SCALE][1]), anchor=E)
 
     # create combat screen frame structure
@@ -603,10 +605,13 @@ class gameInstance(Tk):
                 self.actions.keypad_state_change()
                 self.actions.clear_buffer()
                 self.actions.clear_screen()
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"],image = self.assets.getAsset("Menu"))
             elif status == "shopClose":
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"],image = self.assets.getAsset("displayBG"))
                 self.actions.keypad_state_reset()
                 time.sleep(1)
-        
+        if player.get_stat("HP") <= 0:
+            self.destroy()
 
 
         
@@ -638,9 +643,9 @@ class actions():
         self.altLayout = [
             ["BlankOrange", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
             ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
-            ["Triangle", "LeftArrow", "BlankDarkGrey", "RightArrow", "BlankLightGrey"],
+            ["Triangle", "LeftArrow", "CenterArrow", "RightArrow", "BlankLightGrey"],
             ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
-            ["Home", "No", "BlankBlack", "Yes", None]
+            ["BlankBlack", "No", "BlankBlack", "Yes", None]
         ]
 
         for y in range(len(self.game.defaultLayout)):
@@ -802,11 +807,14 @@ class buttonPresses():
     def press_RightArrow(self):
         self.action.make_shop_choice("atk")
 
+    def press_CenterArrow(self):
+        self.action.make_shop_choice("maxHP")
+
     def press_Yes(self):
         pass
 
     def press_No(self):
-        pass
+        self.action.make_shop_choice("n")
 
     def press_Circle(self):
         self.action.do_animate("Player", self.action.game.assets.getAnimate("playerAttack"), self.action.game.assets.getDelay("playerAttack"))
@@ -832,8 +840,7 @@ class buttonPresses():
     def press_BlankPlus(self):
         pass
 
-    def press_CenterArrow(self):
-        pass
+    
 
 
 # Randomize Number Range:
@@ -913,6 +920,8 @@ def upgradeAbility():
     shopQueue.put("shopOpen")
     while player.get_stat("Skill") > 0:
         playerUpgradeChoice = queueResult.get()
+        if playerUpgradeChoice == "quit":
+            exit()
         if playerUpgradeChoice == "atk":
             if player.get_stat("Atk") < 5:
                 player.level_up("Atk")
@@ -953,7 +962,7 @@ def upgradeAbility():
                 print("You have reached the maximum level for luck!")
                 continue
 
-        elif playerUpgradeChoice == "hp":
+        elif playerUpgradeChoice == "maxHP":
             if player.get_stat("maxHP") < 5:
                 player.level_up("maxHP")
                 print("You have upgraded your HP!")
@@ -977,6 +986,7 @@ def playerEndgame():
     time.sleep(10)
     print("Now leave my presence, peasant!")
     # os.system("shutdown -l")
+    queueResult.put("quit")
     exit()
 
 
@@ -1046,7 +1056,7 @@ def maingame():
                 print(playerDmg, enemyDmg)
                 
                 # Critical hit calculation
-                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, player.get_stat("Luck"))
+                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, player.get_statlist("Luck"))
                 
                 '''TEST FUNCTION'''
                 if playerDmg >= enemyDmg:
@@ -1054,7 +1064,7 @@ def maingame():
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
                 
                 elif playerDmg < enemyDmg:
-                    player.set_stat("HP", int(player.get_stat("HP") + ((finalDmg * player.get_stat("Def")) * playerCritRed)))
+                    player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))
                     print("You took {} damage!".format(abs(finalDmg)), "TIMES", playerCritRed)
                 
                 print("Final HP - You: {}, Enemy: {}".format(player.get_stat("HP"), enemyDict["HP"]))
