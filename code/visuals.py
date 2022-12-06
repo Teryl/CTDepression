@@ -15,6 +15,7 @@ import os
 import sys
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 from threading import Thread
+from queue import Queue
 
 
 ### Setting Global Variables
@@ -284,7 +285,7 @@ class assetHandler():
             "Player" : [os.path.join(self.charPath, "PlayerAnim_1.png"), 4, 40, 20],
         }
 
-        self.animate["playerAttack"] = [os.path.join(self.charPath, "PlayerAnim_" + str(i) + ".png") for i in range(1, 19)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
+        self.animate["playerAttack"] = [os.path.join(self.charPath, "/" + str(i) + ".png") for i in range(1, 19)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
     
         
 
@@ -345,7 +346,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets):
+    def __init__(self, size, title, assets, queue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -359,6 +360,7 @@ class gameInstance(Tk):
         self.buffer = ""
         self.result = ""
         self.finishCalc = False
+        self.queueResult = queue
 
         self.player = player
         self.binds = {}
@@ -639,7 +641,7 @@ class actions():
         self.game.buffer = self.game.buffer[:-1]
         self.push_to_screen(self.game.buffer)
     
-    def evaluate_buffer(self):
+    def evaluate_buffer(self, queueResult):
         try:
             if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").isalnum():
                 raise CheatException("You can't do that!")
@@ -659,6 +661,8 @@ class actions():
             self.game.result = str(result)
             self.game.buffer = ""
             self.game.finishCalc = True
+            queueResult.put(final)
+
 
     def retrieve_result(self):
         #self.add_to_buffer(self.game.result)
@@ -746,7 +750,7 @@ class buttonPresses():
         self.action.add_to_buffer("/")
     
     def press_Equals(self):
-        self.action.evaluate_buffer()
+        self.action.evaluate_buffer(self.action.game.queueResult)
     
     def press_Pound(self):
         self.action.keypad_state_change()
@@ -985,8 +989,7 @@ def maingame():
                 print("n:",randN)
 
                 # Prompt user input 
-                while game.finishCalc == False:
-                    continue
+                inputPerm = queueResult.get()
 
                 # Calculate damage done by player, if wrong, playerDmg = 0    
                 playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
@@ -1035,17 +1038,20 @@ def maingame():
         print("done")
 
 ### Main Game Loop
-def main():
-    assets = assetHandler()
-    global game
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets)
- 
-    game.mainloop()
+
 
 player = playerClass()
 enemy = enemyClass()
 
-gui = Thread(target=main)
+
+def main(queue):
+    assets = assetHandler()
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue)
+    game.mainloop()
+
+queueResult = Queue()
+
+gui = Thread(target=main, args=(queueResult,))
 gui.start()
 
 eternum = Thread(target=maingame)
