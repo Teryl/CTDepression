@@ -176,36 +176,55 @@
 - enemyTypelist is a dictionary defining the attribute values of each attribute for each enemy type.
 
 ## Defining Functions
-### Randomising Number Range
+### Randomising Number Range (randomizeN)
 - Randomises the number that the player has to get using the calculator. The value of the number falls within a range, and this range increases as the stage number increases.
 
-### Randomising Enemy Type
+### Randomising Enemy Type (randomizeEnemy)
 - Randomises the enemy faced each stage. There is a greater chance to face the 'man' enemy type as compared to the other enemy types.
 
-### Calculating Enemy Damage
+### Calculating Enemy Damage (calcEnemyDmg)
 - Calculates the enemy damage per round based on the enemy's atk attribute value and the stage number
 
-### Calculating Damage Done By Player Per Attack
+### Calculating Damage Done By Player Per Attack (calcPlayerDmg)
 - Calculates the damage done by the player per attack, based on the player's attack attribute and the time remaining in the round. Finding an equation which equals the value of the displayed number on the calculator would result in more damage being done.
 - Giving an equation which does not equal the value of the given number would result in the player's damage being 0 for that round.
 
-### Calculating Critical Damage or Damage Reduction
+### Calculating Critical Damage or Damage Reduction (calcPlayerCrit)
 - Randomly generates a number between 0 and 100. If this number generated is greater than the luck attribute value (starts at 100 and decreases by 2 per attribute level), then for that round:\
 If player damage > enemy damage, the player gets a 1.6 times multiplier on damage.\
 If player damage < enemy damage, the player gets a 0.6 times multiplier on damage received.
 
-### Upgrading Abilities
+### Upgrading Abilities (upgradeAbility)
 - Players will gain a skill point for each stage they clear. When the number of skill points they have is greater than 0, they will be given the choice to upgrade any one of their attributes. 
 - Choosing to upgrade an attribute will increase the selected attribute value by 1 in the playerDict, which will increase the value of that attribute in accordance to the values given in the playerStatlist dictionary.
 
-### Stage and Running of Game
+### Ending The Game (playerEndgame)
+- Happens once player HP attribute reaches 0 in playerDict.
+- Endgame sequence occurs once this function is called.
+
+### Running The Game
+- The following documentation below describes how the code makes the game run.
+
+## Stage Progress
 - When the game starts, initalises the variable globalStage as 1.
 - While loop is set up such that as long as HP value of player is greater than 0, the game will continue.
 - Attributes of the enemy will increase by a multiple each round
+- Time remaining in each round (timeRemaining) is calculated using sum of time attributes in playerDict and enemyDict.
 
-### Enemy Selection and Difficulty Scaling
+## Fighting Process
+- randomizeN generates a random number within a range and randomizeEnemy selects a random enemy for each round
+- calcEnemyDmg,calcPlayerDmg tabulates the amount of damage the enemy and the player do respectively. 
+- Using the time.sleep(1) function, timeRemaining decreases by a value of 1 each second
+- Total damage done is the product of the timeRemaining after the equation is submitted and the difference between calcEnemyDmg and calcPlayerDmg.
 
-### Skill Points
+## Progress and Skill Points
+- For the round, if enemy HP drops to 0, the process repeats and another enemy is selected.
+- Skill point value is increased by 1 for the player, and the upgradeAbility function is run.
+
+## Finishing the Game
+- If player HP drops to 0, then the function playerEndgame() is run and the game ends.
+
+
 
 # Visual Code Explanation
 
