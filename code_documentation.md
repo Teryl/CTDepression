@@ -191,9 +191,6 @@ from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 ## Global Variables
 - Determines the properties of the window and also establishes commonly used unit values for late referencing.
 
-## Player Class
-- Sets values for initial player HP, Attack, Defence, Luck, Level and Time
-
 ## Assets Class(Calc UI and Fight UI)
 -  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the assets when needed
 
