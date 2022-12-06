@@ -864,18 +864,91 @@ def playerEndgame():
     # os.system("shutdown -l")
     exit()
 
-def timer():
-    for i in range(45):
-        time.sleep(1)   #waits 45 seconds
-    sys.exit() #stops program after timer runs out, you could also have it print something or keep the user from attempting to answer any longer
 
-def question():
-    answer = input("foo?")
+def maingame():
+## Game runs as long as playerHP > 0, increase globalStage every time
+    while playerDict["HP"] > 0:
 
-t1 = Thread(target=timer)
-t2 = Thread(target=question)
-t1.start() #Calls first function
-t2.start() #Calls second function to run at same time
+        # playerDict is default
+        playerDict = playerDict
+        print("You: ", playerDict)
+
+        # Selecting random enemy
+        # Deepcopy the dictionary so that when same enemy is selected HP resets
+        # Ensure enemyDict is just a copy not an alias
+        enemyDict = copy.deepcopy(randomizeEnemy(enemyTypeList))
+        
+        # Scale intial enemy HP, Atk value, and Defense value 
+        enemyDict["HP"] = enemyDict["HP"] * (globalStage**1.07 + 10)
+        enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)
+        enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
+        print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
+
+        # Setting global time
+        globalTime = enemyDict["Time"] + playerDict["Time"]
+        timeRemaining = copy.deepcopy(globalTime)
+        
+        # Setting values of initial variables
+        playerDmg = 0
+        enemyDmg = 0
+
+        # Add while loop for enemyHP > 0
+        while enemyDict["HP"] >= 0:
+            enemyDmg = calcEnemyDmg(enemyDict, globalStage)
+
+            while timeRemaining >= 0:
+                # Set a random N
+                randN = randomizeN(globalStage, enemyStatlist)
+                print("n:",randN)
+
+                # Prompt user input 
+                inputPerm = eval(input("Write your equation here: "))
+
+                # Calculate damage done by player, if wrong, playerDmg = 0    
+                playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN, playerDict)
+
+                # Decrease time remaining
+                timeRemaining = timeRemaining - 1
+                print("Time remaining:",timeRemaining)
+                time.sleep(1)
+                
+                # Calculate Final Damage
+                finalDmg = int(playerDmg - enemyDmg)            
+                print(playerDmg, enemyDmg)
+                
+                # Critical hit calculation
+                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, playerDict["Luck"])
+                
+                '''TEST FUNCTION'''
+                if playerDmg >= enemyDmg:
+                    enemyDict["HP"] = int(enemyDict["HP"] - ((finalDmg * enemyDict["Def"]) * playerCritRed))
+                    print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
+                
+                elif playerDmg < enemyDmg:
+                    playerDict["HP"] = int(playerDict["HP"] + ((finalDmg * playerDict["Def"]) * playerCritRed))
+                    print("You took {} damage!".format(abs(finalDmg)), "TIMES", playerCritRed)
+                
+                print("Final HP - You: {}, Enemy: {}".format(playerDict["HP"], enemyDict["HP"]))
+                
+                # Exit while loop and change enemy
+                if enemyDict["HP"] <= 0:
+                    break
+
+                if playerDict["HP"] <= 0:
+                    playerEndgame()
+
+        # Increase globalStage
+        globalStage += 1
+        
+        # Give Skill Points
+        playerDict["Skill"] += 1
+        print("You have gained an upgrade coin!")
+        print("You have {} upgrade coin(s)!".format(playerDict["Skill"]))
+
+        # Upgrade Abilities
+        upgradeAbility(playerDict, playerStatlist)
+
+        print("done")
 
 ### Main Game Loop
 def main():
