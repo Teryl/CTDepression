@@ -577,7 +577,7 @@ class actions():
     def quitGame(self):
         quitQuery = messagebox.askyesno("Quit", "Are you sure you want to quit?", icon="warning")
         if quitQuery:
-            self.game.destroy()
+            sys.exit()
 
     def keypad_state_change(self):
         self.altLayout = [
