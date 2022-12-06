@@ -105,6 +105,7 @@ Complete list of enemies can be found in this table. Bosses are labelled with an
 | Florida Man    | 🔼 HP   <br> 🔽 Atk  |
 | Bepis Man      | 🔼 Atk  <br> 🔽 Def  |
 | The Rock       | 🔼 Def  <br> 🔼 Time |
+| Kanye East     | 🔼 Atk  <br> 🔽 HP   |
 
 *Note that* `🔽Time` *is actually a debuff to the player, as they have less time to compute possible permutations.*
 
