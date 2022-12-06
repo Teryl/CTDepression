@@ -37,6 +37,7 @@ scaleMul = {
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
+    "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
 }
 
 globalStage = 1
@@ -157,8 +158,10 @@ class assetHandler():
     def __init__(self):
         self.calcPath = "./assets/CalcUI/"
         self.fightPath = "./assets/FightUI/"
+        self.charPath = "./assets/CharSprites/"
         self.imageDict = {}
         self.fontDict = {}
+        self.animate = {}
 
         # get asset paths
         self.assets = {
@@ -244,7 +247,23 @@ class assetHandler():
             "HP" : ['#424242', 16, 5],
             "LVL" : ['#424242', 14, 5],
             "N" : ['#424242', 14, 5],
+
+
+            ### Char Sprites
+            "Man_1" : [os.path.join(self.charPath, "01_Man_1.png"), 4, 20, 20],
+            "Man_2" : [os.path.join(self.charPath, "02_Man_2.png"), 4, 20, 20],
+            "Man_3" : [os.path.join(self.charPath, "03_Man_3.png"), 4, 20, 20],
+            "Man_4" : [os.path.join(self.charPath, "04_Man_4.png"), 4, 20, 20],
+            "Man_5" : [os.path.join(self.charPath, "05_Man_5.png"), 4, 20, 20],
+            "Man_6" : [os.path.join(self.charPath, "06_Man_6.png"), 4, 20, 20],
+            "Cancer" : [os.path.join(self.charPath, "07_Cancer.png"), 4, 20, 20],
+            "Florida" : [os.path.join(self.charPath, "08_Florida.png"), 4, 20, 20],
+            "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
+            "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
+            "Player" : [os.path.join(self.charPath, "PlayerAnim_1.png"), 4, 40, 20],
         }
+
+        self.animate["playerAttack"] = [os.path.join(self.charPath, "PlayerAnim_" + str(i) + ".png") for i in range(1, 19)]
     
         
 
@@ -257,6 +276,9 @@ class assetHandler():
         else:
             self.imageDict[assetName] = PhotoImage(file=os.path.abspath(self.assets[assetName][0])).zoom(int(self.assets[assetName][1] * WINDOW_SCALE))
             return self.imageDict[assetName]
+
+    def getAnimate(self, idAnimation):
+        return [PhotoImage(file=os.path.abspath(i)).zoom(int(4 * WINDOW_SCALE)) for i in self.animate[idAnimation]]
 
     # load fonts
     def initialise_fonts(self):
@@ -389,6 +411,7 @@ class gameInstance(Tk):
         self.assets.initialise_fonts()
         self.create_display()
         self.create_combat()
+        self.create_combat_elements()
         
         
     def modify_timer(self, thread, time):
@@ -455,6 +478,13 @@ class gameInstance(Tk):
 
         self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.2415, anchor=CENTER)
         self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
+
+    # create combat elements (sprites, text)
+    def create_combat_elements(self):
+        self.create_canvas(self.frameDict["combat"], "enemy", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.95, rely=0.75, anchor=E)
+        self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW)
+        self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.05, rely=0.75, anchor=W)
+        self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
 
         
 
@@ -530,6 +560,15 @@ class gameInstance(Tk):
 
         self.after(10, self.update_combat_display)
 
+    def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
+        if idSprite != None:
+            self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], image=self.assets.getAsset(idSprite))
+        self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], state=NORMAL if visible else HIDDEN, anchor=NW)
+    
+    def update_animation(self, idFrame, image):
+        self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], image=image)
+
+
 class actions():
     def __init__(self, game):
         self.game = game
@@ -601,6 +640,16 @@ class actions():
         #self.add_to_buffer(self.game.result)
         #self.push_to_screen(self.game.result)
         pass ###feature disabled
+
+    def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
+        self.game.toggle_switch_sprites(idFrame, visible, idSprite)
+
+    def do_animate(self, idFrame, framesArr, delay=100, frame=0):
+        if frame < len(framesArr):
+            self.game.update_animation(idFrame, framesArr[frame])
+            self.game.after(delay, lambda: self.do_animate(idFrame, framesArr, delay, frame+1))
+        else:
+            self.toggle_switch_sprites(idFrame, True, idFrame)
 
 class buttonPresses():
     def __init__(self, actions):
@@ -694,14 +743,13 @@ class buttonPresses():
         pass
 
     def press_Yes(self):
-        for key in self.action.game.player.playerDict:
-            self.action.game.player.playerDict[key] += 1
+        pass
 
     def press_No(self):
         pass
 
     def press_Circle(self):
-        pass
+        self.action.do_animate("Player", self.action.game.assets.getAnimate("playerAttack"), 75)
 
     def press_Triangle(self):
         pass
