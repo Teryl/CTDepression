@@ -46,7 +46,7 @@ class launcher():
 
     def begin(self):
         self.root.destroy()
-        import visuals
+        import main
 
     def keepOnTop(self):
         self.root.attributes("-topmost", True)
