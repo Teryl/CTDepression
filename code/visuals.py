@@ -53,7 +53,7 @@ class playerClass():
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
-            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
+            "Luck": {0:0, 1:98, 2:96, 3:94, 4:92, 5:90}
         }
         self.playerDict = {
             "maxHP": 0,
@@ -360,7 +360,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue):
+    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -380,6 +380,7 @@ class gameInstance(Tk):
         self.enemyQueue = enemyQueue
         self.enemyHPQueue = enemyHPQueue
         self.damageQueue = damageQueue
+        self.critQueue = critQueue
         self.actions = actions(self)
         self.player = player
         self.enemy = enemy
@@ -612,12 +613,24 @@ class gameInstance(Tk):
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
+
         if not(self.enemyHPQueue.empty()):
             status = self.enemyHPQueue.get()
             self.frameDict["enemyHP"].itemconfig(self.textfields["enemyHP"], text=str(int(status))+" HP")
+
         if not(self.enemyQueue.empty()):
             status = self.enemyQueue.get()
             self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text=status)
+
+        if not(self.critQueue.empty()):
+            status = self.critQueue.get()
+            if status:
+                self.frameDict["damageNum"].itemconfig(self.textfields["damageNum"], fill="red")
+                self.frameDict["damageNumPlayer"].itemconfig(self.textfields["damageNumPlayer"], fill="green")
+            else:
+                self.frameDict["damageNum"].itemconfig(self.textfields["damageNum"], fill="yellow")
+                self.frameDict["damageNumPlayer"].itemconfig(self.textfields["damageNumPlayer"], fill="yellow")
+
         if not(self.spriteQueue.empty()):
             status = self.spriteQueue.get()
             if status == "enemyKilled":
@@ -630,8 +643,8 @@ class gameInstance(Tk):
                 self.after(0, self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack")))
                 self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(int(damageQueue.get())), delay=125))
             elif status == "playerHit":
-                self.after(0, self.actions.text_animate("display", "screenText", text="INCORRECT", delay=250, frame=4))
-                self.after(100, self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(int(damageQueue.get())), delay=125))
+                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=180, frame=6, endstate="SHOW"))
+                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(int(damageQueue.get())), delay=200))
                 
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
@@ -647,6 +660,7 @@ class gameInstance(Tk):
                 self.frameDict["coin"].place_forget()
                 self.actions.keypad_state_reset()
                 time.sleep(1)
+
         if player.get_stat("HP") <= 0:
             self.destroy()
 
@@ -756,13 +770,13 @@ class actions():
         else:
             self.toggle_switch_sprites(idFrame, True, idFrame)
 
-    def text_animate(self, idFrame, idText, text, delay=250, frame=6):
-        if frame > 0:
+    def text_animate(self, idFrame, idText, text, delay=250, frame=6, endstate = "HIDE"):
+        if frame > 0 and not(endstate == "SHOW" and frame == 1):
             if frame % 2 == 0:
                 self.game.frameDict[idFrame].itemconfig(self.game.textfields[idText], text=text)
             else:
                 self.game.frameDict[idFrame].itemconfig(self.game.textfields[idText], text="")
-            self.game.after(delay, lambda: self.text_animate(id, text, delay, frame-1))
+            self.game.after(delay, lambda: self.text_animate(idFrame, idText, text, delay, frame-1))
         
 
 
@@ -954,8 +968,11 @@ def calcPlayerDmg(timeRemaining, inputPerm, randN):
     return playerDmg
 
 # Calculate critical damage or damage reduction
-def calcPlayerCrit(playerDmg, enemyDmg, playerLuck):
-    if random.randrange(0,101) > playerLuck:
+def isCrit(playerLuck):
+    return random.randrange(0,101) > playerLuck
+
+def calcPlayerCrit(playerDmg, enemyDmg, result):
+    if result:
         if playerDmg > enemyDmg:
             playerCritRed = 1.6
         elif playerDmg < enemyDmg:
@@ -1092,27 +1109,33 @@ def maingame():
                 randN = randomizeN(globalStage, enemy.enemyStatlist)
                 player.set_stat("N", randN)
                 print("n:",randN)
+                critBool = isCrit(player.get_statlist("Luck"))
+                critQueue.put(critBool)
 
                 # Prompt user input 
                 inputPerm = queueResult.get()
+                print(inputPerm)
                 if inputPerm == randN:
                     spriteQueue.put("enemyHit")
                 else:
                     spriteQueue.put("playerHit")
-                print(inputPerm)
                 if inputPerm == "quit":
                     exit()
 
                 # Calculate damage done by player, if wrong, playerDmg = 0    
                 playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
 
+                # Critical hit calculation
+                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, critBool)
+
+                
+                
                 
                 # Calculate Final Damage
                 finalDmg = int(playerDmg - enemyDmg)            
                 print(playerDmg, enemyDmg)
                 
-                # Critical hit calculation
-                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, player.get_statlist("Luck"))
+                
                 
                 '''TEST FUNCTION'''
                 if playerDmg >= enemyDmg:
@@ -1161,9 +1184,9 @@ player = playerClass()
 enemy = enemyClass()
 
 
-def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue):
+def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue):
     assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue)
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue)
     game.mainloop()
 
 queueResult = Queue()
@@ -1172,8 +1195,9 @@ shopQueue = Queue()
 enemyQueue = Queue()
 enemyHPQueue = Queue()
 damageQueue = Queue()
+critQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue))
+gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue))
 gui.start()
 
 eternum = Thread(target=maingame)
