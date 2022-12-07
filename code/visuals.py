@@ -294,7 +294,7 @@ class assetHandler():
             "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
             "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
-            "Player" : [os.path.join(self.animPath, "0.png"), 4, 40, 20],
+            "Player" : [os.path.join(self.animPath, "0.png"), 4, 60, 20],
         }
 
         self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(0, 18)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
@@ -627,6 +627,7 @@ class gameInstance(Tk):
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
                 self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack"))
+        
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
             if status == "shopOpen":
