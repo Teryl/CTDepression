@@ -25,9 +25,9 @@ class launcher():
         self.root.geometry("{}x{}".format(WINDOW_SIZE_LAUNCHER[0], WINDOW_SIZE_LAUNCHER[1]))
         self.root.overrideredirect(True)
         self.root.configure(background="black")
-        self.fontassets = assetHandler()
         self.itemDict = {}
         self.imageBuffer = {}
+        self.sendScale = 1
         self.root.bind("<Escape>", lambda e: self.root.destroy())
         
 
@@ -43,7 +43,7 @@ class launcher():
         self.loopsplash.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
         self.imageBuffer["Start Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "01_Button_Play.png"))).zoom(6))
-        self.itemDict["Start Arrow"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0,command = lambda: self.begin())
+        self.itemDict["Start Arrow"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0,command = lambda: self.begin(self.sendScale))
         self.itemDict["Start Arrow"].place(relx = 0.25, rely = 0.7, anchor = CENTER)
 
         self.imageBuffer["Exit Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "02_Button_Quit.png"))).zoom(6))
@@ -58,11 +58,13 @@ class launcher():
         self.itemDict["Button Down"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Button Down"], bg="black", borderwidth = 0, highlightthickness = 0, command= lambda: self.change_scaling(-1))
         self.itemDict["Button Down"].place(relx = 0.775, rely = 0.900, anchor = CENTER)
 
-        self.imageBuffer["Window"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "04_Window.png"))).zoom(6))
-        self.itemDict["Window"] = Label(self.root, width = 120, height = 100, image = self.imageBuffer["Window"], text="3", font = ,bg="black", borderwidth = 0, highlightthickness = 0)
+        self.imageBuffer["Scales"] = [PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "{:02d}".format(i+6) + "_Scale" + str(i) + ".png"))).zoom(6) for i in range(1, 6)]
+
+        self.imageBuffer["Window"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "07_Scale1.png"))).zoom(6))
+        self.itemDict["Window"] = Label(self.root, width = 120, height = 100, image = self.imageBuffer["Window"], text="3",bg="black", borderwidth = 0, highlightthickness = 0)
         self.itemDict["Window"].place(relx = 0.780, rely = 0.775, anchor = CENTER)
 
-
+        self.updateScaleDisplay()
         self.root.after(1000, lambda: self.animateLoopingSplash())
         self.keepOnTop()
 
@@ -72,11 +74,18 @@ class launcher():
         self.root.destroy()
         ###run main.py
 
-
     def keepOnTop(self):
         self.root.attributes("-topmost", True)
         self.root.after(10, lambda: self.keepOnTop())
 
+    def change_scaling(self, direction):
+        if self.sendScale + 0.25*direction >= 0.75 and self.sendScale + 0.25*direction <= 1.75:
+            self.sendScale += 0.25*direction
+
+    def updateScaleDisplay(self):
+        self.itemDict["Window"].configure(image = self.imageBuffer["Scales"][int(self.sendScale*4 - 3)])
+        self.itemDict["Window"].update()
+        self.root.after(50, lambda: self.updateScaleDisplay())
 
     def animateLoopingSplash(self, frame = 0):
         if frame < 18:
