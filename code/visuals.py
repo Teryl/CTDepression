@@ -385,13 +385,13 @@ class gameInstance(Tk):
         self.player = player
         self.enemy = enemy
         self.binds = {}
+        self.clockTime = self.clock(self)
 
         # timer pseudothreads
         self.threads = [0, 0, 0]
         self.threadbuffer = [0, 0, 0]
 
         self.configure(background=self.assets.getAsset("windowBG"))
-        self.title(self.name)
        
        # Calculate Starting X and Y coordinates for Window
         x = (self.winfo_screenwidth()/2) - (WINDOW_SIZE[0]/2)
@@ -608,7 +608,7 @@ class gameInstance(Tk):
         self.frameDict["HP"].itemconfig(self.textfields["HP"], text=str(self.player.get_stat("HP")))
         self.frameDict["LVL"].itemconfig(self.textfields["LVL"], text=str(self.player.get_stat("LVL")))
         self.frameDict["N"].itemconfig(self.textfields["N"], text=str(self.player.get_stat("N")))
-        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(5)))
+        self.frameDict["Time"].itemconfig(self.imagefields["Time"], image=self.assets.getAsset("Time_" + str(ceil(self.clockTime.percent / 10))))
         self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.get_stat("Atk"))))
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
@@ -641,10 +641,13 @@ class gameInstance(Tk):
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
                 self.after(0, self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack")))
-                self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(int(damageQueue.get())), delay=125))
+                self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(ceil(damageQueue.get())), delay=125))
             elif status == "playerHit":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=180, frame=6, endstate="SHOW"))
-                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(int(damageQueue.get())), delay=200))
+                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
+            elif status == "timeout":
+                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="OUT OF TIME", delay=300, frame=6, endstate="SHOW"))
+                self.after(2000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
                 
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
@@ -670,6 +673,7 @@ class gameInstance(Tk):
 
         self.after(10, self.update_combat_display)
 
+
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
         if idSprite != None:
             self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], image=self.assets.getAsset(idSprite))
@@ -678,6 +682,36 @@ class gameInstance(Tk):
     def update_animation(self, idFrame, image):
         self.frameDict[idFrame].itemconfig(self.imagefields[idFrame], image=image)
 
+    class clock():
+        def __init__(self, host):
+            self.host = host
+            self.time = 0
+            self.buffer = 0
+            self.max = 1
+            self.percent = 100
+
+
+        def start_timer(self, time):
+            self.time = time
+            self.percent = self.time/self.max * 100
+            if self.time == -999:
+                return
+            if self.time <= 0:
+                self.host.queueResult.put(-999999)
+                return
+            self.host.after(10, self.start_timer, self.time-0.01)
+        
+        def stop_get_time(self):
+            self.buffer = copy.deepcopy(self.time)
+            self.time = -999
+            return self.buffer
+        
+        def set_max_start(self, max):
+            self.max = max
+            self.start_timer(max)
+
+        
+        
 
 class actions():
     def __init__(self, game):
@@ -1094,7 +1128,6 @@ def maingame():
         enemyQueue.put(enemyName)
         # Setting global time
         globalTime = enemyDict["Time"] + player.get_statlist("Time")
-        timeRemaining = copy.deepcopy(globalTime)
         
         # Setting values of initial variables
         playerDmg = 0
@@ -1103,8 +1136,9 @@ def maingame():
         # Add while loop for enemyHP > 0
         while enemyDict["HP"] > 0:
             enemyDmg = calcEnemyDmg(enemyDict, globalStage)
-
-            while timeRemaining >= 0:
+            timeRemaining = clock.stop_get_time()
+            while True:
+                clock.set_max_start(globalTime)
                 # Set a random N
                 randN = randomizeN(globalStage, enemy.enemyStatlist)
                 player.set_stat("N", randN)
@@ -1117,11 +1151,15 @@ def maingame():
                 print(inputPerm)
                 if inputPerm == randN:
                     spriteQueue.put("enemyHit")
-                else:
+                elif inputPerm != -999999:
                     spriteQueue.put("playerHit")
+                    time.sleep(3)
+                else:
+                    spriteQueue.put("timeout")
                 if inputPerm == "quit":
                     exit()
 
+                timeRemaining = clock.stop_get_time()
                 # Calculate damage done by player, if wrong, playerDmg = 0    
                 playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
 
@@ -1160,6 +1198,7 @@ def maingame():
                 if player.get_stat("HP") <= 0:
                     playerEndgame()
 
+        
         spriteQueue.put("enemyKilled")
 
         # Increase globalStage
@@ -1187,8 +1226,9 @@ enemy = enemyClass()
 def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue):
     assets = assetHandler()
     game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue)
+    metaQueue.put(game)
     game.mainloop()
-
+metaQueue = Queue()
 queueResult = Queue()
 spriteQueue = Queue()
 shopQueue = Queue()
@@ -1200,6 +1240,7 @@ critQueue = Queue()
 gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue))
 gui.start()
 
+clock = metaQueue.get().clockTime
+
 eternum = Thread(target=maingame)
 eternum.start()
-
