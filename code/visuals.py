@@ -645,6 +645,9 @@ class gameInstance(Tk):
             elif status == "playerHit":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=200, frame=6, endstate="SHOW"))
                 self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
+            elif status == "playerHitTime":
+                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="TOO SLOW", delay=200, frame=6, endstate="SHOW"))
+                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
             elif status == "timeout":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="OUT OF TIME", delay=300, frame=6, endstate="SHOW"))
                 self.after(1800, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
@@ -1151,6 +1154,9 @@ def maingame():
                 # Prompt user input 
                 inputPerm = queueResult.get()
                 print(inputPerm)
+
+                correct = (randN == inputPerm)
+
                 if inputPerm == -999999:
                     spriteQueue.put("timeout")
                     time.sleep(2)
@@ -1186,8 +1192,10 @@ def maingame():
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
 
                 elif playerDmg < enemyDmg:
-                    if inputPerm != -999999:
+                    if inputPerm != -999999 and correct == False:
                         spriteQueue.put("playerHit")
+                    else:
+                        spriteQueue.put("playerHitTime")
                     player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))
                     damageQueue.put(((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed))
                     time.sleep(2)
