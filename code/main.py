@@ -187,6 +187,7 @@ class assetHandler():
         self.fightPath = "./assets/FightUI/"
         self.charPath = "./assets/CharSprites/"
         self.animPath = "./assets/CharSprites/char_frames/"
+        self.iconPath = "./assets/LauncherSprites/"
         self.imageDict = {}
         self.fontDict = {}
         self.animate = {}
@@ -295,6 +296,8 @@ class assetHandler():
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
             "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
             "Player" : [os.path.join(self.animPath, "0.png"), 4, 60, 20],
+
+            "icon" : os.path.join(self.iconPath, ".Titleicon.ico"),
         }
 
         self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(0, 18)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
@@ -365,6 +368,7 @@ class gameInstance(Tk):
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
         self.title(title)
+        self.iconbitmap(assets.assets["icon"])
         self.assets = assets
         self.frameDict = {}
         self.container = []
