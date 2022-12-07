@@ -1,6 +1,6 @@
-### CTD Calculator Game Prototype 0.5
-### By: David Ling
-### Versioned as of 04/12/22
+### CTD Calculator Game Prototype 0.9
+### By: David Ling & Featurecreep Balaji
+### Versioned as of 07/12/22
 
 ### Importing Modules
 import time
@@ -21,7 +21,7 @@ from queue import Queue
 ### Setting Global Variables
 WINDOW_SIZE = (460, 840)
 SCALE_UNIT = (115, 220)
-WINDOW_SCALE = 1 #0.75 - 1.75, increments of 0.25, default is 1.0
+WINDOW_SCALE = 0.75 #0.75 - 1.75, increments of 0.25, default is 1.0
 WINDOW_SIZE_PX = (118, 214)
 WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
@@ -39,7 +39,7 @@ scaleMul = {
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
     "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
-    "Info" : {0.75: (1.00, 1.00) , 1: (0.2, 0.85) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
+    "Info" : {0.75: (0.2, 0.85) , 1: (0.2, 0.85) , 1.25: (0.2, 0.85) , 1.5: (0.2, 0.85) , 1.75: (0.2, 0.85)}, #Y Offset, Size
 }
 
 globalStage = 1
@@ -274,9 +274,9 @@ class assetHandler():
             "HP" : ['#424242', 16, 5],
             "LVL" : ['#424242', 14, 5],
             "N" : ['#424242', 14, 5],
-            "EnemyHP" : ['#424242', 20, 8],
+            "EnemyHP" : ['#424242', 40, 6],
             "EnemyName" : ['#424242', 40, 6],
-            "DamageNum" : ['#424242', 20, 8],
+            "DamageNum" : ['#424242', 15, 10],
 
 
             ### Char Sprites
@@ -357,7 +357,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, damageQueue):
+    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -375,6 +375,7 @@ class gameInstance(Tk):
         self.spriteQueue = spriteQueue
         self.shopQueue = shopQueue
         self.enemyQueue = enemyQueue
+        self.enemyHPQueue = enemyHPQueue
         self.damageQueue = damageQueue
         self.actions = actions(self)
         self.player = player
@@ -521,7 +522,7 @@ class gameInstance(Tk):
         self.textfields["LVL"] = self.frameDict["LVL"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
 
         self.create_canvas(self.frameDict["combat"], "N", bg=self.assets.getAsset("N"), width=self.assets.assets["N"][1]*self.px, height=self.assets.assets["N"][2]*self.px, padx=0, pady=0, relx=0.403, rely=0.2415, anchor=CENTER)
-        self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="white", anchor=SW)
+        self.textfields["N"] = self.frameDict["N"].create_text(0, self.px*5*scaleMul["Stats"][WINDOW_SCALE][0], text="10", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Stats"][WINDOW_SCALE][1]), fill="yellow", anchor=SW)
 
     # create combat elements (sprites, text)
     def create_combat_elements(self):
@@ -531,8 +532,10 @@ class gameInstance(Tk):
         self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
         self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["EnemyName"][1]*self.px, height=self.assets.assets["EnemyName"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.4, anchor=CENTER)
         self.textfields["enemyName"] = self.frameDict["enemyName"].create_text(self.assets.assets["EnemyName"][1]*self.px/2, self.assets.assets["EnemyName"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
-
-        
+        self.create_canvas(self.frameDict["combat"], "enemyHP", width=self.assets.assets["EnemyHP"][1]*self.px, height=self.assets.assets["EnemyHP"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.9, anchor=CENTER)
+        self.textfields["enemyHP"] = self.frameDict["enemyHP"].create_text(self.assets.assets["EnemyHP"][1]*self.px/2, self.assets.assets["EnemyHP"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="HP = 100", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "damageNum", width=self.assets.assets["DamageNum"][1]*self.px, height=self.assets.assets["DamageNum"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.64, rely=0.65, anchor=CENTER)
+        self.textfields["damageNum"] = self.frameDict["damageNum"].create_text(self.assets.assets["DamageNum"][1]*self.px/2, self.assets.assets["DamageNum"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="-99", font=self.assets.getFont("monogramRevised", 2*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
 
         self.update_combat_display()
 
@@ -602,20 +605,24 @@ class gameInstance(Tk):
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
+        if not(self.enemyHPQueue.empty()):
+            status = self.enemyHPQueue.get()
+            self.frameDict["enemyHP"].itemconfig(self.textfields["enemyHP"], text=str(int(status))+" HP")
         if not(self.enemyQueue.empty()):
             status = self.enemyQueue.get()
             self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text=status)
         if not(self.spriteQueue.empty()):
-            status = spriteQueue.get()
+            status = self.spriteQueue.get()
             if status == "enemyKilled":
                 self.toggle_switch_sprites("enemy", False)
                 self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text="")
+                self.frameDict["enemyHP"].itemconfig(self.textfields["enemyHP"], text="")
             elif status == "enemySpawned":
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
                 self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack"))
         if not(self.shopQueue.empty()):
-            status = shopQueue.get()
+            status = self.shopQueue.get()
             if status == "shopOpen":
                 self.actions.keypad_state_change()
                 self.actions.clear_buffer()
@@ -1037,6 +1044,7 @@ def maingame():
         enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)
         enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)
         print("global stage: {}, enemy: {}".format(globalStage,enemyDict))
+        enemyHPQueue.put(enemyDict["HP"])
         spriteQueue.put("enemySpawned")
         enemyQueue.put(enemyName)
         # Setting global time
@@ -1048,7 +1056,7 @@ def maingame():
         enemyDmg = 0
 
         # Add while loop for enemyHP > 0
-        while enemyDict["HP"] >= 0:
+        while enemyDict["HP"] > 0:
             enemyDmg = calcEnemyDmg(enemyDict, globalStage)
 
             while timeRemaining >= 0:
@@ -1084,6 +1092,7 @@ def maingame():
                 '''TEST FUNCTION'''
                 if playerDmg >= enemyDmg:
                     enemyDict["HP"] = int(enemyDict["HP"] - ((finalDmg * enemyDict["Def"]) * playerCritRed))
+                    enemyHPQueue.put(enemyDict["HP"])
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
                 
                 elif playerDmg < enemyDmg:
@@ -1123,18 +1132,19 @@ player = playerClass()
 enemy = enemyClass()
 
 
-def main(queue, spriteQueue, shopQueue, enemyQueue, damageQueue):
+def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue):
     assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, damageQueue)
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue)
     game.mainloop()
 
 queueResult = Queue()
 spriteQueue = Queue()
 shopQueue = Queue()
 enemyQueue = Queue()
+enemyHPQueue = Queue()
 damageQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, damageQueue))
+gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue))
 gui.start()
 
 eternum = Thread(target=maingame)
