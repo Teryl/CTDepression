@@ -1184,8 +1184,10 @@ def upgradeAbility():
                 print("You have upgraded your HP!")
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
-            else:
+            elif player.get_stat("maxHP") == 5:
                 print("You have reached the maximum level for HP!")
+                player.set_stat("HP", 4)
+                player.level_up("maxHP")
                 continue
 
         elif playerUpgradeChoice == "N":
