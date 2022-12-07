@@ -11,7 +11,7 @@ The launcher then executes *main.py*, which contains the bulk of our code.
 2. [Game Engine Documentation](#game-engine-documentation)
 3. [GUI documentation](#gui-documentation)
 4. [Index](#index)
-5. [Dependencies](#dependencies)
+5. [Dependencies](#dependancies)
 
 <br>
 
@@ -31,7 +31,7 @@ Put succinctly, abstraction makes debugging much easier.
 ## Running The Game
 - The following documentation below describes how the code makes the game run.
 
-## Stage Loop:
+## Stage Loop
 1. A number, `randN` is generated using `randomizeN(globalStage, enemyStatlist)`.
     - `randN` is the number displayed on the calculator that the player needs to get
 2. An enemytype is selected for that stage using `randomizeEnemy()`
@@ -48,7 +48,7 @@ Put succinctly, abstraction makes debugging much easier.
     - Player can choose which attribute they want to upgrade using the `upgradeAbility()` function.
 
 
-## Each Turn:
+## Turn Loop
 1. Player damage is calculated using `calcPlayerDmg(timeRemaining, inputPerm, randN)`
     - If inputted equation equals `randN` :
         - `playerDmg = (player.get_statlist("Atk") * timeRemaining)**1.05`
@@ -76,43 +76,23 @@ Put succinctly, abstraction makes debugging much easier.
 <br>
 
 # GUI Documentation
-
-## Imported Modules
-### from time import sleep
-- To buffer timings of visuals / delay mechanics
-
-### from math import *
-- To allow for usage of maths related functions for calculations
-
-### from tkinter import *
-### from tkinter import messagebox
-### from tkinter import font
-### from tkinter.font import Font
-- Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
-
-### import os
-- Built in python library to handle filepaths. Used to reference assets and other files used in the code.
-
-### import sys
-- Allows for passing of command line arguments to assign values to variables in the code from the command line.
-
-### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
-- Python C language interpreter necessary for the importing of custom fonts.
-
 ## Global Variables
 - Determines the properties of the window and also establishes commonly used unit values for late referencing.
 
-## Assets Class (Calc UI and Fight UI)
--  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the assets when needed
+## Assets Class (Calc UI, Fight UI, Char Sprites)
+-  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the required assets when needed
 
 ### Calc UI (Calculator UI) and CalcButtons
 - The assets used for our calculator. they consist of the number and operator buttons, as well as the frame and screen.
 
-### Fight UI (Fight UI)
+### Fight UI
 - The assets used in creating the background and elements for the fight screen
 
+### Char Sprites 
+- The assets which consist of our character and the different enemies
+
 ### Asset Get Method
-- Loads visual assets and allows us to access them,
+- Loads visual assets and allows us to access them, displaying them in the window
 
 ## Fonts
 - Initialises and loads fonts for the calculator. The font used was MonogramRevised, which is a modified TrueType Font.
@@ -133,9 +113,15 @@ Example: Pressing numerical keys on the calculator will cause the respective num
 - It also evaluates equations keyed into the calculator, and returns the result on the calculator screen.\
 Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 10, and then displays 10 on the calculator screen
 
-## Actions Class
- -   Starts the tkinter loop
+- Lastly, using queues, it constantly transfers data between the GUI and main code.\
+Inputs into the GUI numberpad are evaluated and sent back to the main code.\
+Enemy health, enemy sprite data, enemy name data and other miscellaneous data is transferred from the main code into the GUI
 
+## Actions Class
+- Stores all of the basic commands that can be done to modify elements in the GUI. This allows us to call multiple functions per button press to initiate more complex processes simultaniously
+
+## buttonPresses Class
+- Lists and carries out the specified processes that should be undergone when each of the buttons are pressed
 <br>
 
 # Index
@@ -145,6 +131,7 @@ Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 
 | :-------------- | :---------------- | :----------- |
 | `globalNRange`  | list[x,y]         | Range of numbers taken to make a prompt |
 | `globalStage`   | int               | Current stage the player is in |
+| `globalTime`    | int               | Total time 
 
 ### Calculator
 | Variable        | Type              | Description  |
@@ -316,3 +303,35 @@ enemyTypeList = {
 - If `playerDmg` < `enemyDmg`, returns damage done to player:
     - `finalDmg` = `finalDmg` * `playerDict["Def"]` *
 - `calcPlayerCrit(playerDmg, enemyDmg, playerLuck)`
+
+<br>
+
+# Dependancies
+## Imported Modules
+These are the modules we had to import in order for our code to work.
+### from time import sleep
+- To buffer timings of visuals / delay mechanics
+
+### from math import *
+- To allow for usage of maths related functions for calculations
+
+### from tkinter import *
+### from tkinter import messagebox
+### from tkinter import font
+### from tkinter.font import Font
+- Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
+
+### import os
+- Built in python library to handle filepaths. Used to reference assets and other files used in the code.
+
+### import sys
+- Allows for passing of command line arguments to assign values to variables in the code from the command line.
+
+### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+- Python C language interpreter necessary for the importing of custom fonts.
+
+### from threading import Thread, Event
+- Allows us to initiate threads, so that we can simultaniously run the game and GUI.
+
+### from queue import Queue
+- Allows for communications between threads using queues 
