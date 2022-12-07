@@ -872,7 +872,7 @@ class actions():
     
     def evaluate_buffer(self, queueResult):
         try:
-            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").isalnum():
+            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").replace("+1-1", "").replace("+0", "").replace("-0", "").replace("-1+1","").replace("*1", "").replace("/1", "").isalnum():
                 raise CheatException("You can't do that!")
             result = eval(self.game.buffer)
             if not(isinstance(result, int)):
@@ -1194,7 +1194,7 @@ def upgradeAbility():
 
 def playerEndgame():
     print("Game Over! What an L!")
-    os.system("start \"\" https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    os.system("start \"\" https://www.youtube.com/watch?v=xvFZjo5PgG0")
     time.sleep(10)
     print("Now leave my presence, peasant!")
     # os.system("shutdown -l")
