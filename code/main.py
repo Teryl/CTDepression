@@ -126,6 +126,7 @@ WINDOW_TITLE = "Eternal Number Slumber"
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
 GLOBAL_PRECISION = 5
+ANIMATION_SCALE = 0.8
 
 if len(sys.argv) == 2:
     if sys.argv[1] == int(sys.argv[1]) and (sys.argv[1] >= 1 and sys.argv[1] <= 5):
@@ -394,12 +395,12 @@ class assetHandler():
             "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
             "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
-            "Player" : [os.path.join(self.animPath, "0.png"), 4, 60, 20],
+            "Player" : [os.path.join(self.animPath, "1.png"), 4, 60, 20],
 
             "icon" : os.path.join(self.iconPath, ".Titleicon.ico"),
         }
 
-        self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(0, 18)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
+        self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(1, 26)], [75, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 75, 75, 75, 75, 75, 300, 75, 75, 75, 75, 75, 75, 75, 75]
     
         
 
@@ -870,7 +871,7 @@ class actions():
     
     def evaluate_buffer(self, queueResult):
         try:
-            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").isalnum():
+            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").replace("{}/1".format(''), "").replace("+1-1", "").isalnum():
                 raise CheatException("You can't do that!")
             result = eval(self.game.buffer)
             if not(isinstance(result, int)):
@@ -908,7 +909,7 @@ class actions():
     def do_animate(self, idFrame, framesArr, delayArr, frame=0):
         if frame < len(framesArr):
             self.game.update_animation(idFrame, framesArr[frame])
-            self.game.after(delayArr[frame], lambda: self.do_animate(idFrame, framesArr, delayArr, frame+1))
+            self.game.after(int(delayArr[frame] * ANIMATION_SCALE), lambda: self.do_animate(idFrame, framesArr, delayArr, frame+1))
         else:
             self.toggle_switch_sprites(idFrame, True, idFrame)
 
