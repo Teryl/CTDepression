@@ -1196,7 +1196,7 @@ def maingame():
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
 
                 elif playerDmg < enemyDmg:
-                    if inputPerm != -999999
+                    if inputPerm != -999999:
                         if correct == False:
                             spriteQueue.put("playerHit")
                         else:
