@@ -7,6 +7,7 @@ import os
 import sys
 
 WINDOW_SIZE = (765, 765)
+HOME_DIR = "./code/"
 SPRITE_DIR = "./assets/LauncherSprites/"
 ANIM_DIR = "./assets/LauncherSprites/logo_frames/"
 
@@ -50,7 +51,7 @@ class launcher():
         self.itemDict["Button Down"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Button Down"], bg="black", borderwidth = 0, highlightthickness = 0, command= lambda: self.change_scaling(-1))
         self.itemDict["Button Down"].place(relx = 0.775, rely = 0.900, anchor = CENTER)
 
-        self.imageBuffer[""]
+        #self.imageBuffer[""]
 
 
         self.root.after(1000, lambda: self.animateLoopingSplash())
@@ -58,7 +59,8 @@ class launcher():
 
     def begin(self):
         self.root.destroy()
-        import main
+        ###run main.py
+        
 
     def keepOnTop(self):
         self.root.attributes("-topmost", True)

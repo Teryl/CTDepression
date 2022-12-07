@@ -1246,19 +1246,21 @@ def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, c
     metaQueue.put(game)
     game.mainloop()
 
-metaQueue = Queue()
-queueResult = Queue()
-spriteQueue = Queue()
-shopQueue = Queue()
-enemyQueue = Queue()
-enemyHPQueue = Queue()
-damageQueue = Queue()
-critQueue = Queue()
+def mainmain(SCALE):
+    WINDOW_SCALE = SCALE
+    metaQueue = Queue()
+    queueResult = Queue()
+    spriteQueue = Queue()
+    shopQueue = Queue()
+    enemyQueue = Queue()
+    enemyHPQueue = Queue()
+    damageQueue = Queue()
+    critQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue))
-gui.start()
+    gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue))
+    gui.start()
 
-clock = metaQueue.get().clockTime
+    clock = metaQueue.get().clockTime
 
-eternum = Thread(target=maingame)
-eternum.start()
+    eternum = Thread(target=maingame)
+    eternum.start()
