@@ -53,7 +53,7 @@ class playerClass():
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:2, 2:4, 3:6, 4:8, 5:10}, 
-            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
+            "Luck": {0:50, 1:98, 2:96, 3:94, 4:92, 5:90}
         }
         self.playerDict = {
             "maxHP": 0,
@@ -641,13 +641,13 @@ class gameInstance(Tk):
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
                 self.after(0, self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack")))
-                self.after(2500, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(ceil(damageQueue.get())), delay=125))
+                self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(ceil(damageQueue.get())), delay=125))
             elif status == "playerHit":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=200, frame=6, endstate="SHOW"))
-                self.after(1500, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
+                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
             elif status == "timeout":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="OUT OF TIME", delay=300, frame=6, endstate="SHOW"))
-                self.after(2000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
+                self.after(1800, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
                 
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
@@ -1142,7 +1142,7 @@ def maingame():
             while True:
                 clock.set_max_start(globalTime)
                 # Set a random N
-                randN = randomizeN(globalStage, enemy.enemyStatlist)
+                randN = int(randomizeN(globalStage, enemy.enemyStatlist))
                 player.set_stat("N", randN)
                 print("n:",randN)
                 critBool = isCrit(player.get_statlist("Luck"))
@@ -1153,7 +1153,7 @@ def maingame():
                 print(inputPerm)
                 if inputPerm == -999999:
                     spriteQueue.put("timeout")
-                    time.sleep(1)
+                    time.sleep(2)
                     
                 if inputPerm == "quit":
                     exit()
