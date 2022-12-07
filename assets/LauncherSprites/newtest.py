@@ -15,7 +15,7 @@ class LauncherApp:
         frame3 = tk.Frame(frame2)
         frame3.configure(background="#000000", height=200, width=200)
         self.play = tk.Button(frame3)
-        self.img_01_Button_Play = tk.PhotoImage(file=os.path.abspath("./01_Button_Play.png"))
+        self.img_01_Button_Play = tk.PhotoImage(file=os.path.abspath("./ctd1D/assets/LauncherSprites/01_Button_Play.png"))
         self.play.configure(
             activebackground="#000000",
             activeforeground="#000000",
@@ -30,7 +30,7 @@ class LauncherApp:
             relief="raised")
         self.play.grid(column=0, padx=10, row=0)
         self.exit = tk.Button(frame3)
-        self.img_02_Button_Quit = tk.PhotoImage(file=os.path.abspath("./02_Button_Quit.png"))
+        self.img_02_Button_Quit = tk.PhotoImage(file=os.path.abspath("./ctd1D/assets/LauncherSprites/02_Button_Quit.png"))
         self.exit.configure(
             activebackground="#000000",
             activeforeground="#000000",
@@ -59,7 +59,7 @@ class LauncherApp:
             takefocus=False)
         self.background.grid(column=0, row=0)
         self.title = tk.Label(frame2)
-        self.img__Logo_Black = tk.PhotoImage(file=os.path.abspath(".Logo_Black.png"))
+        self.img__Logo_Black = tk.PhotoImage(file=os.path.abspath("./ctd1D/assets/LauncherSprites/.Logo_Black.png"))
         self.title.configure(
             activebackground="#000000",
             anchor="center",
@@ -72,7 +72,7 @@ class LauncherApp:
         self.resizer = tk.Frame(frame2)
         self.resizer.configure(background="#000000", height=200, width=200)
         button5 = tk.Button(self.resizer)
-        self.img_03_Button_Up = tk.PhotoImage(file=os.path.abspath("./03_Button_Up.png"))
+        self.img_03_Button_Up = tk.PhotoImage(file=os.path.abspath("./ctd1D/assets/LauncherSprites/03_Button_Up.png"))
         button5.configure(
             activebackground="#000000",
             activeforeground="#000000",
@@ -83,7 +83,7 @@ class LauncherApp:
             relief="raised")
         button5.grid(column=0, row=0, sticky="ew")
         button6 = tk.Button(self.resizer)
-        self.img_05_Button_Down = tk.PhotoImage(file=os.path.abspath("./05_Button_Down.png"))
+        self.img_05_Button_Down = tk.PhotoImage(file=os.path.abspath("./ctd1D/assets/LauncherSprites/05_Button_Down.png"))
         button6.configure(
             activebackground="#000000",
             background="#000000",
