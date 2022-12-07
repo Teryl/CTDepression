@@ -53,7 +53,7 @@ class playerClass():
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
             "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
-            }
+        }
         self.playerDict = {
             "maxHP": 0,
             "HP": 0,
@@ -63,7 +63,8 @@ class playerClass():
             "Luck": 0,
             "LVL": globalStage,
             "N": 0,
-            "Skill": 0}
+            "Skill": 0
+        }
 
         self.set_stat("HP", self.get_statlist("maxHP"))
 
@@ -118,54 +119,54 @@ class enemyClass():
             "Def":{0:1.25,1:1,2:0.75},
             "Time": {0:10,1:15,2:20},
             "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
-            }
+        }
         self.enemyTypeList = {
             "man":{
-            "Name": "man",
-            "HP": self.enemyStatlist["HP"][1],
-            "Atk": self.enemyStatlist["Atk"][1],
-            "Def": self.enemyStatlist["Def"][1],
-            "Time": self.enemyStatlist["Time"][1]
-            }, 
+                "Name": "man",
+                "HP": self.enemyStatlist["HP"][1],
+                "Atk": self.enemyStatlist["Atk"][1],
+                "Def": self.enemyStatlist["Def"][1],
+                "Time": self.enemyStatlist["Time"][1]
+            },
 
             "Cancer":{
-            "Name": "Cancer Patient",
-            "HP": self.enemyStatlist["HP"][1],
-            "Atk": self.enemyStatlist["Atk"][1],
-            "Def": self.enemyStatlist["Def"][0],
-            "Time": self.enemyStatlist["Time"][0]
+                "Name": "Cancer Patient",
+                "HP": self.enemyStatlist["HP"][1],
+                "Atk": self.enemyStatlist["Atk"][1],
+                "Def": self.enemyStatlist["Def"][0],
+                "Time": self.enemyStatlist["Time"][0]
             },
 
             "Florida":{
-            "Name": "Florida Man",
-            "HP": self.enemyStatlist["HP"][2],
-            "Atk": self.enemyStatlist["Atk"][0],
-            "Def": self.enemyStatlist["Def"][1],
-            "Time": self.enemyStatlist["Time"][1]
+                "Name": "Florida Man",
+                "HP": self.enemyStatlist["HP"][2],
+                "Atk": self.enemyStatlist["Atk"][0],
+                "Def": self.enemyStatlist["Def"][1],
+                "Time": self.enemyStatlist["Time"][1]
             },
 
             "Bepis":{
-            "Name": "Pepsi Man",
-            "HP": self.enemyStatlist["HP"][1],
-            "Atk": self.enemyStatlist["Atk"][2],
-            "Def": self.enemyStatlist["Def"][0],
-            "Time": self.enemyStatlist["Time"][1]
+                "Name": "Pepsi Man",
+                "HP": self.enemyStatlist["HP"][1],
+                "Atk": self.enemyStatlist["Atk"][2],
+                "Def": self.enemyStatlist["Def"][0],
+                "Time": self.enemyStatlist["Time"][1]
             },
 
             "Therock":{
-            "Name": "The Rock",
-            "HP": self.enemyStatlist["HP"][1],
-            "Atk": self.enemyStatlist["Atk"][1],
-            "Def": self.enemyStatlist["Def"][2],
-            "Time": self.enemyStatlist["Time"][2]
+                "Name": "The Rock",
+                "HP": self.enemyStatlist["HP"][1],
+                "Atk": self.enemyStatlist["Atk"][1],
+                "Def": self.enemyStatlist["Def"][2],
+                "Time": self.enemyStatlist["Time"][2]
             },
 
             "Kanye":{
-            "Name": "Kanye East",
-            "HP": self.enemyStatlist["HP"][0],
-            "Atk": self.enemyStatlist["Atk"][2],
-            "Def": self.enemyStatlist["Def"][1],
-            "Time": self.enemyStatlist["Time"][1]
+                "Name": "Kanye East",
+                "HP": self.enemyStatlist["HP"][0],
+                "Atk": self.enemyStatlist["Atk"][2],
+                "Def": self.enemyStatlist["Def"][1],
+                "Time": self.enemyStatlist["Time"][1]
             }
         }
         self.enemyDict = self.enemyTypeList["man"]
@@ -856,7 +857,7 @@ class buttonPresses():
     def press_BlankPlus(self):
         pass
 
-    
+
 
 
 # Randomize Number Range:
