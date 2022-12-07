@@ -71,6 +71,7 @@ Put succinctly, abstraction makes debugging much easier.
 ## Game Over
 - If `player.get_stat("HP") = 0`, then the function `playerEndgame()` is run and the game ends.
 
+## Visual Representation of Code
 <img src="assets/loops flowchart.png" width=""/>
 <br>
 
