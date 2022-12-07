@@ -11,7 +11,7 @@ The launcher then executes *main.py*, which contains the bulk of our code.
 2. [Game Engine Documentation](#game-engine-documentation)
 3. [GUI documentation](#gui-documentation)
 4. [Index](#index)
-5. [Dependencies](#dependencies)
+5. [Dependencies](#dependancies)
 
 <br>
 
@@ -31,7 +31,7 @@ Put succinctly, abstraction makes debugging much easier.
 ## Running The Game
 - The following documentation below describes how the code makes the game run.
 
-## Stage Loop:
+## Stage Loop
 1. A number, `randN` is generated using `randomizeN(globalStage, enemyStatlist)`.
     - `randN` is the number displayed on the calculator that the player needs to get
 2. An enemytype is selected for that stage using `randomizeEnemy()`
@@ -48,7 +48,7 @@ Put succinctly, abstraction makes debugging much easier.
     - Player can choose which attribute they want to upgrade using the `upgradeAbility()` function.
 
 
-## Each Turn:
+## Turn Loop
 1. Player damage is calculated using `calcPlayerDmg(timeRemaining, inputPerm, randN)`
     - If inputted equation equals `randN` :
         - `playerDmg = (player.get_statlist("Atk") * timeRemaining)**1.05`
@@ -76,35 +76,6 @@ Put succinctly, abstraction makes debugging much easier.
 <br>
 
 # GUI Documentation
-
-## Imported Modules
-### from time import sleep
-- To buffer timings of visuals / delay mechanics
-
-### from math import *
-- To allow for usage of maths related functions for calculations
-
-### from tkinter import *
-### from tkinter import messagebox
-### from tkinter import font
-### from tkinter.font import Font
-- Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
-
-### import os
-- Built in python library to handle filepaths. Used to reference assets and other files used in the code.
-
-### import sys
-- Allows for passing of command line arguments to assign values to variables in the code from the command line.
-
-### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
-- Python C language interpreter necessary for the importing of custom fonts.
-
-### from threading import Thread, Event
-- Allows us to initiate threads, so that we can simultaniously run the game and GUI.
-
-### from queue import Queue
-- Allows for communications between threads using queues 
-
 ## Global Variables
 - Determines the properties of the window and also establishes commonly used unit values for late referencing.
 
@@ -332,3 +303,35 @@ enemyTypeList = {
 - If `playerDmg` < `enemyDmg`, returns damage done to player:
     - `finalDmg` = `finalDmg` * `playerDict["Def"]` *
 - `calcPlayerCrit(playerDmg, enemyDmg, playerLuck)`
+
+<br>
+
+# Dependancies
+## Imported Modules
+These are the modules we had to import in order for our code to work.
+### from time import sleep
+- To buffer timings of visuals / delay mechanics
+
+### from math import *
+- To allow for usage of maths related functions for calculations
+
+### from tkinter import *
+### from tkinter import messagebox
+### from tkinter import font
+### from tkinter.font import Font
+- Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
+
+### import os
+- Built in python library to handle filepaths. Used to reference assets and other files used in the code.
+
+### import sys
+- Allows for passing of command line arguments to assign values to variables in the code from the command line.
+
+### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+- Python C language interpreter necessary for the importing of custom fonts.
+
+### from threading import Thread, Event
+- Allows us to initiate threads, so that we can simultaniously run the game and GUI.
+
+### from queue import Queue
+- Allows for communications between threads using queues 
