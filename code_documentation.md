@@ -28,6 +28,9 @@ Put succinctly, abstraction makes debugging much easier.
 
 # Game Engine Documentation
 
+## Running The Game
+- The following documentation below describes how the code makes the game run.
+
 ## Stage Loop:
 1. A number, `randN` is generated using `randomizeN(globalStage, enemyStatlist)`.
     - `randN` is the number displayed on the calculator that the player needs to get
@@ -63,40 +66,12 @@ Put succinctly, abstraction makes debugging much easier.
     - If `playerDmg < enemyDmg`, player receives damage from enemy 
         - Damage to player = `(abs(finalDmg) * player.get_statlist("Def")) * playerCritRed))`
         - Player HP updated : `player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))`
-       
-## Initialising playerStatlist and playerDict
-- `playerDict` is a dictionary indicating the current value of each player attribute.
-- `playerStatlist` is a dictionary containing the attribute values for each upgrade level
-
-## Initialising enemyNamelist, enemyStatList, enemyTypelist, enemyDict
-- `enemyNamelist` is the list of possible names for the default enemy classified as 'man'
-- `enemyStatlist` is a dictionary containing the attribute values for each level(ranges from 0 - 2. \
-An attribute level of 0 means that the attribute is of a lower value, while the converse applies for an attribute level of 2
-- `enemyTypelist` is a dictionary defining the attribute values of each attribute for each enemy type.
 
 
-## Running The Game
-- The following documentation below describes how the code makes the game run.
+## Game Over
+- If `player.get_stat("HP") = 0`, then the function `playerEndgame()` is run and the game ends.
 
-## Stage Progress
-- When the game starts, initalises the variable `globalStage` as 1.
-- While loop is set up such that as long as HP value of player is greater than 0, the game will continue.
-- Attributes of the enemy will increase by a multiple each round
-- Time remaining in each round (`timeRemaining`) is calculated using sum of time attributes in `playerDict` and `enemyDict`.
-
-## Fighting Process
-- `randomizeN` generates a random number within a range and randomizeEnemy selects a random enemy for each round
-- `calcEnemyDmg`,`calcPlayerDmg` tabulates the amount of damage the enemy and the player do respectively. 
-- Using the `time.sleep(1)` function, `timeRemaining` decreases by a value of 1 each second
-- Total damage done is the product of the `timeRemaining` after the equation is submitted and the difference between `calcEnemyDmg` and `calcPlayerDmg`.
-
-## Progress and Skill Points
-- For the round, if enemy HP drops to 0, the process repeats and another enemy is selected.
-- Skill point value is increased by 1 for the player, and the `upgradeAbility` function is run.
-
-## Finishing the Game
-- If player HP drops to 0, then the function `playerEndgame()` is run and the game ends.
-
+<img src="assets/loops flowchart.png" width=""/>
 <br>
 
 # GUI Documentation
