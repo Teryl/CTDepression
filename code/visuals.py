@@ -52,8 +52,8 @@ class playerClass():
             "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
-            "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
-            "Luck": {0:0, 1:98, 2:96, 3:94, 4:92, 5:90}
+            "Time": {0:0, 1:2, 2:4, 3:6, 4:8, 5:10}, 
+            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
         }
         self.playerDict = {
             "maxHP": 0,
@@ -364,7 +364,7 @@ class gameInstance(Tk):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
-        self.name = title
+        self.title = title
         self.assets = assets
         self.frameDict = {}
         self.container = []
@@ -641,10 +641,10 @@ class gameInstance(Tk):
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
                 self.after(0, self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack")))
-                self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(ceil(damageQueue.get())), delay=125))
+                self.after(2500, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(ceil(damageQueue.get())), delay=125))
             elif status == "playerHit":
-                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=180, frame=6, endstate="SHOW"))
-                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
+                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=200, frame=6, endstate="SHOW"))
+                self.after(1500, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
             elif status == "timeout":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="OUT OF TIME", delay=300, frame=6, endstate="SHOW"))
                 self.after(2000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
@@ -671,7 +671,7 @@ class gameInstance(Tk):
         
         self.increment_timers()
 
-        self.after(10, self.update_combat_display)
+        self.after(5, self.update_combat_display)
 
 
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
@@ -689,25 +689,27 @@ class gameInstance(Tk):
             self.buffer = 0
             self.max = 1
             self.percent = 100
+            self.stop = True
 
 
         def start_timer(self, time):
             self.time = time
             self.percent = self.time/self.max * 100
-            if self.time == -999:
+            if self.stop:
                 return
             if self.time <= 0:
                 self.host.queueResult.put(-999999)
                 return
-            self.host.after(10, self.start_timer, self.time-0.01)
+            self.host.after(10, self.start_timer, self.time-0.0145)
         
         def stop_get_time(self):
             self.buffer = copy.deepcopy(self.time)
-            self.time = -999
+            self.stop = True
             return self.buffer
         
         def set_max_start(self, max):
             self.max = max
+            self.stop = False
             self.start_timer(max)
 
         
@@ -1149,17 +1151,15 @@ def maingame():
                 # Prompt user input 
                 inputPerm = queueResult.get()
                 print(inputPerm)
-                if inputPerm == randN:
-                    spriteQueue.put("enemyHit")
-                elif inputPerm != -999999:
-                    spriteQueue.put("playerHit")
-                    time.sleep(3)
-                else:
+                if inputPerm == -999999:
                     spriteQueue.put("timeout")
+                    time.sleep(1)
+                    
                 if inputPerm == "quit":
                     exit()
 
                 timeRemaining = clock.stop_get_time()
+                print("Time Remaining: ", timeRemaining)
                 # Calculate damage done by player, if wrong, playerDmg = 0    
                 playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
 
@@ -1177,13 +1177,17 @@ def maingame():
                 
                 '''TEST FUNCTION'''
                 if playerDmg >= enemyDmg:
+                    if inputPerm != -999999:
+                        spriteQueue.put("enemyHit")
                     enemyDict["HP"] = int(enemyDict["HP"] - ((finalDmg * enemyDict["Def"]) * playerCritRed))
                     damageQueue.put(((finalDmg * enemyDict["Def"]) * playerCritRed))
-                    time.sleep(2.5)
+                    time.sleep(3)
                     enemyHPQueue.put(enemyDict["HP"])
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
 
                 elif playerDmg < enemyDmg:
+                    if inputPerm != -999999:
+                        spriteQueue.put("playerHit")
                     player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))
                     damageQueue.put(((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed))
                     time.sleep(2)
@@ -1228,6 +1232,7 @@ def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, c
     game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue)
     metaQueue.put(game)
     game.mainloop()
+
 metaQueue = Queue()
 queueResult = Queue()
 spriteQueue = Queue()
