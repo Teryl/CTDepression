@@ -6,7 +6,7 @@ from tkinter import *
 import os
 import sys
 
-WINDOW_SIZE = (765, 765)
+WINDOW_SIZE_LAUNCHER_LAUNCHER = (765, 765)
 HOME_DIR = "./code/"
 SPRITE_DIR = "./assets/LauncherSprites/"
 ANIM_DIR = "./assets/LauncherSprites/logo_frames/"
@@ -16,7 +16,7 @@ class launcher():
         self.root = Tk()
         self.root.title("ENSLauncher")
         self.root.resizable(False, False)
-        self.root.geometry("{}x{}".format(WINDOW_SIZE[0], WINDOW_SIZE[1]))
+        self.root.geometry("{}x{}".format(WINDOW_SIZE_LAUNCHER[0], WINDOW_SIZE_LAUNCHER[1]))
         self.root.overrideredirect(True)
         self.root.configure(background="black")
         self.itemDict = {}
@@ -24,15 +24,15 @@ class launcher():
         self.root.bind("<Escape>", lambda e: self.root.destroy())
         
 
-        x = (self.root.winfo_screenwidth()/2) - (WINDOW_SIZE[0]/2)
-        y = (self.root.winfo_screenheight()/2) - (WINDOW_SIZE[1]/2)
-        self.root.geometry('%dx%d+%d+%d' % (WINDOW_SIZE[0], WINDOW_SIZE[1], x, y))
+        x = (self.root.winfo_screenwidth()/2) - (WINDOW_SIZE_LAUNCHER[0]/2)
+        y = (self.root.winfo_screenheight()/2) - (WINDOW_SIZE_LAUNCHER[1]/2)
+        self.root.geometry('%dx%d+%d+%d' % (WINDOW_SIZE_LAUNCHER[0], WINDOW_SIZE_LAUNCHER[1], x, y))
 
         self.initialFrames = [PhotoImage(file = os.path.abspath(os.path.join(ANIM_DIR, str(i) + ".png"))).subsample(2) for i in range(18)]
         self.loopingFrames = [PhotoImage(file = os.path.abspath(os.path.join(ANIM_DIR, str(i) + ".png"))).subsample(2) for i in range(18, 51)]
 
-        self.loopsplash = Canvas(self.root, width = WINDOW_SIZE[0], height = WINDOW_SIZE[1], background="black", highlightthickness=0, bd=0)
-        self.loopingAnim = self.loopsplash.create_image(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2, image = self.initialFrames[0], anchor = CENTER)
+        self.loopsplash = Canvas(self.root, width = WINDOW_SIZE_LAUNCHER[0], height = WINDOW_SIZE_LAUNCHER[1], background="black", highlightthickness=0, bd=0)
+        self.loopingAnim = self.loopsplash.create_image(WINDOW_SIZE_LAUNCHER[0]/2, WINDOW_SIZE_LAUNCHER[1]/2, image = self.initialFrames[0], anchor = CENTER)
         self.loopsplash.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
         self.imageBuffer["Start Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "01_Button_Play.png"))).zoom(6))
@@ -60,7 +60,7 @@ class launcher():
     def begin(self):
         self.root.destroy()
         ###run main.py
-        
+
 
     def keepOnTop(self):
         self.root.attributes("-topmost", True)
