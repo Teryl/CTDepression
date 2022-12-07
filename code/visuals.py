@@ -364,7 +364,7 @@ class gameInstance(Tk):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
-        self.title = title
+        self.title(title)
         self.assets = assets
         self.frameDict = {}
         self.container = []
