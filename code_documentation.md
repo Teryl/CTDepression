@@ -28,65 +28,51 @@ Put succinctly, abstraction makes debugging much easier.
 
 # Game Engine Documentation
 
-## Initialising playerStatlist and playerDict
-- `playerDict` is a dictionary indicating the current value of each player attribute.
-- `playerStatlist` is a dictionary containing the attribute values for each upgrade level
-
-## Initialising enemyNamelist, enemyStatList, enemyTypelist, enemyDict
-- `enemyNamelist` is the list of possible names for the default enemy classified as 'man'
-- `enemyStatlist` is a dictionary containing the attribute values for each level(ranges from 0 - 2. \
-An attribute level of 0 means that the attribute is of a lower value, while the converse applies for an attribute level of 2
-- `enemyTypelist` is a dictionary defining the attribute values of each attribute for each enemy type.
-
-## Defining Functions
-### Randomising Number Range (`randomizeN`)
-- Randomises the number that the player has to get using the calculator. The value of the number falls within a range, and this range increases as the stage number increases.
-
-### Randomising Enemy Type (`randomizeEnemy`)
-- Randomises the enemy faced each stage. There is a greater chance to face the 'man' enemy type as compared to the other enemy types.
-
-### Calculating Enemy Damage (`calcEnemyDmg`)
-- Calculates the enemy damage per round based on the enemy's atk attribute value and the stage number
-
-### Calculating Damage Done By Player Per Attack (`calcPlayerDmg`)
-- Calculates the damage done by the player per attack, based on the player's attack attribute and the time remaining in the round. Finding an equation which equals the value of the displayed number on the calculator would result in more damage being done.
-- Giving an equation which does not equal the value of the given number would result in the player's damage being 0 for that round.
-
-### Calculating Critical Damage or Damage Reduction (`calcPlayerCrit`)
-- Randomly generates a number between 0 and 100. If this number generated is greater than the luck attribute value (starts at 100 and decreases by 2 per attribute level), then for that round:\
-If player damage > enemy damage, the player gets a 1.6 times multiplier on damage.\
-If player damage < enemy damage, the player gets a 0.6 times multiplier on damage received.
-
-### Upgrading Abilities (`upgradeAbility`)
-- Players will gain a skill point for each stage they clear. When the number of skill points they have is greater than 0, they will be given the choice to upgrade any one of their attributes. 
-- Choosing to upgrade an attribute will increase the selected attribute value by 1 in the playerDict, which will increase the value of that attribute in accordance to the values given in the `playerStatlist` dictionary.
-
-### Ending The Game (`playerEndgame`)
-- Happens once player HP attribute reaches 0 in `playerDict`.
-- Endgame sequence occurs once this function is called.
-
 ## Running The Game
 - The following documentation below describes how the code makes the game run.
 
-## Stage Progress
-- When the game starts, initalises the variable `globalStage` as 1.
-- While loop is set up such that as long as HP value of player is greater than 0, the game will continue.
-- Attributes of the enemy will increase by a multiple each round
-- Time remaining in each round (`timeRemaining`) is calculated using sum of time attributes in `playerDict` and `enemyDict`.
+## Stage Loop:
+1. A number, `randN` is generated using `randomizeN(globalStage, enemyStatlist)`.
+    - `randN` is the number displayed on the calculator that the player needs to get
+2. An enemytype is selected for that stage using `randomizeEnemy()`
+    - `randomizeEnemy()`selects an enemy type, and gets the enemy attributes from the `enemyTypeList` dictionary
+3. Enemy damage is calculated using `calcEnemyDmg(enemyDict, globalStage)`
+    - `enemyDmg = enemyDict["Atk"] * globalStage`
+4. Turn Loop starts and repeats until `enemyDict["HP"] = 0`
+5. `globalStage` increases by 1
+6. Enemies' attributes are updated in the `enemyDict` dictionary in accordance to the value of `globalStage` increasing by 1
+    - `enemyDict["HP"] = enemyDict["HP"] * (globalStage**1.07 + 10)`
+    - `enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)`
+    - `enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)`
+7. Player gains 1 coin that they can use in the upgrade shop or choose to save for later rounds
+    - Player can choose which attribute they want to upgrade using the `upgradeAbility()` function.
 
-## Fighting Process
-- `randomizeN` generates a random number within a range and randomizeEnemy selects a random enemy for each round
-- `calcEnemyDmg`,`calcPlayerDmg` tabulates the amount of damage the enemy and the player do respectively. 
-- Using the `time.sleep(1)` function, `timeRemaining` decreases by a value of 1 each second
-- Total damage done is the product of the `timeRemaining` after the equation is submitted and the difference between `calcEnemyDmg` and `calcPlayerDmg`.
 
-## Progress and Skill Points
-- For the round, if enemy HP drops to 0, the process repeats and another enemy is selected.
-- Skill point value is increased by 1 for the player, and the `upgradeAbility` function is run.
+## Each Turn:
+1. Player damage is calculated using `calcPlayerDmg(timeRemaining, inputPerm, randN)`
+    - If inputted equation equals `randN` :
+        - `playerDmg = (player.get_statlist("Atk") * timeRemaining)**1.05`
+    - If inputted equation does not equal `randN` :
+        - `playerDmg = 0`
+2. Determine if critical / damage reduction is applied using `calcPlayerCrit(playerDmg, enemyDmg, playerLuck)`
+    - If luck test fails, `playerCritRed` multiplier = 1
+    - If luck test passes,
+        - If `playerDmg > enemyDmg`, critical damage applies, `playerCritRed` multiplier = 1.6
+        - If `playerDmg < enemyDmg`, damage reduction applies, `playerCritRed` multiplier = 0.6
+3. Final damage is calculated 
+    - If `playerDmg > enemyDmg`, player deals damage to enemy
+        - Damage to enemy = `(finalDmg * enemyDict["Def"]) * playerCritRed)`
+        - Enemy HP updated : `enemyDict["HP"] = int(enemyDict["HP"] - ((finalDmg * enemyDict["Def"]) * playerCritRed))`
+    - If `playerDmg < enemyDmg`, player receives damage from enemy 
+        - Damage to player = `(abs(finalDmg) * player.get_statlist("Def")) * playerCritRed))`
+        - Player HP updated : `player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))`
 
-## Finishing the Game
-- If player HP drops to 0, then the function `playerEndgame()` is run and the game ends.
 
+## Game Over
+- If `player.get_stat("HP") = 0`, then the function `playerEndgame()` is run and the game ends.
+
+## Visual Representation of Code
+<img src="assets/loops flowchart.png" width=""/>
 <br>
 
 # GUI Documentation
@@ -281,7 +267,7 @@ enemyTypeList = {
 
 <br>
 
-`randomizeN(globalNRange)`
+`randomizeN(globalStage, enemyStatlist)`
 - Randomly selects a number from the random number range. 
 - The range increases as `globalStage` increases
 - Returns the number, `randN`
