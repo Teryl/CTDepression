@@ -1,20 +1,32 @@
 # Code Documentation
+Welcome! This is the documentation for our game and all related Python code.
 
-## Conventions
-- We chose to utilise the camelCase naming system to name our functions, as it is faster to type, and easier to read in paragraphs with multiple functions.
-- We decided on the following naming convention: [(function type)(function use)] to increase clarity of our code. Function type indicates the general category of the function.
-- We also made sure to avoid hardcoding by using functions instead of constants. We have done so in order to:
-  1. Increase versatility of code - Should we need to make changes, they can be implemented a lot easier than if they were hardcoded.
-  2. Increase clarity - As all functions are named, the purpose of each value is clearer. Thus while troubleshooting, we do not have to spend as much time figuring out what each value means
+*Eternal Number Slumber* is launched by executing *launcher.py*, which is used as a title screen, as well as to configure important settings such as window scale.\
+The launcher then executes *main.py*, which contains the bulk of our code.
 
-     Examples:
-     The dictionaries we created for the player and the different enemy types. By doing this, we can simply change the variables in the dictionary directly, instead of going through all of our code and making the changes manually.
+*main.py* is divided into two main portions - the game engine and the GUI. The game engine is created using common Python modules, while the GUI utilises Tkinter.
 
+### Table of Contents
+1. [Programming Conventions and Principles](#programming-conventions-and-principles)
+2. [Game Engine Documentation](#game-engine-documentation)
+3. [GUI documentation](#gui-documentation)
+4. [Index](#index)
+5. [Dependencies](#dependencies)
 
+<br>
 
+# Programming Conventions and Principles
+We chose to utilise the camelCase naming system to name variables and functions, as it is faster to type, and easier to read in snippets with multiple lines.
 
+For functions, we decided on the following naming convention: `[function type + Function use](arguments)` to increase clarity of our code.
 
-# Main Code Explanation
+Using functions instead of constants allows us to avoid hard coding. This increases **flexibility** of code - should we need to make changes, they can be implemented a lot easier than if they were hardcoded. Additionally, this increases **clarity** - as all functions are named, the purpose of each value is clearer.
+
+Put succinctly, abstraction makes debugging much easier.
+
+<br>
+
+# Game Engine Documentation
 
 ## Initialising playerStatlist and playerDict
 - `playerDict` is a dictionary indicating the current value of each player attribute.
@@ -76,9 +88,8 @@ If player damage < enemy damage, the player gets a 0.6 times multiplier on damag
 - If player HP drops to 0, then the function `playerEndgame()` is run and the game ends.
 
 <br>
-<br>
 
-# Visual Code Explanation
+# GUI Documentation
 
 ## Imported Modules
 ### from time import sleep
@@ -139,128 +150,131 @@ Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 
 ## Actions Class
  -   Starts the tkinter loop
 
+<br>
 
-
-
- ## Variable Tables
-
+# Index
+## Variables
 ### Global
-| Variable        | Type              | Description   |
-| :-------------- | :---------------- | :-----------  |
+| Variable        | Type              | Description  |
+| :-------------- | :---------------- | :----------- |
 | `globalNRange`  | list[x,y]         | Range of numbers taken to make a prompt |
 | `globalStage`   | int               | Current stage the player is in |
 
 ### Calculator
-| Variable        | Type              | Description   |
-| :-------------- | :---------------- | :-----------  |
-| `inputPerm`    | str               | Equation entered by player to get number |
-| `randN`    | int               | Random number generated using bounds of `globalNRange` |
-| `timeRemaining`    | int               | Time remaining when player gets the answer |
+| Variable        | Type              | Description  |
+| :-------------- | :---------------- | :----------- |
+| `inputPerm`     | str               | Equation entered by player to get number |
+| `randN`         | int               | Random number generated using bounds of `globalNRange` |
+| `timeRemaining` | int               | Time remaining when player gets the answer |
 
-### Clash
-| Variable        | Type              | Description   | 
-| :-------------- | :---------------- | :-----------  |
+### Game Engine
+| Variable        | Type              | Description  | 
+| :-------------- | :---------------- | :----------- |
 | `enemyDict`     | dict - int        | Current stats of enemy |
 | `enemyStatlist` | dict - dict - int | Values for stats of all enemies |
 | `enemyTypelist` | dict - dict - int | Values for each type of enemy |
 | `enemyDmg`      | int               | Damage done by enemy |
-| `enemyNamelist`      | list               | All possible names "Man" can take:|
+| `enemyNamelist` | list              | All possible names "Man" can take|
 | `playerDict`    | dict - int        | Stats of player currrently |
-| `playerStatlist`|dict - dict - int  | Int value of each stat |
+| `playerStatlist`| dict - dict - int | Int value of each stat |
 | `playerDmg`     | int               | Damage done by player |
-| `playerCritRed`          | int               | Critical/Reduction multiplier |
-| `finalDmg` | int               | Contains the results of the clash |
+| `playerCritRed` | int               | Critical/Reduction multiplier |
+| `finalDmg`      | int               | Contains the results of the clash |
 
 
 ## Dictionaries
-
 ### Player
-
-- playerDict: 
-{<br>
-"HP": playerStatlist["HP"][0], <br>
-"Atk": playerStatlist[Atk"][0], <br>
-"Def": playerStatlist["Def"][0], <br>
-"Time": playerStatlist["Time"][0], <br>
-"Luck": playerStatlist["Luck"][0]<br>
-} <br><i> Default Value </i> <br>
-
-- playerStatlist:
-{<br>
-"HP":{0:15,1:25,2:45,3:65,4:90,5:120}, <br>
-"Atk":{0:1,1:1.2,2:1.4,3:1.6,4:1.8,5:2}, <br>
-"Def":{0:1,1:0.97,2:0.92,3:0.85,4:0.75,5:0.62}, <br>
-"Time": {0:0,1:1,2:2,3:3,4:4,5:5}, <br>
-"Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
-<br>}
-
-### Enemy
-- enemyDict = randomizeEnemy(enemyTypelist) <br>
-     - also apply scalers to Atk, Def and HP stats
-     - enemyDict["Atk"] *= `globalStage`<sup>1.15</sup> /  `globalStage`
-     - enemyDict["Def"] *= `globalStage` / `globalStage`<sup>1.15</sup>
-     - enemyDict["HP"] = ( `enemyDict["HP]` * `globalStage`<sup>1.15</sup> ) + 10
-     
-
-- enemyStatlist:
-     {<br>
-     {"HP":{0:0.75,1:1,2:1.25},
-     <br>
-     {"Atk":{0:0.75,1:1,2,2:1.25},
-     <br>
-     {"Def":{0:1.25,1:1.2,2:0.75},
-     <br>
-     {"Time": {0:10,1:15,2:20},
-     <br>
-     {"NRange": {0:[0,10], 1:[5,25], 2:[25,100], 3:[100,1000]},
-     <br>
-     }
-
-- enemyTypelist:
-{<br>
-     - "man": {<br>
-        "Name": randomizeName(),<br>
-        "HP": enemyStatlist["HP"][1],<br>
-        "Atk": enemyStatlist["Atk"][1],<br>
-        "Def": enemyStatlist["Def"][1],<br>
-        "Time": enemyStatlist["Time"][1]},<br>
-<br>
-     - "cancerpatient": {<br>
-     "Name": "Cancer Patient",<br>
-     "HP": enemyStatlist["HP"][1],<br>
-     "Atk": enemyStatlist["Atk"][1],<br>
-     "Def": enemyStatlist["Def"][0],<br>
-     "Time": enemyStatlist["Time"][0]},<br>
-<br>
-     - "floridaman": {<br>
-     "Name": "Florida Man",<br>
-     "HP": enemyStatlist["HP"][2],<br>
-     "Atk": enemyStatlist["Atk"][0],<br>
-     "Def": enemyStatlist["Def"][1],<br>
-     "Time": enemyStatlist["Time"][1]},<br>
-<br>
-     - "pepsiman": {<br>
-     "Name": "Pepsi Man",<br>
-     "HP": enemyStatlist["HP"][1],<br>
-     "Atk": enemyStatlist["Atk"][2],<br>
-     "Def": enemyStatlist["Def"][0],<br>
-     "Time": enemyStatlist["Time"][1]},<br>
-<br>
-     - "therock": {<br>
-     "Name": "The Rock",<br>
-     "HP": enemyStatlist["HP"][1],<br>
-     "Atk": enemyStatlist["Atk"][1],<br>
-     "Def": enemyStatlist["Def"][2],<br>
-     "Time": enemyStatlist["Time"][2]},
-<br>
+```python
+playerDict = {
+    "maxHP": 0,
+    "HP": 0,
+    "Atk": 0,
+    "Def": 0,
+    "Time": 0,
+    "Luck": 0,
+    "LVL": globalStage,
+    "N": 0,
+    "Skill": 0
 }
+```
+```python
+playerStatlist = {
+    "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
+    "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
+    "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
+    "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
+    "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
+}
+```
+### Enemy
+`enemyDict` is initialised using `enemyDict = enemyTypeList["man"]`.\
+It is then assigned an enemy using the `randomizeEnemy()` function: `enemyDict = randomizeEnemy(enemyTypelist)`.\
+This allows you to get an attribute of the current enemy easily.\
+e.g. `enemyName = enemyDict["Name"]`, `enemyDmg = enemyDict["Atk"] * globalStage`
 
+```python
+enemyStatlist = {
+    "HP":{0:0.25,1:1,2:1.25},
+    "Atk":{0:0.75,1:1,2:1.25},
+    "Def":{0:1.25,1:1,2:0.75},
+    "Time": {0:10,1:15,2:20},
+    "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
+}
+```
+```python
+enemyTypeList = {
+    "man":{
+        "Name": "man",
+        "HP": self.enemyStatlist["HP"][1],
+        "Atk": self.enemyStatlist["Atk"][1],
+        "Def": self.enemyStatlist["Def"][1],
+        "Time": self.enemyStatlist["Time"][1]
+    }, 
 
+    "Cancer":{
+        "Name": "Cancer Patient",
+        "HP": self.enemyStatlist["HP"][1],
+        "Atk": self.enemyStatlist["Atk"][1],
+        "Def": self.enemyStatlist["Def"][0],
+        "Time": self.enemyStatlist["Time"][0]
+    },
+
+    "Florida":{
+        "Name": "Florida Man",
+        "HP": self.enemyStatlist["HP"][2],
+        "Atk": self.enemyStatlist["Atk"][0],
+        "Def": self.enemyStatlist["Def"][1],
+        "Time": self.enemyStatlist["Time"][1]
+    },
+
+    "Bepis":{
+        "Name": "Pepsi Man",
+        "HP": self.enemyStatlist["HP"][1],
+        "Atk": self.enemyStatlist["Atk"][2],
+        "Def": self.enemyStatlist["Def"][0],
+        "Time": self.enemyStatlist["Time"][1]
+    },
+
+    "Therock":{
+        "Name": "The Rock",
+        "HP": self.enemyStatlist["HP"][1],
+        "Atk": self.enemyStatlist["Atk"][1],
+        "Def": self.enemyStatlist["Def"][2],
+        "Time": self.enemyStatlist["Time"][2]
+    },
+
+    "Kanye":{
+        "Name": "Kanye East",
+        "HP": self.enemyStatlist["HP"][0],
+        "Atk": self.enemyStatlist["Atk"][2],
+        "Def": self.enemyStatlist["Def"][1],
+        "Time": self.enemyStatlist["Time"][1]
+    }
+}
+```
 
 ## Functions
-
 ### Calculator
-
 - randomizeEnemy(`enemyTypelist`):
     - Randomly selects an enemy from the enemy type list
     - Returns the enemy dictionary, `enemyDict`
@@ -269,14 +283,12 @@ Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 
      - Randomly selects a number from the random number range
      - Returns the number, `randN`
 
-
 - calcEnemyDmg(`enemyDict, globalStage`):
      - Calculates the damage done by the enemy
      - Returns the damage done, `enemyDmg`
           - `enemyDmg` = `enemyDict["Atk"]` * `globalStage`<sup>1.2</sup>
-     
-### Clash
 
+### Clash
 - calcEnemyHP(`enemyDict`, `globalStage`):
      - Calculates the HP of the enemy
      - Returns the HP of the enemy, `enemyHP`
