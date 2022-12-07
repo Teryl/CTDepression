@@ -35,10 +35,23 @@ class launcher():
         self.loopsplash.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
         self.imageBuffer["Start Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "01_Button_Play.png"))).zoom(6))
-        self.itemDict["Start Arrow"] = Button(self.root, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0,command = lambda: self.begin())
-        self.itemDict["Start Arrow"].place(relx = 0.3, rely = 0.85, anchor = CENTER)
-       
+        self.itemDict["Start Arrow"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0,command = lambda: self.begin())
+        self.itemDict["Start Arrow"].place(relx = 0.25, rely = 0.7, anchor = CENTER)
+
+        self.imageBuffer["Exit Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "02_Button_Quit.png"))).zoom(6))
+        self.itemDict["Exit Arrow"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Exit Arrow"], bg="black", borderwidth = 0, highlightthickness = 0, command = lambda: self.root.destroy())
+        self.itemDict["Exit Arrow"].place(relx = 0.25, rely = 0.85, anchor = CENTER)
         
+        self.imageBuffer["Button Up"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "03_Button_Up.png"))).zoom(6))
+        self.itemDict["Button Up"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Button Up"], bg="black", borderwidth = 0, highlightthickness = 0, command= lambda: self.change_scaling(1))
+        self.itemDict["Button Up"].place(relx = 0.775, rely = 0.650, anchor = CENTER)
+
+        self.imageBuffer["Button Down"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "05_Button_Down.png"))).zoom(6))
+        self.itemDict["Button Down"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Button Down"], bg="black", borderwidth = 0, highlightthickness = 0, command= lambda: self.change_scaling(-1))
+        self.itemDict["Button Down"].place(relx = 0.775, rely = 0.900, anchor = CENTER)
+
+        self.imageBuffer[""]
+
 
         self.root.after(1000, lambda: self.animateLoopingSplash())
         self.keepOnTop()
@@ -56,13 +69,13 @@ class launcher():
         if frame < 18:
             self.loopsplash.itemconfig(self.loopingAnim, image = self.initialFrames[frame])
             self.loopsplash.update()
-            self.root.after(50, lambda: self.animateLoopingSplash(frame + 1))
+            self.root.after(40, lambda: self.animateLoopingSplash(frame + 1))
         else:
             self.loopsplash.itemconfig(self.loopingAnim, image = self.loopingFrames[frame-18])
             self.loopsplash.update()
             if frame == 50:
                 frame = 17
-            self.root.after(50, lambda: self.animateLoopingSplash(frame+1))
+            self.root.after(40, lambda: self.animateLoopingSplash(frame+1))
 
     def create_canvas(self, width, height, x, y, bg):
         canvas = Canvas(self.root, width = width, height = height, background=bg, highlightthickness=0, bd=0)
