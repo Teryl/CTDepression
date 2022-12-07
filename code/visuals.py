@@ -38,6 +38,7 @@ scaleMul = {
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
+    "Coin" : {0.75: (1.00, 1.00) , 1: (0.5, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
     "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
     "Info" : {0.75: (0.2, 0.9) , 1: (0.2, 0.85) , 1.25: (0.2, 0.85) , 1.5: (0.2, 0.85) , 1.75: (0.2, 0.85)}, #Y Offset, Size
 }
@@ -502,7 +503,9 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["screen"], "display", bg = "#438F4C", width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
         self.imagefields['screenImage'] = self.frameDict["display"].create_image(self.assets.assets["displayBG"][2]*self.px/2, self.assets.assets["displayBG"][3]*self.px/2, image=self.assets.getAsset("displayBG"))
         self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Display"][WINDOW_SCALE][1]), anchor=E)
-        self.create_canvas(self.frameDict["screen"], "coin", bg = "#438F4C", width=self.assets.assets["Coin"][2]*self.px, height=self.assets.assets["Coin"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
+        self.create_canvas(self.frameDict["screen"], "coin", bg = "#438F4C", width=self.assets.assets["Coin"][2]*self.px, height=self.assets.assets["Coin"][3]*self.px, padx=0, pady=0, relx=0.8875, rely=0.68, anchor=CENTER)
+        self.textfields['coinText'] = self.frameDict["coin"].create_text(self.assets.assets["Coin"][2]*self.px/2, self.assets.assets["Coin"][3]*self.px*scaleMul["Coin"][WINDOW_SCALE][0]/2, text="0", font=self.assets.getFont("monogramRevised", 0.8*WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Coin"][WINDOW_SCALE][1]), anchor=CENTER)
+        self.frameDict["coin"].place_forget()
 
     # create combat screen frame structure
     def create_combat(self):
@@ -630,9 +633,12 @@ class gameInstance(Tk):
                 self.actions.keypad_state_change()
                 self.actions.clear_buffer()
                 self.actions.clear_screen()
-                self.frameDict["display"].itemconfig(self.imagefields["screenImage"],image = self.assets.getAsset("Menu"))
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"], image = self.assets.getAsset("Menu"))
+                self.frameDict["coin"].place(relx=0.8875, rely=0.68, anchor=CENTER)
+                self.frameDict["coin"].itemconfig(self.textfields["coinText"], text = self.player.get_stat("Skill"))
             elif status == "shopClose":
-                self.frameDict["display"].itemconfig(self.imagefields["screenImage"],image = self.assets.getAsset("displayBG"))
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"], image = self.assets.getAsset("displayBG"))
+                self.frameDict["coin"].place_forget()
                 self.actions.keypad_state_reset()
                 time.sleep(1)
         if player.get_stat("HP") <= 0:
@@ -729,7 +735,9 @@ class actions():
         pass ###feature disabled
 
     def make_shop_choice(self, choice):
-        queueResult.put(choice)
+        if choice != "n":
+            self.game.frameDict["coin"].itemconfig(self.game.textfields["coinText"], text = self.game.player.get_stat("Skill")-1)
+        self.game.after(100, lambda: queueResult.put(choice))
 
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
         self.game.toggle_switch_sprites(idFrame, visible, idSprite)
