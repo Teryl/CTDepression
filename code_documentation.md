@@ -99,20 +99,29 @@ Put succinctly, abstraction makes debugging much easier.
 ### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 - Python C language interpreter necessary for the importing of custom fonts.
 
+### from threading import Thread, Event
+- Allows us to initiate threads, so that we can simultaniously run the game and GUI.
+
+### from queue import Queue
+- Allows for communications between threads using queues 
+
 ## Global Variables
 - Determines the properties of the window and also establishes commonly used unit values for late referencing.
 
-## Assets Class (Calc UI and Fight UI)
--  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the assets when needed
+## Assets Class (Calc UI, Fight UI, Char Sprites)
+-  It is a dictionary, serving as the directory for all our assets and stores custom size and scale attribute. It allows us to get the required assets when needed
 
 ### Calc UI (Calculator UI) and CalcButtons
 - The assets used for our calculator. they consist of the number and operator buttons, as well as the frame and screen.
 
-### Fight UI (Fight UI)
+### Fight UI
 - The assets used in creating the background and elements for the fight screen
 
+### Char Sprites 
+- The assets which consist of our character and the different enemies
+
 ### Asset Get Method
-- Loads visual assets and allows us to access them,
+- Loads visual assets and allows us to access them, displaying them in the window
 
 ## Fonts
 - Initialises and loads fonts for the calculator. The font used was MonogramRevised, which is a modified TrueType Font.
@@ -133,9 +142,15 @@ Example: Pressing numerical keys on the calculator will cause the respective num
 - It also evaluates equations keyed into the calculator, and returns the result on the calculator screen.\
 Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 10, and then displays 10 on the calculator screen
 
-## Actions Class
- -   Starts the tkinter loop
+- Lastly, using queues, it constantly transfers data between the GUI and main code.\
+Inputs into the GUI numberpad are evaluated and sent back to the main code.\
+Enemy health, enemy sprite data, enemy name data and other miscellaneous data is transferred from the main code into the GUI
 
+## Actions Class
+- Stores all of the basic commands that can be done to modify elements in the GUI. This allows us to call multiple functions per button press to initiate more complex processes simultaniously
+
+## buttonPresses Class
+- Lists and carries out the specified processes that should be undergone when each of the buttons are pressed
 <br>
 
 # Index
@@ -145,6 +160,7 @@ Example: Inputting "(" , "1", "+" , "4", ")" , "x" , "2" computes (1 + 4) * 2 = 
 | :-------------- | :---------------- | :----------- |
 | `globalNRange`  | list[x,y]         | Range of numbers taken to make a prompt |
 | `globalStage`   | int               | Current stage the player is in |
+| `globalTime`    | int               | Total time 
 
 ### Calculator
 | Variable        | Type              | Description  |
