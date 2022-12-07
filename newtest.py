@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import tkinter as tk
 import tkinter.ttk as ttk
+import os
 
 
 class LauncherApp:
@@ -14,7 +15,7 @@ class LauncherApp:
         frame3 = tk.Frame(frame2)
         frame3.configure(background="#000000", height=200, width=200)
         self.play = tk.Button(frame3)
-        self.img_01_Button_Play = tk.PhotoImage(file="./ctd1D/assets/LauncherSprites/01_Button_Play.png")
+        self.img_01_Button_Play = tk.PhotoImage(file= os.path.abspath("./assets/LauncherSprites/01_Button_Play.png"))
         self.play.configure(
             activebackground="#000000",
             activeforeground="#000000",
@@ -30,7 +31,7 @@ class LauncherApp:
         self.play.grid(column=0, padx=10, row=0)
         self.play.configure(command=self.playGame)
         self.exit = tk.Button(frame3)
-        self.img_02_Button_Quit = tk.PhotoImage(file="./ctd1D/assets/LauncherSprites/02_Button_Quit.png")
+        self.img_02_Button_Quit = tk.PhotoImage(file=os.path.abspath("./assets/LauncherSprites/02_Button_Quit.png"))
         self.exit.configure(
             activebackground="#000000",
             activeforeground="#000000",
@@ -60,7 +61,7 @@ class LauncherApp:
             takefocus=False)
         self.background.grid(column=0, row=0)
         self.title = tk.Label(frame2)
-        self.img__Logo_Black = tk.PhotoImage(file="./ctd1D/assets/LauncherSprites/.Logo_Black.png")
+        self.img__Logo_Black = tk.PhotoImage(file=os.path.abspath("./assets/LauncherSprites/.Logo_Black.png"))
         self.title.configure(
             activebackground="#000000",
             anchor="center",
@@ -74,7 +75,7 @@ class LauncherApp:
         self.resizer = tk.Frame(frame2)
         self.resizer.configure(background="#000000", height=200, width=200)
         button5 = tk.Button(self.resizer)
-        self.img_03_Button_Up = tk.PhotoImage(file="./ctd1D/assets/LauncherSprites/03_Button_Up.png")
+        self.img_03_Button_Up = tk.PhotoImage(file=os.path.abspath("./assets/LauncherSprites/03_Button_Up.png"))
         button5.configure(
             activebackground="#000000",
             activeforeground="#000000",
@@ -86,7 +87,7 @@ class LauncherApp:
         button5.grid(column=0, row=0, sticky="ew")
         button5.configure(command=self.zoomIn)
         button6 = tk.Button(self.resizer)
-        self.img_05_Button_Down = tk.PhotoImage(file="./ctd1D/assets/LauncherSprites/05_Button_Down.png")
+        self.img_05_Button_Down = tk.PhotoImage(file=".assets/LauncherSprites/05_Button_Down.png")
         button6.configure(
             activebackground="#000000",
             background="#000000",
