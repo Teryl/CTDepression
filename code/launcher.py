@@ -35,14 +35,22 @@ class launcher():
         self.loopingAnim = self.loopsplash.create_image(WINDOW_SIZE[0]/2, WINDOW_SIZE[1]/2, image = self.initialFrames[0], anchor = CENTER)
         self.loopsplash.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
-        self.itemDict["Start Arrow"] = self.create_canvas(100, 100, 0.2, 0.85, "black")
         self.imageBuffer["Start Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "01_Button_Play.png"))).zoom(6))
-        self.itemDict["Start Arrow"].create_image(50, 50, image = self.imageBuffer["Start Arrow"], anchor = CENTER)
+        self.itemDict["Start Arrow"] = Button(self.root, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0, command = lambda: self.begin())
+        self.itemDict["Start Arrow"].place(relx = 0.3, rely = 0.85, anchor = CENTER)
+       
+        
 
         self.root.after(1000, lambda: self.animateLoopingSplash())
+        self.keepOnTop()
 
+    def begin(self):
+        self.root.destroy()
+        import visuals
 
-        
+    def keepOnTop(self):
+        self.root.attributes("-topmost", True)
+        self.root.after(10, lambda: self.keepOnTop())
 
 
     def animateLoopingSplash(self, frame = 0):
