@@ -1196,10 +1196,11 @@ def maingame():
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
 
                 elif playerDmg < enemyDmg:
-                    if inputPerm != -999999 and correct == False:
-                        spriteQueue.put("playerHit")
-                    else:
-                        spriteQueue.put("playerHitTime")
+                    if inputPerm != -999999
+                        if correct == False:
+                            spriteQueue.put("playerHit")
+                        else:
+                            spriteQueue.put("playerHitTime")
                     player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))
                     damageQueue.put(((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed))
                     time.sleep(2)
