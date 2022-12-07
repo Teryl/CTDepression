@@ -123,10 +123,11 @@ class LauncherApp:
         self.mainwindow.mainloop()
 
     def playGame(self):
+        sys.startfile("")
         pass
 
     def playExit(self):
-        pass
+        exit()
 
     def zoomIn(self):
         pass
