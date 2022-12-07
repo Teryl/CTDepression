@@ -28,7 +28,7 @@ class launcher():
         self.itemDict = {}
         self.imageBuffer = {}
         self.sendScale = 1
-        self.root.bind("<Escape>", lambda e: self.root.destroy())
+        self.root.bind("<Escape>", lambda e: exit())
         
 
         x = (self.root.winfo_screenwidth()/2) - (WINDOW_SIZE_LAUNCHER[0]/2)
@@ -47,7 +47,7 @@ class launcher():
         self.itemDict["Start Arrow"].place(relx = 0.25, rely = 0.7, anchor = CENTER)
 
         self.imageBuffer["Exit Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "02_Button_Quit.png"))).zoom(6))
-        self.itemDict["Exit Arrow"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Exit Arrow"], bg="black", borderwidth = 0, highlightthickness = 0, command = lambda: self.root.destroy())
+        self.itemDict["Exit Arrow"] = Button(self.root, width = 120, height = 100, image = self.imageBuffer["Exit Arrow"], bg="black", borderwidth = 0, highlightthickness = 0, command = lambda: exit())
         self.itemDict["Exit Arrow"].place(relx = 0.25, rely = 0.85, anchor = CENTER)
         
         self.imageBuffer["Button Up"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "03_Button_Up.png"))).zoom(6))
