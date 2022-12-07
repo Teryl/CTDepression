@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.3">
+  <object class="tk.Toplevel" id="topLevel" named="True">
+    <property name="background">#000000</property>
+    <property name="height">200</property>
+    <property name="resizable">none</property>
+    <property name="width">200</property>
+    <child>
+      <object class="tk.Frame" id="frame2">
+        <property name="background">#000000</property>
+        <property name="height">200</property>
+        <property name="padx">100</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Frame" id="frame3">
+            <property name="background">#000000</property>
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">2</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="button2">
+                <property name="command" type="command" cbtype="simple">runGame</property>
+                <property name="default">normal</property>
+                <property name="image">01_Button_Play.png</property>
+                <property name="state">normal</property>
+                <property name="takefocus">false</property>
+                <property name="text" translatable="yes">play</property>
+                <layout manager="grid">
+                  <property name="column">0</property>
+                  <property name="padx">5</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="button4">
+                <property name="command" type="command" cbtype="simple">runGame</property>
+                <property name="default">normal</property>
+                <property name="image">02_Button_Quit.png</property>
+                <property name="state">normal</property>
+                <property name="takefocus">false</property>
+                <property name="text" translatable="yes">play</property>
+                <layout manager="grid">
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Canvas" id="canvas5">
+            <property name="background">#000000</property>
+            <property name="cursor">arrow</property>
+            <property name="highlightbackground">#000000</property>
+            <property name="highlightcolor">#000000</property>
+            <property name="insertbackground">#000000</property>
+            <property name="relief">flat</property>
+            <property name="selectbackground">#000000</property>
+            <property name="selectforeground">#000000</property>
+            <property name="state">disabled</property>
+            <property name="takefocus">false</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Label" id="label3">
+            <property name="activebackground">#000000</property>
+            <property name="background">#000000</property>
+            <property name="image">.Logo_Black.png</property>
+            <property name="justify">center</property>
+            <property name="relief">flat</property>
+            <property name="state">normal</property>
+            <property name="text" translatable="yes">label3</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
