@@ -200,6 +200,7 @@ class assetHandler():
             "keypadBG" : [os.path.join(self.calcPath, "01_Background.png"), 8, 102, 102],
             "displayBG" : [os.path.join(self.calcPath, "02_Screen.png"), 8, 90, 31],
             "Menu" : [os.path.join(self.calcPath, "99_Menu.png"), 4, 71, 31],
+            "Coin" : [os.path.join(self.calcPath, "02_Screen.png"), 8, 12, 12],
 
             ### CalcButtons
             "C" : [os.path.join(self.calcPath, "03_Button_C.png"), 8, 18, 18],
@@ -501,6 +502,7 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["screen"], "display", bg = "#438F4C", width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
         self.imagefields['screenImage'] = self.frameDict["display"].create_image(self.assets.assets["displayBG"][2]*self.px/2, self.assets.assets["displayBG"][3]*self.px/2, image=self.assets.getAsset("displayBG"))
         self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Display"][WINDOW_SCALE][1]), anchor=E)
+        self.create_canvas(self.frameDict["screen"], "coin", bg = "#438F4C", width=self.assets.assets["Coin"][2]*self.px, height=self.assets.assets["Coin"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
 
     # create combat screen frame structure
     def create_combat(self):
