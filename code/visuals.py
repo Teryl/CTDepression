@@ -38,6 +38,7 @@ scaleMul = {
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
+    "Coin" : {0.75: (1.00, 1.00) , 1: (0.5, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
     "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
     "Info" : {0.75: (0.2, 0.9) , 1: (0.2, 0.85) , 1.25: (0.2, 0.85) , 1.5: (0.2, 0.85) , 1.75: (0.2, 0.85)}, #Y Offset, Size
 }
@@ -52,7 +53,7 @@ class playerClass():
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
-            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
+            "Luck": {0:0, 1:98, 2:96, 3:94, 4:92, 5:90}
         }
         self.playerDict = {
             "maxHP": 0,
@@ -279,7 +280,7 @@ class assetHandler():
             "EnemyHP" : ['#424242', 40, 6],
             "EnemyName" : ['#424242', 40, 6],
             "DamageNum" : ['#424242', 15, 10],
-
+            "DamageNumPlayer" : ['#424242', 15, 10],
 
             ### Char Sprites
             "Man_1" : [os.path.join(self.charPath, "01_Man_1.png"), 4, 20, 20],
@@ -293,7 +294,7 @@ class assetHandler():
             "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
             "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
-            "Player" : [os.path.join(self.animPath, "0.png"), 4, 40, 20],
+            "Player" : [os.path.join(self.animPath, "0.png"), 4, 60, 20],
         }
 
         self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(0, 18)], [0, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 150, 150, 150, 150, 150, 150, 150]
@@ -359,7 +360,7 @@ class assetHandler():
 class gameInstance(Tk):
 
     #initialise
-    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue):
+    def __init__(self, size, title, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue):
         Tk.__init__(self)
         self.size = size[0]*WINDOW_SCALE, size[1]*WINDOW_SCALE
         self.px = self.size[0] / WINDOW_SIZE_PX[0]
@@ -379,6 +380,7 @@ class gameInstance(Tk):
         self.enemyQueue = enemyQueue
         self.enemyHPQueue = enemyHPQueue
         self.damageQueue = damageQueue
+        self.critQueue = critQueue
         self.actions = actions(self)
         self.player = player
         self.enemy = enemy
@@ -502,7 +504,9 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["screen"], "display", bg = "#438F4C", width=self.assets.assets["displayBG"][2]*self.px, height=self.assets.assets["displayBG"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
         self.imagefields['screenImage'] = self.frameDict["display"].create_image(self.assets.assets["displayBG"][2]*self.px/2, self.assets.assets["displayBG"][3]*self.px/2, image=self.assets.getAsset("displayBG"))
         self.textfields['screenText'] = self.frameDict["display"].create_text(self.assets.assets["displayBG"][2]*self.px, self.assets.assets["displayBG"][3]*self.px/2 - 4*self.px, text="START", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Display"][WINDOW_SCALE][1]), anchor=E)
-        self.create_canvas(self.frameDict["screen"], "coin", bg = "#438F4C", width=self.assets.assets["Coin"][2]*self.px, height=self.assets.assets["Coin"][3]*self.px, padx=0, pady=0, relx=0.5, rely=0.5*scaleMul["Display"][WINDOW_SCALE][0], anchor=CENTER)
+        self.create_canvas(self.frameDict["screen"], "coin", bg = "#438F4C", width=self.assets.assets["Coin"][2]*self.px, height=self.assets.assets["Coin"][3]*self.px, padx=0, pady=0, relx=0.8875, rely=0.68, anchor=CENTER)
+        self.textfields['coinText'] = self.frameDict["coin"].create_text(self.assets.assets["Coin"][2]*self.px/2, self.assets.assets["Coin"][3]*self.px*scaleMul["Coin"][WINDOW_SCALE][0]/2, text="0", font=self.assets.getFont("monogramRevised", 0.8*WINDOW_SCALE*-(80 - (WINDOW_SCALE-1)*50)*scaleMul["Coin"][WINDOW_SCALE][1]), anchor=CENTER)
+        self.frameDict["coin"].place_forget()
 
     # create combat screen frame structure
     def create_combat(self):
@@ -538,8 +542,9 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["combat"], "enemyHP", width=self.assets.assets["EnemyHP"][1]*self.px, height=self.assets.assets["EnemyHP"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.9, anchor=CENTER)
         self.textfields["enemyHP"] = self.frameDict["enemyHP"].create_text(self.assets.assets["EnemyHP"][1]*self.px/2, self.assets.assets["EnemyHP"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="HP = 100", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.create_canvas(self.frameDict["combat"], "damageNum", width=self.assets.assets["DamageNum"][1]*self.px, height=self.assets.assets["DamageNum"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.64, rely=0.65, anchor=CENTER)
-        self.textfields["damageNum"] = self.frameDict["damageNum"].create_text(self.assets.assets["DamageNum"][1]*self.px/2, self.assets.assets["DamageNum"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="-99", font=self.assets.getFont("monogramRevised", 1.75*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
-
+        self.textfields["damageNum"] = self.frameDict["damageNum"].create_text(self.assets.assets["DamageNum"][1]*self.px/2, self.assets.assets["DamageNum"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", 1.75*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "damageNumPlayer", width=self.assets.assets["DamageNumPlayer"][1]*self.px, height=self.assets.assets["DamageNumPlayer"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.21, rely=0.415, anchor=CENTER)
+        self.textfields["damageNumPlayer"] = self.frameDict["damageNumPlayer"].create_text(self.assets.assets["DamageNumPlayer"][1]*self.px/2, self.assets.assets["DamageNumPlayer"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", 1.75*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.update_combat_display()
 
     def create_buttons(self):
@@ -608,12 +613,24 @@ class gameInstance(Tk):
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
         self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
+
         if not(self.enemyHPQueue.empty()):
             status = self.enemyHPQueue.get()
             self.frameDict["enemyHP"].itemconfig(self.textfields["enemyHP"], text=str(int(status))+" HP")
+
         if not(self.enemyQueue.empty()):
             status = self.enemyQueue.get()
             self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text=status)
+
+        if not(self.critQueue.empty()):
+            status = self.critQueue.get()
+            if status:
+                self.frameDict["damageNum"].itemconfig(self.textfields["damageNum"], fill="red")
+                self.frameDict["damageNumPlayer"].itemconfig(self.textfields["damageNumPlayer"], fill="green")
+            else:
+                self.frameDict["damageNum"].itemconfig(self.textfields["damageNum"], fill="yellow")
+                self.frameDict["damageNumPlayer"].itemconfig(self.textfields["damageNumPlayer"], fill="yellow")
+
         if not(self.spriteQueue.empty()):
             status = self.spriteQueue.get()
             if status == "enemyKilled":
@@ -623,18 +640,27 @@ class gameInstance(Tk):
             elif status == "enemySpawned":
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
-                self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack"))
+                self.after(0, self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack")))
+                self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(int(damageQueue.get())), delay=125))
+            elif status == "playerHit":
+                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=180, frame=6, endstate="SHOW"))
+                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(int(damageQueue.get())), delay=200))
+                
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
             if status == "shopOpen":
                 self.actions.keypad_state_change()
                 self.actions.clear_buffer()
                 self.actions.clear_screen()
-                self.frameDict["display"].itemconfig(self.imagefields["screenImage"],image = self.assets.getAsset("Menu"))
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"], image = self.assets.getAsset("Menu"))
+                self.frameDict["coin"].place(relx=0.8875, rely=0.68, anchor=CENTER)
+                self.frameDict["coin"].itemconfig(self.textfields["coinText"], text = self.player.get_stat("Skill"))
             elif status == "shopClose":
-                self.frameDict["display"].itemconfig(self.imagefields["screenImage"],image = self.assets.getAsset("displayBG"))
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"], image = self.assets.getAsset("displayBG"))
+                self.frameDict["coin"].place_forget()
                 self.actions.keypad_state_reset()
                 time.sleep(1)
+
         if player.get_stat("HP") <= 0:
             self.destroy()
 
@@ -729,7 +755,9 @@ class actions():
         pass ###feature disabled
 
     def make_shop_choice(self, choice):
-        queueResult.put(choice)
+        if choice != "n" and player.get_stat(choice) < 5 and not(choice == "Time" and player.get_stat("Time") >=10):
+            self.game.frameDict["coin"].itemconfig(self.game.textfields["coinText"], text = self.game.player.get_stat("Skill")-1)
+        self.game.after(100, lambda: queueResult.put(choice))
 
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
         self.game.toggle_switch_sprites(idFrame, visible, idSprite)
@@ -741,6 +769,17 @@ class actions():
             self.game.after(delayArr[frame], lambda: self.do_animate(idFrame, framesArr, delayArr, frame+1))
         else:
             self.toggle_switch_sprites(idFrame, True, idFrame)
+
+    def text_animate(self, idFrame, idText, text, delay=250, frame=6, endstate = "HIDE"):
+        if frame > 0 and not(endstate == "SHOW" and frame == 1):
+            if frame % 2 == 0:
+                self.game.frameDict[idFrame].itemconfig(self.game.textfields[idText], text=text)
+            else:
+                self.game.frameDict[idFrame].itemconfig(self.game.textfields[idText], text="")
+            self.game.after(delay, lambda: self.text_animate(idFrame, idText, text, delay, frame-1))
+        
+
+
 
 class buttonPresses():
     def __init__(self, actions):
@@ -822,16 +861,16 @@ class buttonPresses():
         self.action.keypad_state_reset()
     
     def press_UpArrow(self):
-        self.action.make_shop_choice("time")
+        self.action.make_shop_choice("Time")
 
     def press_DownArrow(self):
-        self.action.make_shop_choice("luck")
+        self.action.make_shop_choice("Luck")
 
     def press_LeftArrow(self):
-        self.action.make_shop_choice("def")
+        self.action.make_shop_choice("Def")
 
     def press_RightArrow(self):
-        self.action.make_shop_choice("atk")
+        self.action.make_shop_choice("Atk")
 
     def press_CenterArrow(self):
         self.action.make_shop_choice("maxHP")
@@ -840,7 +879,7 @@ class buttonPresses():
         pass
 
     def press_No(self):
-        self.action.make_shop_choice("n")
+        self.action.make_shop_choice("N")
 
     def press_Circle(self):
         pass
@@ -929,8 +968,11 @@ def calcPlayerDmg(timeRemaining, inputPerm, randN):
     return playerDmg
 
 # Calculate critical damage or damage reduction
-def calcPlayerCrit(playerDmg, enemyDmg, playerLuck):
-    if random.randrange(0,101) > playerLuck:
+def isCrit(playerLuck):
+    return random.randrange(0,101) > playerLuck
+
+def calcPlayerCrit(playerDmg, enemyDmg, result):
+    if result:
         if playerDmg > enemyDmg:
             playerCritRed = 1.6
         elif playerDmg < enemyDmg:
@@ -948,7 +990,7 @@ def upgradeAbility():
         playerUpgradeChoice = queueResult.get()
         if playerUpgradeChoice == "quit":
             exit()
-        if playerUpgradeChoice == "atk":
+        if playerUpgradeChoice == "Atk":
             if player.get_stat("Atk") < 5:
                 player.level_up("Atk")
                 print("You have upgraded your attack!")
@@ -958,7 +1000,7 @@ def upgradeAbility():
                 print("You have reached the maximum level for attack!")
                 continue
 
-        elif playerUpgradeChoice == "def":
+        elif playerUpgradeChoice == "Def":
             if player.get_stat("Def") < 5:
                 player.level_up("Def")
                 print("You have upgraded your defense!")
@@ -968,7 +1010,7 @@ def upgradeAbility():
                 print("You have reached the maximum level for defense!")
                 continue
 
-        elif playerUpgradeChoice == "time":
+        elif playerUpgradeChoice == "Time":
             if player.get_stat("Time") < 10:
                 player.level_up("Time")
                 print("You have upgraded your time!")
@@ -978,7 +1020,7 @@ def upgradeAbility():
                 print("You have reached the maximum level for time!")
                 continue
 
-        elif playerUpgradeChoice == "luck":
+        elif playerUpgradeChoice == "Luck":
             if player.get_stat("Luck") < 5:
                 player.level_up("Luck")
                 print("You have upgraded your luck!")
@@ -998,10 +1040,10 @@ def upgradeAbility():
                 print("You have reached the maximum level for HP!")
                 continue
 
-        elif playerUpgradeChoice == "n":
+        elif playerUpgradeChoice == "N":
             break
 
-        elif playerUpgradeChoice != "atk" or "def" or "time" or "luck" or "hp" or "n":
+        elif playerUpgradeChoice != "Atk" or "Def" or "Time" or "Luck" or "maxHP" or "N":
             print("You can't upgrade that! Enter a valid input this time...")
             pass
     shopQueue.put("shopClose")
@@ -1067,39 +1109,46 @@ def maingame():
                 randN = randomizeN(globalStage, enemy.enemyStatlist)
                 player.set_stat("N", randN)
                 print("n:",randN)
+                critBool = isCrit(player.get_statlist("Luck"))
+                critQueue.put(critBool)
 
                 # Prompt user input 
                 inputPerm = queueResult.get()
+                print(inputPerm)
                 if inputPerm == randN:
                     spriteQueue.put("enemyHit")
-                    time.sleep(1.2)
-                print(inputPerm)
+                else:
+                    spriteQueue.put("playerHit")
                 if inputPerm == "quit":
                     exit()
 
                 # Calculate damage done by player, if wrong, playerDmg = 0    
                 playerDmg = calcPlayerDmg(timeRemaining, inputPerm, randN)
 
-                # Decrease time remaining
-                timeRemaining = timeRemaining - 1
-                print("Time remaining:",timeRemaining)
-                time.sleep(1)
+                # Critical hit calculation
+                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, critBool)
+
+                
+                
                 
                 # Calculate Final Damage
                 finalDmg = int(playerDmg - enemyDmg)            
                 print(playerDmg, enemyDmg)
                 
-                # Critical hit calculation
-                playerCritRed = calcPlayerCrit(playerDmg, enemyDmg, player.get_statlist("Luck"))
+                
                 
                 '''TEST FUNCTION'''
                 if playerDmg >= enemyDmg:
                     enemyDict["HP"] = int(enemyDict["HP"] - ((finalDmg * enemyDict["Def"]) * playerCritRed))
+                    damageQueue.put(((finalDmg * enemyDict["Def"]) * playerCritRed))
+                    time.sleep(2.5)
                     enemyHPQueue.put(enemyDict["HP"])
                     print("You did {} damage!".format(finalDmg), "TIMES", playerCritRed)
-                
+
                 elif playerDmg < enemyDmg:
                     player.set_stat("HP", int(player.get_stat("HP") - ((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed)))
+                    damageQueue.put(((abs(finalDmg) * player.get_statlist("Def")) * playerCritRed))
+                    time.sleep(2)
                     print("You took {} damage!".format(abs(finalDmg)), "TIMES", playerCritRed)
                 
                 print("Final HP - You: {}, Enemy: {}".format(player.get_stat("HP"), enemyDict["HP"]))
@@ -1135,9 +1184,9 @@ player = playerClass()
 enemy = enemyClass()
 
 
-def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue):
+def main(queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue):
     assets = assetHandler()
-    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue)
+    game = gameInstance(WINDOW_SIZE, WINDOW_TITLE, assets, queue, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue)
     game.mainloop()
 
 queueResult = Queue()
@@ -1146,8 +1195,9 @@ shopQueue = Queue()
 enemyQueue = Queue()
 enemyHPQueue = Queue()
 damageQueue = Queue()
+critQueue = Queue()
 
-gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue))
+gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue, enemyHPQueue, damageQueue, critQueue))
 gui.start()
 
 eternum = Thread(target=maingame)
