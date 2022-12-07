@@ -65,6 +65,10 @@ class launcher():
         self.itemDict["Window"] = Label(self.root, width = 120, height = 100, image = self.imageBuffer["Window"], text="3",bg="black", borderwidth = 0, highlightthickness = 0)
         self.itemDict["Window"].place(relx = 0.780, rely = 0.775, anchor = CENTER)
 
+        self.imageBuffer["Scale Label"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "06_UIscale.png"))).zoom(6))
+        self.itemDict["Scale Label"] = Label(self.root, width = 120, height = 100, image = self.imageBuffer["Scale Label"],bg="black", borderwidth = 0, highlightthickness = 0)
+        self.itemDict["Scale Label"].place(relx = 0.580, rely = 0.775, anchor = CENTER)
+
         self.updateScaleDisplay()
         self.root.after(1000, lambda: self.animateLoopingSplash())
         self.keepOnTop()
@@ -1180,8 +1184,10 @@ def upgradeAbility():
                 print("You have upgraded your HP!")
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
-            else:
+            elif player.get_stat("maxHP") == 5:
                 print("You have reached the maximum level for HP!")
+                player.set_stat("HP", 4)
+                player.level_up("maxHP")
                 continue
 
         elif playerUpgradeChoice == "N":
