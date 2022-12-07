@@ -16,7 +16,6 @@ class launcher():
         self.root.title("ENSLauncher")
         self.root.resizable(False, False)
         self.root.geometry("{}x{}".format(WINDOW_SIZE[0], WINDOW_SIZE[1]))
-        #self.root.iconbitmap("./assets/.ico")
         self.root.overrideredirect(True)
         self.root.configure(background="black")
         self.itemDict = {}
@@ -36,7 +35,7 @@ class launcher():
         self.loopsplash.place(relx = 0.5, rely = 0.5, anchor = CENTER)
 
         self.imageBuffer["Start Arrow"] = (PhotoImage(file = os.path.abspath(os.path.join(SPRITE_DIR, "01_Button_Play.png"))).zoom(6))
-        self.itemDict["Start Arrow"] = Button(self.root, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0, command = lambda: self.begin())
+        self.itemDict["Start Arrow"] = Button(self.root, image = self.imageBuffer["Start Arrow"], bg="black", borderwidth = 0, highlightthickness = 0,command = lambda: self.begin())
         self.itemDict["Start Arrow"].place(relx = 0.3, rely = 0.85, anchor = CENTER)
        
         
