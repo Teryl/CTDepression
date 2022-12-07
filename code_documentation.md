@@ -45,7 +45,7 @@ Put succinctly, abstraction makes debugging much easier.
     - `enemyDict["Atk"] = enemyDict["Atk"] * (globalStage**1.07 / globalStage)`
     - `enemyDict["Def"] = enemyDict["Def"] * (globalStage / globalStage**1.07)`
 7. Player gains 1 coin that they can use in the upgrade shop or choose to save for later rounds
-    - Player can choose which attribute they want to upgrade using the `upgradeAbility()` function.
+    - Player can choose which attribute they want to upgrade using the `upgradeAbility()` function at the cost of 1 coin.
 
 
 ## Turn Loop
