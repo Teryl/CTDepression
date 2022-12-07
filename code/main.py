@@ -1,5 +1,6 @@
-### CTD Calculator Game Prototype 0.9
-### By: David Ling & Featurecreep Balaji
+### CTD Calculator Game Version 1.0
+### By: F06 Group E
+### Code By: Refer to README
 ### Versioned as of 07/12/22
 
 ### Importing Modules
@@ -138,7 +139,7 @@ scaleMul = {
     "Bars" : {0.75: (1.07, 1.53) , 1: (1.02, 1.40) , 1.25: (1.00, 1.30) , 1.5: (1.00, 1.28) , 1.75: (0.98, 1.24)}, #Width, Height
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
-    "Coin" : {0.75: (1.00, 1.00) , 1: (0.5, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
+    "Coin" : {0.75: (0.5, 1.00) , 1: (0.5, 1.00) , 1.25: (0.5, 1.00) , 1.5: (0.5, 1.00) , 1.75: (0.5, 1.00)}, #Y Offset, Size
     "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
     "Info" : {0.75: (0.2, 0.9) , 1: (0.2, 0.85) , 1.25: (0.2, 0.85) , 1.5: (0.2, 0.85) , 1.75: (0.2, 0.85)}, #Y Offset, Size
 }
@@ -152,8 +153,8 @@ class playerClass():
             "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
-            "Time": {0:0, 1:2, 2:4, 3:6, 4:8, 5:10}, 
-            "Luck": {0:50, 1:98, 2:96, 3:94, 4:92, 5:90}
+            "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
+            "Luck": {0:100, 1:98, 2:96, 3:94, 4:92, 5:90}
         }
         self.playerDict = {
             "maxHP": 0,
@@ -871,7 +872,7 @@ class actions():
     
     def evaluate_buffer(self, queueResult):
         try:
-            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").replace("{}/1".format(''), "").replace("+1-1", "").isalnum():
+            if self.game.buffer.replace(".", "").replace("(", "").replace(")", "").isalnum():
                 raise CheatException("You can't do that!")
             result = eval(self.game.buffer)
             if not(isinstance(result, int)):
@@ -898,7 +899,7 @@ class actions():
         pass ###feature disabled
 
     def make_shop_choice(self, choice):
-        if choice != "n" and player.get_stat(choice) < 5 and not(choice == "Time" and player.get_stat("Time") >=10):
+        if choice != "n" and player.get_stat(choice) < 5:
             self.game.frameDict["coin"].itemconfig(self.game.textfields["coinText"], text = self.game.player.get_stat("Skill")-1)
         self.game.after(100, lambda: queueResult.put(choice))
 
@@ -1056,16 +1057,16 @@ def randomizeN(globalStage, enemyStatlist):
     # range of n is selected based on the globalStage
     # the higher the stage, range is increased 
     
-    if globalStage <= 3:
+    if globalStage <= 2:
         globalNRange = enemyStatlist["globalNRange"][0]
     
-    elif globalStage > 3 and globalStage <= 7:
+    elif globalStage > 2 and globalStage <= 4:
         globalNRange = enemyStatlist["globalNRange"][1]
     
-    elif globalStage > 7 and globalStage <= 12:
+    elif globalStage > 4 and globalStage <= 10:
         globalNRange = enemyStatlist["globalNRange"][2]
     
-    elif globalStage > 12:
+    elif globalStage > 10:
         globalNRange = enemyStatlist["globalNRange"][3]
 
     # choose n based on the globalNRange
@@ -1154,7 +1155,7 @@ def upgradeAbility():
                 continue
 
         elif playerUpgradeChoice == "Time":
-            if player.get_stat("Time") < 10:
+            if player.get_stat("Time") < 5:
                 player.level_up("Time")
                 print("You have upgraded your time!")
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
