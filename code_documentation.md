@@ -72,8 +72,13 @@ Put succinctly, abstraction makes debugging much easier.
 - If `player.get_stat("HP") = 0`, then the function `playerEndgame()` is run and the game ends.
 
 ## Visual Representation of Code
-<img src="assets/loops flowchart.png" width=""/>
-<br>
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/loop_diagram_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="assets/loop_diagram_light.png">
+  <img src="assets/loop_diagram_light.png" width="">
+</picture>
 
 # GUI Documentation
 ## Global Variables
@@ -309,29 +314,46 @@ enemyTypeList = {
 # Dependancies
 ## Imported Modules
 These are the modules we had to import in order for our code to work.
-### from time import sleep
+<br>
+<br>
+
+`from time import sleep`
 - To buffer timings of visuals / delay mechanics
 
-### from math import *
+<br>
+
+`from math import *`
 - To allow for usage of maths related functions for calculations
 
-### from tkinter import *
-### from tkinter import messagebox
-### from tkinter import font
-### from tkinter.font import Font
+<br>
+
+`from tkinter import *`
+`from tkinter import messagebox`
+`from tkinter import font`
+`from tkinter.font import Font`
 - Importing tkinter, default python inbuilt GUI library. All functional code in this python file will be based about tkinter.
 
-### import os
+<br>
+
+`import os`
 - Built in python library to handle filepaths. Used to reference assets and other files used in the code.
 
-### import sys
+<br>
+
+`import sys`
 - Allows for passing of command line arguments to assign values to variables in the code from the command line.
 
-### from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+<br>
+
+`from ctypes import windll, byref, create_unicode_buffer, create_string_buffer`
 - Python C language interpreter necessary for the importing of custom fonts.
 
-### from threading import Thread, Event
+<br>
+
+`from threading import Thread, Event`
 - Allows us to initiate threads, so that we can simultaniously run the game and GUI.
 
-### from queue import Queue
+<br>
+
+`from queue import Queue`
 - Allows for communications between threads using queues 
