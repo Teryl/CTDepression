@@ -74,7 +74,7 @@ class launcher():
         self.itemDict["Scale Label"].place(relx = 0.580, rely = 0.775, anchor = CENTER)
 
         self.updateScaleDisplay()
-        self.root.after(1000, lambda: self.animateLoopingSplash())
+        self.root.after(500, lambda: self.animateLoopingSplash())
         self.keepOnTop()
 
     def begin(self, scale=1):
@@ -848,7 +848,7 @@ class actions():
             ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
             ["Triangle", "LeftArrow", "CenterArrow", "RightArrow", "BlankLightGrey"],
             ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
-            ["BlankBlack", "No", "BlankBlack", "Yes", None]
+            ["BlankBlack", "BlankBlack", "No", "BlankBlack", None]
         ]
 
         for y in range(len(self.game.defaultLayout)):
