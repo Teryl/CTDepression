@@ -199,7 +199,6 @@ class playerClass():
 
 class enemyClass():
     def __init__(self):
-        assets = assetHandler()
         self.currentEnemy = ""
         ## initialize enemyNamelist, enemy.enemyStatlist, enemyTypelist, enemyDict (default enemy is man)
         self.enemyNamelist = [
@@ -230,6 +229,14 @@ class enemyClass():
             "Time": {0:10,1:15,2:20},
             "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
         }
+        self.enemyTypeList = {}
+        self.initStats()
+        self.enemyDict = self.enemyTypeList["man"]
+
+    def randomName(self):
+        return self.enemyNamelist[random.randrange(len(self.enemyNamelist))]
+
+    def initStats(self):
         self.enemyTypeList = {
             "man":{
                 "Name": "man",
@@ -279,10 +286,6 @@ class enemyClass():
                 "Time": self.enemyStatlist["Time"][1]
             }
         }
-        self.enemyDict = self.enemyTypeList["man"]
-
-    def randomName(self):
-        return self.enemyNamelist[random.randrange(len(self.enemyNamelist))]
 
 def PLACEHOLDER_FUNCTION():
     pass
@@ -574,6 +577,8 @@ class gameInstance(Tk):
         self.create_combat()
         self.create_combat_elements()
         self.secret()
+
+        self.protocol("WM_DELETE_WINDOW", self.actions.quitGame)
         
         
     def modify_timer(self, thread, time):
@@ -858,7 +863,7 @@ class actions():
             ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
             ["Triangle", "LeftArrow", "CenterArrow", "RightArrow", "BlankLightGrey"],
             ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
-            ["BlankBlack", "BlankBlack", "No", "BlankBlack", None]
+            ["Pound", "BlankBlack", "No", "BlankBlack", None]
         ]
 
         for y in range(len(self.game.defaultLayout)):
@@ -944,7 +949,27 @@ class actions():
         os.system("start \"\" https://youtu.be/IGLVMBTIAPE?t=289")
         queueResult.put("quit")
         exit()
+
+    def mithun(self):
+        messagebox.showinfo("bruh", message="You actual moron of a human being!\nStop pressing unnecessary buttons "+os.getlogin()+"!", icon="warning")
+        enemy.enemyStatlist = {
+            "HP":{0:1.25,1:3,2:7},
+            "Atk":{0:0,1:0,2:0},
+            "Def":{0:2,1:3,2:4},
+            "Time": {0:7,1:7,2:10},
+            "globalNRange": {0:[1,11], 1:[5,26], 2:[25,101], 3:[100,1001]}
+        }
+        enemy.initStats()
+
+    
+    def evan(self):
+        pass
+    
+    def michael(self):
+        pass
         
+    def thei(self):
+        pass
 
 
 
@@ -1022,10 +1047,10 @@ class buttonPresses():
         self.action.evaluate_buffer(self.action.game.queueResult)
     
     def press_Pound(self):
-        self.action.keypad_state_change()
+        pass
 
     def press_Home(self):
-        self.action.keypad_state_reset()
+        pass
     
     def press_UpArrow(self):
         self.action.make_shop_choice("Time")
@@ -1049,7 +1074,7 @@ class buttonPresses():
         self.action.make_shop_choice("N")
 
     def press_Circle(self):
-        pass
+        self.action.mithun()
 
     def press_Triangle(self):
         pass
