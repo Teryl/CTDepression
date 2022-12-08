@@ -148,7 +148,7 @@ scaleMul = {
     "Stats": {0.75: (0.92, 1.01) , 1: (0.90, 1.00) , 1.25: (1.00, 0.90) , 1.5: (1.00, 0.93) , 1.75: (0.98, 1.00)}, #Y Offset, Size
     "Display" : {0.75: (1.00, 1.00) , 1: (1.00, 0.92) , 1.25: (1.00, 0.86) , 1.5: (1.00, 0.86) , 1.75: (1.00, 0.97)}, #Y Offset, Size
     "Coin" : {0.75: (0.5, 1.00) , 1: (0.5, 1.00) , 1.25: (0.5, 1.00) , 1.5: (0.5, 1.00) , 1.75: (0.5, 1.00)}, #Y Offset, Size
-    "Sprites" : {0.75: (1.00, 1.00) , 1: (1.00, 1.00) , 1.25: (1.00, 1.00) , 1.5: (1.00, 1.00) , 1.75: (1.00, 1.00)}, #Y Offset, Size
+    "Sprites" : {0.75: (1.00, 1.10) , 1: (1.00, 1.10) , 1.25: (1.00, 1.10) , 1.5: (1.00, 1.10) , 1.75: (1.00, 1.10)}, #Y Offset, Size
     "Info" : {0.75: (0.2, 0.9) , 1: (0.2, 0.85) , 1.25: (0.2, 0.85) , 1.5: (0.2, 0.85) , 1.75: (0.2, 0.85)}, #Y Offset, Size
 }
 
@@ -404,7 +404,7 @@ class assetHandler():
             "Bepis" : [os.path.join(self.charPath, "09_Bepis.png"), 4, 20, 20],
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
             "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
-            "Player" : [os.path.join(self.animPath, "1.png"), 4, 60, 20],
+            "Player" : [os.path.join(self.animPath, "1.png"), 4, 64, 20],
 
             "icon" : os.path.join(self.iconPath, ".Titleicon.ico"),
         }
@@ -648,7 +648,7 @@ class gameInstance(Tk):
     def create_combat_elements(self):
         self.create_canvas(self.frameDict["combat"], "enemy", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.88, rely=0.65, anchor=E)
         self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW)
-        self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.05, rely=0.65, anchor=W)
+        self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.03, rely=0.65, anchor=W)
         self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
         self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["EnemyName"][1]*self.px, height=self.assets.assets["EnemyName"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.4, anchor=CENTER)
         self.textfields["enemyName"] = self.frameDict["enemyName"].create_text(self.assets.assets["EnemyName"][1]*self.px/2, self.assets.assets["EnemyName"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
@@ -656,7 +656,7 @@ class gameInstance(Tk):
         self.textfields["enemyHP"] = self.frameDict["enemyHP"].create_text(self.assets.assets["EnemyHP"][1]*self.px/2, self.assets.assets["EnemyHP"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="HP = 100", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.create_canvas(self.frameDict["combat"], "damageNum", width=self.assets.assets["DamageNum"][1]*self.px, height=self.assets.assets["DamageNum"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.64, rely=0.65, anchor=CENTER)
         self.textfields["damageNum"] = self.frameDict["damageNum"].create_text(self.assets.assets["DamageNum"][1]*self.px/2, self.assets.assets["DamageNum"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", 1.75*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
-        self.create_canvas(self.frameDict["combat"], "damageNumPlayer", width=self.assets.assets["DamageNumPlayer"][1]*self.px, height=self.assets.assets["DamageNumPlayer"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.21, rely=0.415, anchor=CENTER)
+        self.create_canvas(self.frameDict["combat"], "damageNumPlayer", width=self.assets.assets["DamageNumPlayer"][1]*self.px, height=self.assets.assets["DamageNumPlayer"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.21, rely=0.418, anchor=CENTER)
         self.textfields["damageNumPlayer"] = self.frameDict["damageNumPlayer"].create_text(self.assets.assets["DamageNumPlayer"][1]*self.px/2, self.assets.assets["DamageNumPlayer"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", 1.75*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.update_combat_display()
 
