@@ -18,6 +18,10 @@ from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 from threading import Thread, Event
 from queue import Queue
 
+### Navigate one folder above main.py
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.chdir("..")
+
 class launcher():
     def __init__(self):
         self.root = Tk()
