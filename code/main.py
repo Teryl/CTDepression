@@ -159,7 +159,7 @@ class playerClass():
     def __init__(self):
         ## initialize playerStatlist and playerDict 
         self.playerStatlist = {
-            "maxHP":{0:11, 1:45, 2:75, 3:100, 4:140, 5:200},
+            "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
