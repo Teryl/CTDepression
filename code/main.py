@@ -779,6 +779,11 @@ class gameInstance(Tk):
                 self.frameDict["coin"].place_forget()
                 self.actions.keypad_state_reset()
                 time.sleep(1)
+            elif status == "maxLevel":
+                self.frameDict["display"].itemconfig(self.imagefields["screenImage"], image = self.assets.getAsset("displayBG"))
+                self.frameDict["coin"].place_forget()
+                self.after(100, lambda: self.actions.text_animate("display", "screenText", text="MAX LEVEL", delay=200, frame=6, endstate="SHOW"))
+                
 
         if player.get_stat("HP") <= 0:
             self.destroy()
@@ -1149,7 +1154,10 @@ def upgradeAbility():
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
             else:
+                shopQueue.put("maxLevel")
                 print("You have reached the maximum level for attack!")
+                time.sleep(1)
+                shopQueue.put("shopOpen")
                 continue
 
         elif playerUpgradeChoice == "Def":
@@ -1159,7 +1167,10 @@ def upgradeAbility():
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
             else:
+                shopQueue.put("maxLevel")
                 print("You have reached the maximum level for defense!")
+                time.sleep(1)
+                shopQueue.put("shopOpen")
                 continue
 
         elif playerUpgradeChoice == "Time":
@@ -1169,7 +1180,10 @@ def upgradeAbility():
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
             else:
+                shopQueue.put("maxLevel")
                 print("You have reached the maximum level for time!")
+                time.sleep(1)
+                shopQueue.put("shopOpen")
                 continue
 
         elif playerUpgradeChoice == "Luck":
@@ -1179,7 +1193,10 @@ def upgradeAbility():
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
             else:
+                shopQueue.put("maxLevel")
                 print("You have reached the maximum level for luck!")
+                time.sleep(1)
+                shopQueue.put("shopOpen")
                 continue
 
         elif playerUpgradeChoice == "maxHP":
@@ -1189,7 +1206,10 @@ def upgradeAbility():
                 print("You have {} upgrade coin(s)!".format(player.get_stat("Skill")))
                 continue
             elif player.get_stat("maxHP") == 5:
+                shopQueue.put("maxLevel")
                 print("You have reached the maximum level for HP!")
+                time.sleep(1)
+                shopQueue.put("shopOpen")
                 player.set_stat("maxHP", 4)
                 player.level_up("maxHP")
                 continue
