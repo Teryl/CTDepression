@@ -783,7 +783,7 @@ class gameInstance(Tk):
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
             if status == "shopOpen":
-                self.actions.keypad_state_change()
+                self.actions.keypad_state_change("shop")
                 self.actions.clear_buffer()
                 self.actions.clear_screen()
                 self.frameDict["display"].itemconfig(self.imagefields["screenImage"], image = self.assets.getAsset("Menu"))
@@ -873,19 +873,29 @@ class actions():
             time.sleep(0.1)
             exit()
 
-    def keypad_state_change(self):
-        self.altLayout = [
-            ["BlankOrange", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
-            ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
-            ["Triangle", "LeftArrow", "CenterArrow", "RightArrow", "BlankLightGrey"],
-            ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
-            ["Pound", "BlankBlack", "No", "BlankBlack", None]
-        ]
+    def keypad_state_change(self, layout):
+        self.altLayout = {
+            "shop":[
+                ["BlankOrange", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
+                ["BlankBlack", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
+                ["BlankBlack", "LeftArrow", "CenterArrow", "RightArrow", "BlankLightGrey"],
+                ["BlankBlack", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
+                ["Pound", "BlankBlack", "No", "BlankBlack", None]
+            ],
+
+            "secret":[
+                ["BlankOrange", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
+                ["Circle", "BlankBlack", "UpArrow", "BlankBlack", "BlankLightGrey"],
+                ["Triangle", "LeftArrow", "CenterArrow", "RightArrow", "BlankLightGrey"],
+                ["Square", "BlankBlack", "DownArrow", "BlankBlack", "BlankPlus"],
+                ["Pound", "BlankBlack", "No", "BlankBlack", None]
+            ]
+        }
 
         for y in range(len(self.game.defaultLayout)):
             for x in range(len(self.game.defaultLayout[y])):
-                if self.altLayout[y][x] != None and self.game.defaultLayout[y][x] != None and self.game.defaultLayout[y][x] != self.altLayout[y][x]:
-                    self.game.change_button((y, x), self.altLayout[y][x])
+                if self.altLayout[layout][y][x] != None and self.game.defaultLayout[y][x] != None and self.game.defaultLayout[y][x] != self.altLayout[layout][y][x]:
+                    self.game.change_button((y, x), self.altLayout[layout][y][x])
 
     def keypad_state_reset(self):
         self.game.reset_buttons()
@@ -1008,10 +1018,15 @@ class actions():
         self.do_animate("enemy", self.game.assets.getAnimate("cancerFlip"), self.game.assets.getDelay("cancerFlip"), self.game.enemy.currentEnemy)
 
 
+    def finn(self):
+        winsound.PlaySound("./assets/Sound/bepis.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+
 
 class buttonPresses():
     def __init__(self, actions):
         self.action = actions
+        self.secretOpen = False
     
     def press_C(self):
         self.action.backspace()
@@ -1083,7 +1098,13 @@ class buttonPresses():
         self.action.evaluate_buffer(self.action.game.queueResult)
     
     def press_Pound(self):
-        pass
+        if self.secretOpen == False:
+            self.action.keypad_state_change("secret")
+            self.secretOpen = True
+        else:
+            self.action.keypad_state_reset()
+            self.action.keypad_state_change("shop")
+            self.secretOpen = False
 
     def press_Home(self):
         pass
@@ -1116,7 +1137,7 @@ class buttonPresses():
         self.action.michael()
 
     def press_Square(self):
-        pass
+        self.action.finn()
 
     def press_BlankOrange(self):
         pass
