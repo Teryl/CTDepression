@@ -1190,7 +1190,7 @@ def upgradeAbility():
                 continue
             elif player.get_stat("maxHP") == 5:
                 print("You have reached the maximum level for HP!")
-                player.set_stat("HP", 4)
+                player.set_stat("maxHP", 4)
                 player.level_up("maxHP")
                 continue
 
