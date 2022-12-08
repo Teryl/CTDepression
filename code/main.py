@@ -17,6 +17,7 @@ import sys
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
 from threading import Thread, Event
 from queue import Queue
+import winsound
 
 ### Navigate one folder above main.py
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -158,7 +159,7 @@ class playerClass():
     def __init__(self):
         ## initialize playerStatlist and playerDict 
         self.playerStatlist = {
-            "maxHP":{0:30, 1:45, 2:75, 3:100, 4:140, 5:200},
+            "maxHP":{0:11, 1:45, 2:75, 3:100, 4:140, 5:200},
             "Atk":{0:1, 1:1.2, 2:1.4, 3:1.6, 4:1.8, 5:2}, 
             "Def":{0:1, 1:0.97, 2:0.92, 3:0.85, 4:0.75, 5:0.62}, 
             "Time": {0:0, 1:1, 2:2, 3:3, 4:4, 5:5}, 
@@ -299,6 +300,8 @@ class assetHandler():
         self.fightPath = "./assets/FightUI/"
         self.charPath = "./assets/CharSprites/"
         self.animPath = "./assets/CharSprites/char_frames/"
+        self.animPath2 = "./assets/CharSprites/char_frames_2/"
+        self.cancerPath = "./assets/CharSprites/cancer_frames/"
         self.iconPath = "./assets/LauncherSprites/"
         self.imageDict = {}
         self.fontDict = {}
@@ -408,11 +411,13 @@ class assetHandler():
             "Therock" : [os.path.join(self.charPath, "10_Therock.png"), 4, 20, 20],
             "Kanye" : [os.path.join(self.charPath, "11_Kanye.png"), 4, 20, 20],
             "Player" : [os.path.join(self.animPath, "1.png"), 4, 64, 20],
+            "Player2" : [os.path.join(self.animPath2, "1.png"), 4, 64, 20],
 
             "icon" : os.path.join(self.iconPath, ".Titleicon.ico"),
         }
 
         self.animate["playerAttack"] = [os.path.join(self.animPath, str(i) + ".png") for i in range(1, 26)], [75, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 75, 75, 75, 75, 75, 300, 75, 75, 75, 75, 75, 75, 75, 75]
+        self.animate["cancerFlip"] = [os.path.join(self.cancerPath, str(i) + ".png") for i in range(1, 6)], [75, 125, 125, 125, 125]
     
         
 
@@ -502,6 +507,8 @@ class gameInstance(Tk):
         self.enemy = enemy
         self.binds = {}
         self.clockTime = self.clock(self)
+        self.Player = "Player"
+        self.currentEnemy = ""
 
         # timer pseudothreads
         self.threads = [0, 0, 0]
@@ -653,7 +660,7 @@ class gameInstance(Tk):
     # create combat elements (sprites, text)
     def create_combat_elements(self):
         self.create_canvas(self.frameDict["combat"], "enemy", width=self.assets.assets["Man_1"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Man_1"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.88, rely=0.65, anchor=E)
-        self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW)
+        self.imagefields["enemy"] = self.frameDict["enemy"].create_image(0, 0, image=self.assets.getAsset("Man_1"), anchor = NW, state=HIDDEN)
         self.create_canvas(self.frameDict["combat"], "Player", width=self.assets.assets["Player"][2]*self.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.assets.assets["Player"][3]*self.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.03, rely=0.65, anchor=W)
         self.imagefields["Player"] = self.frameDict["Player"].create_image(0, 0, image=self.assets.getAsset("Player"), anchor = NW)
         self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["EnemyName"][1]*self.px, height=self.assets.assets["EnemyName"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.4, anchor=CENTER)
@@ -731,7 +738,6 @@ class gameInstance(Tk):
         self.frameDict["Atk"].itemconfig(self.imagefields["Atk"], image=self.assets.getAsset("Atk_" + str(self.player.get_stat("Atk"))))
         self.frameDict["Def"].itemconfig(self.imagefields["Def"], image=self.assets.getAsset("Def_" + str(self.player.get_stat("Def"))))
         self.frameDict["Luck"].itemconfig(self.imagefields["Luck"], image=self.assets.getAsset("Luck_" + str(self.player.get_stat("Luck"))))
-        self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
 
         if not(self.enemyHPQueue.empty()):
             status = self.enemyHPQueue.get()
@@ -740,6 +746,8 @@ class gameInstance(Tk):
         if not(self.enemyQueue.empty()):
             status = self.enemyQueue.get()
             self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text=status)
+            if self.currentEnemy != "Done":
+                self.currentEnemy = status
 
         if not(self.critQueue.empty()):
             status = self.critQueue.get()
@@ -757,9 +765,10 @@ class gameInstance(Tk):
                 self.frameDict["enemyName"].itemconfig(self.textfields["enemyName"], text="")
                 self.frameDict["enemyHP"].itemconfig(self.textfields["enemyHP"], text="")
             elif status == "enemySpawned":
+                self.frameDict["enemy"].itemconfig(self.imagefields["enemy"], image=self.enemy.currentEnemy)
                 self.toggle_switch_sprites("enemy", True)
             elif status == "enemyHit":
-                self.after(0, self.actions.do_animate("Player", self.actions.game.assets.getAnimate("playerAttack"), self.actions.game.assets.getDelay("playerAttack")))
+                self.after(0, self.actions.do_animate(self.Player, self.assets.getAnimate("playerAttack"), self.assets.getDelay("playerAttack"), self.Player))
                 self.after(1800, lambda: self.actions.text_animate("damageNum", "damageNum", text="-" + str(ceil(damageQueue.get())), delay=125))
             elif status == "playerHit":
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="INCORRECT", delay=200, frame=6, endstate="SHOW"))
@@ -768,8 +777,8 @@ class gameInstance(Tk):
                 self.after(0, lambda: self.actions.text_animate("display", "screenText", text="TOO SLOW", delay=200, frame=6, endstate="SHOW"))
                 self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
             elif status == "timeout":
-                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="OUT OF TIME", delay=300, frame=6, endstate="SHOW"))
-                self.after(1800, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
+                self.after(0, lambda: self.actions.text_animate("display", "screenText", text="OUT OF TIME", delay=200, frame=6, endstate="SHOW"))
+                self.after(1000, lambda: self.actions.text_animate("damageNumPlayer", "damageNumPlayer", text="-" + str(ceil(damageQueue.get())), delay=200))
                 
         if not(self.shopQueue.empty()):
             status = self.shopQueue.get()
@@ -803,6 +812,11 @@ class gameInstance(Tk):
     def secret(self):
         if self.buffer == "3337773333224447773":
             self.actions.freebird()
+        if self.buffer == "6666666666.":
+            self.actions.evan()
+        if self.currentEnemy == "Cancer Patient" and self.player.get_stat("HP") <= 10:
+            self.actions.thei()
+            self.currentEnemy = "Done"
         self.after(50, lambda : self.secret())
 
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
@@ -850,11 +864,13 @@ class actions():
     def __init__(self, game):
         self.game = game
         self.game.bind("<Escape>", lambda e : self.quitGame())
+        self.soundPlaying = False
 
     def quitGame(self):
         quitQuery = messagebox.askyesno("Quit", "Are you sure you want to quit?", icon="warning")
         if quitQuery:
             self.game.queueResult.put("quit")
+            time.sleep(0.1)
             exit()
 
     def keypad_state_change(self):
@@ -922,7 +938,7 @@ class actions():
         pass ###feature disabled
 
     def make_shop_choice(self, choice):
-        if choice != "n" and player.get_stat(choice) < 5:
+        if (choice != "N" and player.get_stat(choice) < 5) or choice == "maxHP":
             self.game.frameDict["coin"].itemconfig(self.game.textfields["coinText"], text = self.game.player.get_stat("Skill")-1)
         self.game.after(100, lambda: queueResult.put(choice))
 
@@ -930,12 +946,12 @@ class actions():
         self.game.toggle_switch_sprites(idFrame, visible, idSprite)
         
 
-    def do_animate(self, idFrame, framesArr, delayArr, frame=0):
+    def do_animate(self, idFrame, framesArr, delayArr, original, frame=0):
         if frame < len(framesArr):
             self.game.update_animation(idFrame, framesArr[frame])
-            self.game.after(int(delayArr[frame] * ANIMATION_SCALE), lambda: self.do_animate(idFrame, framesArr, delayArr, frame+1))
+            self.game.after(int(delayArr[frame] * ANIMATION_SCALE), lambda: self.do_animate(idFrame, framesArr, delayArr, original, frame+1))
         else:
-            self.toggle_switch_sprites(idFrame, True, idFrame)
+            self.toggle_switch_sprites(idFrame, True, original)
 
     def text_animate(self, idFrame, idText, text, delay=250, frame=6, endstate = "HIDE"):
         if frame > 0 and not(endstate == "SHOW" and frame == 1):
@@ -946,9 +962,15 @@ class actions():
             self.game.after(delay, lambda: self.text_animate(idFrame, idText, text, delay, frame-1))
 
     def freebird(self):
-        os.system("start \"\" https://youtu.be/IGLVMBTIAPE?t=289")
-        queueResult.put("quit")
-        exit()
+        if not(self.soundPlaying):
+            winsound.PlaySound("./assets/Sound/freebird.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+            self.soundPlaying = True
+        else:
+            winsound.PlaySound(None, winsound.SND_FILENAME)
+            self.soundPlaying = False
+        self.clear_buffer()
+        self.clear_screen()
+
 
     def mithun(self):
         messagebox.showinfo("bruh", message="You actual moron of a human being!\nStop pressing unnecessary buttons "+os.getlogin()+"!", icon="warning")
@@ -963,13 +985,27 @@ class actions():
 
     
     def evan(self):
-        pass
+        self.game.frameDict["Player"].delete('all')
+        self.game.Player = "Player2"
+        self.game.assets.animate["playerAttack"] = [os.path.join(self.game.assets.animPath2, str(i) + ".png") for i in range(1, 26)], [75, 100, 300, 100, 300, 300, 300, 75, 75, 75, 75, 75, 75, 75, 75, 75, 300, 75, 75, 75, 75, 75, 75, 75, 75]
+        self.game.create_canvas(self.game.frameDict["combat"], "Player2", width=self.game.assets.assets["Player2"][2]*self.game.px*scaleMul["Sprites"][WINDOW_SCALE][0], height=self.game.assets.assets["Player2"][3]*self.game.px*scaleMul["Sprites"][WINDOW_SCALE][1], bg="#424242", padx=0, pady=0, relx=0.03, rely=0.7, anchor=W)
+        self.game.imagefields["Player2"] = self.game.frameDict["Player2"].create_image(0, 0, image=self.game.assets.getAsset("Player2"), anchor = NW)
+        self.clear_buffer()
+        self.clear_screen()
+        
     
     def michael(self):
-        pass
+        if not(self.soundPlaying):
+            self.game.after(750, lambda: winsound.PlaySound("./assets/Sound/sans.wav", winsound.SND_FILENAME | winsound.SND_ASYNC))
+            messagebox.showinfo("get dunked on", message="* You feel like you're going to have a bad time.", icon="warning")
+            self.soundPlaying = True
+        else:
+            winsound.PlaySound(None, winsound.SND_FILENAME)
+            self.soundPlaying = False
+
         
     def thei(self):
-        pass
+        self.do_animate("enemy", self.game.assets.getAnimate("cancerFlip"), self.game.assets.getDelay("cancerFlip"), self.game.enemy.currentEnemy)
 
 
 
@@ -1077,7 +1113,7 @@ class buttonPresses():
         self.action.mithun()
 
     def press_Triangle(self):
-        pass
+        self.action.michael()
 
     def press_Square(self):
         pass
@@ -1329,7 +1365,7 @@ def maingame():
 
                 if inputPerm == -999999:
                     spriteQueue.put("timeout")
-                    time.sleep(2)
+                    time.sleep(1.5)
                     
                 if inputPerm == "quit":
                     exit()
