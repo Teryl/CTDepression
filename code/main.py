@@ -23,6 +23,14 @@ import winsound
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 os.chdir("..")
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class launcher():
     def __init__(self):
         self.root = Tk()
@@ -577,6 +585,14 @@ class gameInstance(Tk):
             ["BlankBlack", "0", "Dot", "Equals", None],
         ]
 
+        self.startLayout = [
+            ["BlankOrange", "BlankOrange", "BlankLightGrey", "BlankLightGrey", "BlankLightGrey"],
+            ["BlankBlack", "BlankDarkGrey", "BlankDarkGrey", "BlankDarkGrey", "BlankLightGrey"],
+            ["BlankBlack", "BlankDarkGrey", "BlankDarkGrey", "BlankDarkGrey", "BlankLightGrey"],
+            ["BlankBlack", "BlankDarkGrey", "BlankDarkGrey", "BlankDarkGrey", "BlankPlus"],
+            ["BlankBlack", "BlankDarkGrey", "BlankDarkGrey", "BlankLightGrey", None],
+        ]
+
         self.create_calc()
         self.create_buttons()
         self.assets.initialise_fonts()
@@ -584,7 +600,7 @@ class gameInstance(Tk):
         self.create_combat()
         self.create_combat_elements()
         self.secret()
-
+        self.begin_countdown(3)
         self.protocol("WM_DELETE_WINDOW", self.actions.quitGame)
         
         
@@ -666,7 +682,7 @@ class gameInstance(Tk):
         self.create_canvas(self.frameDict["combat"], "enemyName", width=self.assets.assets["EnemyName"][1]*self.px, height=self.assets.assets["EnemyName"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.4, anchor=CENTER)
         self.textfields["enemyName"] = self.frameDict["enemyName"].create_text(self.assets.assets["EnemyName"][1]*self.px/2, self.assets.assets["EnemyName"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.create_canvas(self.frameDict["combat"], "enemyHP", width=self.assets.assets["EnemyHP"][1]*self.px, height=self.assets.assets["EnemyHP"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.8, rely=0.9, anchor=CENTER)
-        self.textfields["enemyHP"] = self.frameDict["enemyHP"].create_text(self.assets.assets["EnemyHP"][1]*self.px/2, self.assets.assets["EnemyHP"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="HP = 100", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
+        self.textfields["enemyHP"] = self.frameDict["enemyHP"].create_text(self.assets.assets["EnemyHP"][1]*self.px/2, self.assets.assets["EnemyHP"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.create_canvas(self.frameDict["combat"], "damageNum", width=self.assets.assets["DamageNum"][1]*self.px, height=self.assets.assets["DamageNum"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.64, rely=0.65, anchor=CENTER)
         self.textfields["damageNum"] = self.frameDict["damageNum"].create_text(self.assets.assets["DamageNum"][1]*self.px/2, self.assets.assets["DamageNum"][2]*self.px*scaleMul["Info"][WINDOW_SCALE][0], text="", font=self.assets.getFont("monogramRevised", 1.75*WINDOW_SCALE*-(32 - (WINDOW_SCALE-1)*20)*scaleMul["Info"][WINDOW_SCALE][1]), fill="red", anchor=CENTER)
         self.create_canvas(self.frameDict["combat"], "damageNumPlayer", width=self.assets.assets["DamageNumPlayer"][1]*self.px, height=self.assets.assets["DamageNumPlayer"][2]*self.px, bg="#424242", padx=0, pady=0, relx=0.21, rely=0.418, anchor=CENTER)
@@ -674,11 +690,11 @@ class gameInstance(Tk):
         self.update_combat_display()
 
     def create_buttons(self):
-        for y in range(len(self.defaultLayout)):
-            for x in range(len(self.defaultLayout[y])):
-                if self.defaultLayout[y][x] != None:
-                    self.create_button(self.frameDict["keypad"], (y, x), image=self.assets.getAsset(self.defaultLayout[y][x]), bg="#424242", width=self.assets.assets[self.defaultLayout[y][x]][2]*self.px, height=self.assets.assets[self.defaultLayout[y][x]][3]*self.px, padx=0, pady=0, bd=0, command=self.buttons[self.defaultLayout[y][x]])
-                    if self.defaultLayout[y][x] == "Plus":
+        for y in range(len(self.startLayout)):
+            for x in range(len(self.startLayout[y])):
+                if self.startLayout[y][x] != None:
+                    self.create_button(self.frameDict["keypad"], (y, x), image=self.assets.getAsset(self.startLayout[y][x]), bg="#424242", width=self.assets.assets[self.startLayout[y][x]][2]*self.px, height=self.assets.assets[self.startLayout[y][x]][3]*self.px, padx=0, pady=0, bd=0, command=self.buttons[self.startLayout[y][x]])
+                    if self.startLayout[y][x] == "BlankPlus":
                         self.grid_item(self.buttonDict[(y, x)], row=y, column=x, padx=self.px, pady=self.px ,rowspan=2, sticky=NSEW)
                         continue
                     self.grid_item(self.buttonDict[(y,x)], row=y, column=x, padx=self.px, pady=self.px, sticky=NSEW)
@@ -802,12 +818,18 @@ class gameInstance(Tk):
 
         if player.get_stat("HP") <= 0:
             self.destroy()
-
-
         
         self.increment_timers()
 
         self.after(5, self.update_combat_display)
+
+    def begin_countdown(self, start):
+        if start > 0:
+            self.actions.push_to_screen("START IN " + str(start))
+            self.after(1000, lambda: self.begin_countdown(start-1))
+        else:
+            self.after(0, lambda: self.actions.text_scroll(text="FIGHT!!!"))
+            self.after(1000, lambda: self.actions.keypad_state_reset())
 
     def secret(self):
         if self.buffer == "3337773333224447773":
@@ -970,6 +992,19 @@ class actions():
             else:
                 self.game.frameDict[idFrame].itemconfig(self.game.textfields[idText], text="")
             self.game.after(delay, lambda: self.text_animate(idFrame, idText, text, delay, frame-1))
+    
+    def text_scroll(self, text, delay=50, frame=13):
+        if frame+len(text) > 13:
+            self.push_to_screen(text[0:14-frame])
+            self.game.after(delay, lambda: self.text_scroll(text, delay, frame-1))
+        elif frame+len(text) == 13:
+            self.push_to_screen(text)
+            self.game.after(delay-25, lambda: self.text_scroll(text, delay, frame-1))
+        elif frame > -len(text):
+            self.push_to_screen(text + " "*abs((frame - 13 + len(text))))
+            self.game.after(delay, lambda: self.text_scroll(text, delay, frame-1))
+        else:
+            self.clear_screen()
 
     def freebird(self):
         if not(self.soundPlaying):
@@ -1487,6 +1522,7 @@ gui = Thread(target=main, args=(queueResult, spriteQueue, shopQueue, enemyQueue,
 gui.start()
 
 clock = metaQueue.get().clockTime
+time.sleep(4)
 
 eternum = Thread(target=maingame)
 eternum.start()
