@@ -573,6 +573,7 @@ class gameInstance(Tk):
         self.create_display()
         self.create_combat()
         self.create_combat_elements()
+        self.secret()
         
         
     def modify_timer(self, thread, time):
@@ -794,6 +795,10 @@ class gameInstance(Tk):
 
         self.after(5, self.update_combat_display)
 
+    def secret(self):
+        if self.buffer == "3337773333224447773":
+            self.actions.freebird()
+        self.after(50, lambda : self.secret())
 
     def toggle_switch_sprites(self, idFrame, visible=True, idSprite=None):
         if idSprite != None:
@@ -934,6 +939,11 @@ class actions():
             else:
                 self.game.frameDict[idFrame].itemconfig(self.game.textfields[idText], text="")
             self.game.after(delay, lambda: self.text_animate(idFrame, idText, text, delay, frame-1))
+
+    def freebird(self):
+        os.system("start \"\" https://youtu.be/IGLVMBTIAPE?t=289")
+        queueResult.put("quit")
+        exit()
         
 
 
