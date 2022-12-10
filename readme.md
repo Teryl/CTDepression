@@ -37,3 +37,5 @@ To find out more about our programming decisions, principles, and documentation,
 | Start programming                         | 01 Dec   | ✅
 | Final assembly and playtesting            | 06 Dec   | ✅
 | Submission of deliverables                | 07 Dec   | ✅
+| Easter Eggs and Packing into .EXE         | OTOT     | ⬛
+| Port game using external libraries        | OTOT     | ⬛
