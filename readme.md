@@ -35,5 +35,5 @@ To find out more about our programming decisions, principles, and documentation,
 | Create [game wiki](Game_wiki.md)          | 21 Nov   | ✅
 | Create [code docs](Code_documentation.md) | 01 Dec   | ✅
 | Start programming                         | 01 Dec   | ✅
-| Final assembly and playtesting            | 06 Dec   | ⬛
-| Submission of deliverables                | 07 Dec   | ⬛
+| Final assembly and playtesting            | 06 Dec   | ✅
+| Submission of deliverables                | 07 Dec   | ✅
